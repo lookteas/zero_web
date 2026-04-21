@@ -431,3 +431,67 @@ npm run start
 - 改接口地址时，不要在页面里写死地址，统一改环境变量。
 - 改页面时，优先保留当前“页面小模块 + 少量共享组件”的组织方式，不要随手抽大而空的抽象层。
 - 如果终端输出出现乱码，不要直接相信输出结果；先确认读取方式和文件编码再继续判断。
+---
+
+## 生产部署脚本
+
+如果你在 Windows 本地开发、Linux 服务器部署，可以直接使用：`scripts/deploy-web.ps1`
+
+脚本作用：
+- 本地打包 `apps/web` 的源码与配置
+- 自动排除 `.next`、`node_modules`、`.git`
+- 通过 `scp` 上传到服务器
+- 通过 `ssh` 在服务器解压
+- 可选执行 `npm install` 与 `npm run build`
+
+### 使用前提
+- 本机可用：`tar`、`scp`、`ssh`
+- 服务器已经安装 Node.js / npm
+- 服务器目标目录可写
+
+### 示例
+
+只上传并解压：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-web.ps1 `
+  -HostName 123.123.123.123 `
+  -UserName root `
+  -RemotePath /opt/zero/apps/web
+```
+
+上传后顺手安装依赖并构建：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-web.ps1 `
+  -HostName 123.123.123.123 `
+  -UserName root `
+  -RemotePath /opt/zero/apps/web `
+  -InstallDependencies `
+  -BuildOnServer
+```
+
+如果你还想在上传后顺手执行额外命令：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-web.ps1 `
+  -HostName 123.123.123.123 `
+  -UserName root `
+  -RemotePath /opt/zero/apps/web `
+  -InstallDependencies `
+  -BuildOnServer `
+  -PostDeployCommand "npm run start"
+```
+
+### 参数说明
+- `HostName`：服务器地址
+- `UserName`：服务器用户
+- `RemotePath`：服务器上的前端目录
+- `Port`：SSH 端口，默认 `22`
+- `InstallDependencies`：上传完成后执行 `npm install`
+- `BuildOnServer`：上传完成后执行 `npm run build`
+- `PostDeployCommand`：上传完成后额外执行的命令
+
+### 建议
+- 正式环境更推荐把 `PostDeployCommand` 换成 `systemctl restart xxx` 或 `pm2 restart xxx`
+- 前端 API 地址仍然通过 `.env.production` 里的 `NEXT_PUBLIC_API_BASE_URL` 控制

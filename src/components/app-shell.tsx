@@ -18,16 +18,14 @@ type AppShellProps = {
 
 function BrandSlot() {
   return (
-    <Link href="/" className="inline-flex items-center gap-3 rounded-full border border-[var(--border-soft)] bg-white/95 px-3 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition hover:border-[var(--primary)]/30 hover:bg-[var(--surface-soft)]">
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[linear-gradient(180deg,#dff2eb_0%,#edf8f4_100%)] text-[15px] font-semibold tracking-[0.04em] text-[var(--primary)] ring-1 ring-[var(--border-soft)]">
-        LOGO
-      </span>
-      <span className="hidden md:flex md:flex-col md:leading-tight">
-        <span className="text-[15px] font-semibold text-[var(--foreground)]">Zero</span>
-        <span className="text-[12px] text-[var(--foreground-soft)]">品牌位占位图</span>
-      </span>
+    <Link
+      href="/"
+      className="inline-flex items-center rounded-full border border-[var(--border-soft)] bg-white/95 px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition hover:border-[var(--primary)]/30 hover:bg-[var(--surface-soft)]"
+    >
+      <span className="inline-flex min-h-10 items-center text-[14px] font-semibold tracking-[0.03em] text-[var(--foreground)] md:hidden">Zero</span>
+      <span className="hidden items-center text-[22px] font-bold tracking-[0.01em] text-[var(--foreground)] md:inline-flex">Zero</span>
     </Link>
-  )
+  );
 }
 
 export async function AppShell({
