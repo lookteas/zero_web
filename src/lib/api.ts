@@ -19,6 +19,35 @@ export type Topic = {
   scheduleDate?: string;
 };
 
+export type AdminUser = {
+  id: number;
+  account: string;
+  email?: string;
+  mobile?: string;
+  nickname: string;
+  avatar?: string;
+  status: number;
+  createdAt: string;
+  lastLoginAt?: string;
+};
+
+export type AdminUserSummary = {
+  total: number;
+  active: number;
+  withEmail: number;
+  withMobile: number;
+};
+
+export type AdminUserListData = {
+  list: AdminUser[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+  };
+  summary: AdminUserSummary;
+};
+
 export type DailyTask = {
   id: number;
   taskDate: string;
@@ -418,6 +447,29 @@ export async function updateAdminDiscussion(discussionId: number, payload: {
   adminRemark?: string;
 }) {
   return requestAdmin<{ code?: number }>(`/admin/discussions/${discussionId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listAdminUsers(filters?: { keyword?: string; status?: string; page?: number; pageSize?: number }) {
+  const params = new URLSearchParams();
+  if (filters?.keyword) params.set("keyword", filters.keyword);
+  if (filters?.status === "0" || filters?.status === "1") params.set("status", filters.status);
+  if (filters?.page) params.set("page", String(filters.page));
+  if (filters?.pageSize) params.set("pageSize", String(filters.pageSize));
+  const query = params.toString();
+  return requestAdmin<AdminUserListData>(query ? `/admin/users?${query}` : "/admin/users");
+}
+
+export async function updateAdminUser(userId: number, payload: {
+  nickname: string;
+  email?: string;
+  mobile?: string;
+  avatar?: string;
+  status: number;
+}) {
+  return requestAdmin<{ code?: number }>(`/admin/users/${userId}`, {
     method: "PATCH",
     body: JSON.stringify(payload),
   });

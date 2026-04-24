@@ -5,9 +5,10 @@ export const authErrorCopy = Object.freeze({
 })
 
 export const actionErrorCopy = Object.freeze({
-  todaySubmitFailed: '提交前请先把当前卡点、改进行动和验证方式写完整。',
+  todaySubmitFailed: '提交前请先把当前卡点、改进行动和验证方式填写完整。',
   topicSaveFailed: '主题保存失败，请稍后再试',
   discussionSaveFailed: '保存讨论失败',
+  userSaveFailed: '保存用户资料失败，请稍后再试',
   voteSubmitFailed: '投票暂时失败，请稍后再试',
 })
 

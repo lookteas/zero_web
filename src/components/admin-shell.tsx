@@ -8,6 +8,7 @@ const adminNavItems = [
   { href: "/admin", label: "管理台" },
   { href: "/admin/topics", label: "主题设置" },
   { href: "/admin/discussions", label: "讨论设置" },
+  { href: "/admin/users", label: "用户管理" },
 ];
 
 type AdminShellProps = {
