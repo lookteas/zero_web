@@ -62,6 +62,11 @@ test('getAdminDiscussionSummary falls back when meeting link is empty', () => {
 test('loadAdminDashboardData keeps admin dashboard usable when vote and discussion loading fail', async () => {
   const data = await loadAdminDashboardData({
     listAdminTopics: async () => [{ id: 1, title: '表达能力', status: 1 }],
+    listAdminUsers: async () => ({
+      list: [],
+      pagination: { page: 1, pageSize: 100, total: 12 },
+      summary: { total: 12, active: 10, withEmail: 8, withMobile: 6 },
+    }),
     getCurrentWeeklyVote: async () => {
       throw new Error('Request failed: 400')
     },
@@ -71,6 +76,7 @@ test('loadAdminDashboardData keeps admin dashboard usable when vote and discussi
   })
 
   assert.equal(data.topics.length, 1)
+  assert.equal(data.userSummary.total, 12)
   assert.deepEqual(data.vote.candidates, [])
   assert.equal(data.discussion.discussionTitle, '待补充本周讨论')
   assert.equal(data.discussion.status, 'draft')

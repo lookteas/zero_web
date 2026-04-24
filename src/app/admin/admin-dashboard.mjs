@@ -17,15 +17,26 @@ function createFallbackDiscussion() {
   }
 }
 
+function createFallbackUserSummary() {
+  return {
+    total: null,
+    active: null,
+    withEmail: null,
+    withMobile: null,
+  }
+}
+
 export async function loadAdminDashboardData(loaders) {
-  const [topicsResult, voteResult, discussionResult] = await Promise.allSettled([
+  const [topicsResult, usersResult, voteResult, discussionResult] = await Promise.allSettled([
     loaders.listAdminTopics(),
+    loaders.listAdminUsers(),
     loaders.getCurrentWeeklyVote(),
     loaders.getCurrentDiscussion(),
   ])
 
   const warnings = []
   const topics = topicsResult.status === 'fulfilled' ? topicsResult.value : []
+  const userSummary = usersResult.status === 'fulfilled' ? (usersResult.value?.summary ?? createFallbackUserSummary()) : createFallbackUserSummary()
   const vote = voteResult.status === 'fulfilled' ? voteResult.value : createFallbackVote()
   const discussion = discussionResult.status === 'fulfilled' ? discussionResult.value : createFallbackDiscussion()
 
@@ -39,6 +50,7 @@ export async function loadAdminDashboardData(loaders) {
 
   return {
     topics,
+    userSummary,
     vote,
     discussion,
     warnings,

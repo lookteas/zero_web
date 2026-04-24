@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { AdminShell } from "@/components/admin-shell";
 import { SectionCard } from "@/components/section-card";
-import { getCurrentDiscussion, getCurrentWeeklyVote, listAdminTopics } from "@/lib/api";
+import { getCurrentDiscussion, getCurrentWeeklyVote, listAdminTopics, listAdminUsers } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
 import {
@@ -12,11 +12,16 @@ import {
   loadAdminDashboardData,
 } from "./admin-dashboard.mjs";
 
+function formatUserTotal(total: number | null | undefined) {
+  return typeof total === "number" ? String(total) : "--";
+}
+
 export default async function AdminPage() {
   await requireAdmin();
 
-  const { topics, vote, discussion, warnings } = await loadAdminDashboardData({
+  const { topics, userSummary, vote, discussion, warnings } = await loadAdminDashboardData({
     listAdminTopics,
+    listAdminUsers,
     getCurrentWeeklyVote,
     getCurrentDiscussion,
   });
@@ -48,11 +53,16 @@ export default async function AdminPage() {
         </section>
       ) : null}
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
           <p className="text-sm text-slate-500">主题总数</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">{topicStats.total}</p>
           <p className="mt-2 text-sm text-slate-600">启用中 {topicStats.active} 个，停用 {topicStats.inactive} 个</p>
+        </article>
+        <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+          <p className="text-sm text-slate-500">用户总数</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900">{formatUserTotal(userSummary.total)}</p>
+          <p className="mt-2 text-sm text-slate-600">来自用户管理汇总，可快速判断当前整体用户量。</p>
         </article>
         <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
           <p className="text-sm text-slate-500">当前领先主题</p>
