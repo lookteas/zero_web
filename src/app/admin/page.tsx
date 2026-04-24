@@ -1,29 +1,53 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { AdminShell } from "@/components/admin-shell";
 import { SectionCard } from "@/components/section-card";
 import { getCurrentDiscussion, getCurrentWeeklyVote, listAdminTopics } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
-import { getAdminDiscussionSummary, getAdminTopicStats, getAdminVoteLeader } from "./admin-dashboard.mjs";
+import {
+  getAdminDiscussionSummary,
+  getAdminTopicStats,
+  getAdminVoteLeader,
+  loadAdminDashboardData,
+} from "./admin-dashboard.mjs";
 
 export default async function AdminPage() {
   await requireAdmin();
 
-  const [topics, vote, discussion] = await Promise.all([
-    listAdminTopics(),
-    getCurrentWeeklyVote(),
-    getCurrentDiscussion(),
-  ]);
+  const { topics, vote, discussion, warnings } = await loadAdminDashboardData({
+    listAdminTopics,
+    getCurrentWeeklyVote,
+    getCurrentDiscussion,
+  });
 
   const topicStats = getAdminTopicStats(topics);
   const leader = getAdminVoteLeader(vote);
   const discussionSummary = getAdminDiscussionSummary(discussion);
-  const winningTopicTitle = leader?.topicTitle || discussion.topicTitle || '本周话题待定';
+  const winningTopicTitle = leader?.topicTitle || discussion.topicTitle || "本周话题待定";
   const winningVoteCount = leader?.voteCount || 0;
 
   return (
     <AdminShell title="管理台" description="这里只放当前需要的最小后台能力：管理主题、补充讨论信息、确认本周投票和讨论是否已就绪。">
+      {warnings.length ? (
+        <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900 shadow-sm">
+          <p className="text-base font-semibold">后台已进入降级模式</p>
+          <div className="mt-2 space-y-2 leading-6">
+            {warnings.map((warning) => (
+              <p key={warning}>{warning}</p>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/admin/topics" className="rounded-full bg-amber-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-amber-950">
+              去主题设置补排期
+            </Link>
+            <Link href="/admin/discussions" className="rounded-full border border-amber-300 px-4 py-2 text-sm font-medium text-amber-900 transition hover:bg-amber-100">
+              去讨论设置检查配置
+            </Link>
+          </div>
+        </section>
+      ) : null}
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
           <p className="text-sm text-slate-500">主题总数</p>
@@ -43,7 +67,7 @@ export default async function AdminPage() {
         <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
           <p className="text-sm text-slate-500">会议入口</p>
           <p className="mt-2 text-lg font-semibold text-slate-900">{discussionSummary.providerLabel}</p>
-          <p className="mt-2 text-sm text-slate-600">{discussionSummary.hasMeetingLink ? '已配置讨论入口，可直接对外开放。' : '尚未配置，请先补会议地址。'}</p>
+          <p className="mt-2 text-sm text-slate-600">{discussionSummary.hasMeetingLink ? "已配置讨论入口，可直接对外开放。" : "尚未配置，请先补会议地址。"}</p>
         </article>
       </section>
 

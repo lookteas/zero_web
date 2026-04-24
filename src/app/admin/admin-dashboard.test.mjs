@@ -1,7 +1,12 @@
 ﻿import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { getAdminDiscussionSummary, getAdminTopicStats, getAdminVoteLeader } from './admin-dashboard.mjs'
+import {
+  getAdminDiscussionSummary,
+  getAdminTopicStats,
+  getAdminVoteLeader,
+  loadAdminDashboardData,
+} from './admin-dashboard.mjs'
 
 test('getAdminTopicStats counts active and inactive topics', () => {
   const stats = getAdminTopicStats([
@@ -52,4 +57,23 @@ test('getAdminDiscussionSummary falls back when meeting link is empty', () => {
   assert.equal(summary.providerLabel, '未设置')
   assert.equal(summary.statusLabel, '草稿')
   assert.equal(summary.hasMeetingLink, false)
+})
+
+test('loadAdminDashboardData keeps admin dashboard usable when vote and discussion loading fail', async () => {
+  const data = await loadAdminDashboardData({
+    listAdminTopics: async () => [{ id: 1, title: '表达能力', status: 1 }],
+    getCurrentWeeklyVote: async () => {
+      throw new Error('Request failed: 400')
+    },
+    getCurrentDiscussion: async () => {
+      throw new Error('Request failed: 400')
+    },
+  })
+
+  assert.equal(data.topics.length, 1)
+  assert.deepEqual(data.vote.candidates, [])
+  assert.equal(data.discussion.discussionTitle, '待补充本周讨论')
+  assert.equal(data.discussion.status, 'draft')
+  assert.equal(data.warnings.length, 1)
+  assert.match(data.warnings[0], /主题设置/)
 })

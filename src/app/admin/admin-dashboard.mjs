@@ -1,4 +1,49 @@
-﻿import { resolveMeetingProvider } from '../discussion/meeting-provider.mjs'
+import { resolveMeetingProvider } from '../discussion/meeting-provider.mjs'
+
+function createFallbackVote() {
+  return {
+    candidates: [],
+  }
+}
+
+function createFallbackDiscussion() {
+  return {
+    discussionTitle: '待补充本周讨论',
+    topicTitle: '本周话题待定',
+    meetingTime: '',
+    meetingLink: '',
+    status: 'draft',
+    adminRemark: '',
+  }
+}
+
+export async function loadAdminDashboardData(loaders) {
+  const [topicsResult, voteResult, discussionResult] = await Promise.allSettled([
+    loaders.listAdminTopics(),
+    loaders.getCurrentWeeklyVote(),
+    loaders.getCurrentDiscussion(),
+  ])
+
+  const warnings = []
+  const topics = topicsResult.status === 'fulfilled' ? topicsResult.value : []
+  const vote = voteResult.status === 'fulfilled' ? voteResult.value : createFallbackVote()
+  const discussion = discussionResult.status === 'fulfilled' ? discussionResult.value : createFallbackDiscussion()
+
+  if (topicsResult.status === 'rejected') {
+    warnings.push('主题列表暂时加载失败，后台其它入口仍可继续使用。')
+  }
+
+  if (voteResult.status === 'rejected' || discussionResult.status === 'rejected') {
+    warnings.push('本周投票或讨论数据暂不可用，通常是因为周六到下周五的主题排期还没补齐。请先去主题设置补上排期。')
+  }
+
+  return {
+    topics,
+    vote,
+    discussion,
+    warnings,
+  }
+}
 
 function weekdayLabel(date) {
   return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]
