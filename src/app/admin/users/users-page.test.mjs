@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { getAdminUserPageSummaryCards, getAdminUsersEmptyStateCopy } from './users-page.mjs'
+import { getAdminUserActivityStats, getAdminUserPageSummaryCards, getAdminUsersEmptyStateCopy } from './users-page.mjs'
 
 test('getAdminUserPageSummaryCards returns the four admin overview cards', () => {
   const cards = getAdminUserPageSummaryCards({
@@ -25,4 +25,11 @@ test('getAdminUsersEmptyStateCopy points admins back to registration and filters
   assert.match(copy.title, /没有找到/) 
   assert.match(copy.description, /筛选/)
   assert.match(copy.actionLabel, /查看全部用户/)
+})
+
+test('getAdminUserActivityStats shows written topic count', () => {
+  const stats = getAdminUserActivityStats({ topicCount: 7 })
+
+  assert.equal(stats[0].label, '已写主题')
+  assert.equal(stats[0].value, '7')
 })

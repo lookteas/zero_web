@@ -6,7 +6,7 @@ import { listAdminUsers } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
 import { updateUserAction } from "./actions";
-import { getAdminUserPageSummaryCards, getAdminUsersEmptyStateCopy } from "./users-page.mjs";
+import { getAdminUserActivityStats, getAdminUserPageSummaryCards, getAdminUsersEmptyStateCopy } from "./users-page.mjs";
 
 type AdminUsersPageProps = {
   searchParams: Promise<{ saved?: string; error?: string; keyword?: string; status?: string }>;
@@ -85,6 +85,15 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                   <p className="mt-1 text-lg font-semibold text-slate-900">{user.nickname || user.account}</p>
                   <p className="mt-2 text-slate-600">账号：{user.account}</p>
                   <p className="mt-1 text-slate-500">创建时间：{user.createdAt}；最近登录：{user.lastLoginAt || '暂无记录'}</p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {getAdminUserActivityStats(user).map((stat) => (
+                      <div key={stat.label} className="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">
+                        <p className="text-xs text-slate-500">{stat.label}</p>
+                        <p className="mt-1 text-2xl font-semibold text-slate-900">{stat.value}</p>
+                        <p className="mt-1 text-xs text-slate-500">{stat.description}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <label className="grid gap-2">

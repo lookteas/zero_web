@@ -24,3 +24,13 @@ export function getAdminUsersEmptyStateCopy(filters = {}) {
     actionLabel: '刷新用户列表',
   }
 }
+
+export function getAdminUserActivityStats(user = {}) {
+  return [
+    {
+      label: '已写主题',
+      value: String(user.topicCount ?? 0),
+      description: '当前已生成的每日主题记录数',
+    },
+  ]
+}

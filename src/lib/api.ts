@@ -27,6 +27,7 @@ export type AdminUser = {
   nickname: string;
   avatar?: string;
   status: number;
+  topicCount: number;
   createdAt: string;
   lastLoginAt?: string;
 };
