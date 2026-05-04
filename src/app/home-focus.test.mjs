@@ -71,3 +71,10 @@ test('home page reuses shared primary button styling', () => {
   assert.equal(homePage.includes('getFeedbackChrome("secondaryButton")'), true)
   assert.equal(primaryButton.includes('color: "var(--primary-foreground)"'), true)
 })
+
+test('home page links the pending review status card to reviews when there is work', () => {
+  assert.equal(homePage.includes('const pendingReviewCount = home.overview.pendingReviewCount ?? 0;'), true)
+  assert.equal(homePage.includes('pendingReviewCount > 0 ? ('), true)
+  assert.equal(homePage.includes('href="/reviews"'), true)
+  assert.equal(homePage.includes('aria-label="查看待复盘"'), true)
+})

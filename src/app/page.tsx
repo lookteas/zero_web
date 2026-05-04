@@ -6,6 +6,7 @@ import { SectionCard } from "@/components/section-card";
 import { StatusCard } from "@/components/status-card";
 import { getHome } from "@/lib/api";
 import { requireLogin } from "@/lib/auth";
+import Link from "next/link";
 
 import { getHomeSections, getHomeStatusItems } from "./home-layout.mjs";
 
@@ -77,6 +78,7 @@ export default async function Home() {
     const home = await getHome();
     const sections = getHomeSections();
     const statusItems = getHomeStatusItems(home.overview);
+    const pendingReviewCount = home.overview.pendingReviewCount ?? 0;
     const recoveryCount = home.recoveryReviews?.length ?? 0;
     const secondaryButtonChrome = getFeedbackChrome("secondaryButton");
 
@@ -99,17 +101,33 @@ export default async function Home() {
                   ornamentKind={statusItems[0].ornamentKind}
                   accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(214,245,229,0.92)_0,rgba(214,245,229,0)_32%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.97)_100%)]"
                 />
-                <StatusCard
-                  label={statusItems[1].label}
-                  value={statusItems[1].value}
-                  metric={statusItems[1].metric}
-                  unit={statusItems[1].unit}
-                  hint={recoveryCount > 0 ? "其中包含恢复复盘。" : "到了时间再慢慢回看。"}
-                  icon={<HomeStatusIcon kind="pendingReviewCount" />}
-                  badges={statusItems[1].badges}
-                  ornamentKind={statusItems[1].ornamentKind}
-                  accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(255,238,214,0.9)_0,rgba(255,238,214,0)_34%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(251,249,245,0.97)_100%)]"
-                />
+                {pendingReviewCount > 0 ? (
+                  <Link href="/reviews" aria-label="查看待复盘" className="block rounded-[28px] transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--primary)]">
+                    <StatusCard
+                      label={statusItems[1].label}
+                      value={statusItems[1].value}
+                      metric={statusItems[1].metric}
+                      unit={statusItems[1].unit}
+                      hint={recoveryCount > 0 ? "其中包含恢复复盘，点击处理。" : "点击进入复盘页面。"}
+                      icon={<HomeStatusIcon kind="pendingReviewCount" />}
+                      badges={statusItems[1].badges}
+                      ornamentKind={statusItems[1].ornamentKind}
+                      accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(255,238,214,0.9)_0,rgba(255,238,214,0)_34%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(251,249,245,0.97)_100%)]"
+                    />
+                  </Link>
+                ) : (
+                  <StatusCard
+                    label={statusItems[1].label}
+                    value={statusItems[1].value}
+                    metric={statusItems[1].metric}
+                    unit={statusItems[1].unit}
+                    hint="到了时间再慢慢回看。"
+                    icon={<HomeStatusIcon kind="pendingReviewCount" />}
+                    badges={statusItems[1].badges}
+                    ornamentKind={statusItems[1].ornamentKind}
+                    accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(255,238,214,0.9)_0,rgba(255,238,214,0)_34%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(251,249,245,0.97)_100%)]"
+                  />
+                )}
               </div>
             );
           }

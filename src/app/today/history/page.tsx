@@ -10,6 +10,7 @@ import { taskStatusLabelMap } from '@/lib/labels'
 import { saveHistoryReflectionAction, saveHistoryTaskAction } from './actions'
 import { getHistoryCardSummary } from './history-card.mjs'
 import { buildHistoryQueryString, resolveHistoryFilters } from './history-filters.mjs'
+import { TodaySharePanel } from '../today-share-panel'
 
 type HistoryPageProps = {
   searchParams: Promise<{ startDate?: string; endDate?: string; keyword?: string; saved?: string; reflected?: string; openTask?: string }>
@@ -173,6 +174,8 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
                     </form>
                   </div>
                 )}
+
+                {task.status === "submitted" ? <TodaySharePanel task={task} /> : null}
               </div>
             </details>
           )) : <p className="text-slate-600">这个时间范围里还没有找到历史打卡，换个日期或关键词试试。</p>}
