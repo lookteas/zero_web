@@ -95,7 +95,7 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
 
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span className={`rounded-full px-3 py-1.5 text-xs ${task.canEditContent ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
-                      {task.canEditContent ? '24 小时内，可直接编辑' : '原文已锁定，只能追加后记'}
+                      {task.canEditContent ? '48 小时内，可直接编辑' : '原文已锁定，只能追加后记'}
                     </span>
                     <span className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
                       <span className="group-open:hidden">展开查看</span>
@@ -115,7 +115,7 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
                     <input type="hidden" name="keyword" value={filters.keyword} />
 
                     <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                      这条记录还在 24 小时编辑窗口内，可以直接改原始打卡内容。
+                      这条记录还在 48 小时编辑窗口内，可以直接改原始打卡内容。
                     </div>
 
                     <div className="space-y-3">
