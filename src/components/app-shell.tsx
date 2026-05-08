@@ -16,27 +16,22 @@ type AppShellProps = {
   hideHero?: boolean;
 };
 
-function BrandSlot() {
+function BrandSlot({ title }: { title: string }) {
   return (
     <>
       <Link
         href="/"
         className="group relative flex min-h-[74px] w-full overflow-hidden rounded-[28px] border border-[var(--border-soft)] bg-[linear-gradient(135deg,rgba(255,255,255,0.96)_0%,rgba(238,249,247,0.96)_54%,rgba(226,243,240,0.94)_100%)] px-5 py-4 shadow-[0_12px_28px_rgba(15,48,60,0.07),inset_0_1px_0_rgba(255,255,255,0.9)] transition hover:border-[var(--primary)]/30 md:hidden"
+        aria-label={`回到首页：${title}`}
       >
-        <span className="pointer-events-none absolute -right-6 -top-8 h-28 w-28 rounded-full border border-[rgba(19,111,99,0.12)]" />
-        <span className="pointer-events-none absolute right-8 top-6 h-12 w-12 rounded-full border border-[rgba(19,111,99,0.1)]" />
-        <span className="mobile-brand-marquee pointer-events-none absolute inset-x-5 bottom-2 h-px bg-[linear-gradient(90deg,rgba(19,111,99,0)_0%,rgba(19,111,99,0.32)_48%,rgba(19,111,99,0)_100%)]" />
-        <span className="relative z-[1] flex w-full items-center justify-between gap-4">
-          <span className="min-w-0">
-            <span className="block text-[16px] font-semibold tracking-[0.02em] text-[var(--foreground)]">Zero</span>
-            <span className="mt-1 block text-[12px] font-medium leading-5 text-[var(--foreground-soft)]">今日练习台</span>
-          </span>
-          <span className="flex shrink-0 items-center gap-1.5">
-            {["打卡", "觉察", "复盘"].map((item) => (
-              <span key={item} className="rounded-full border border-[rgba(19,111,99,0.12)] bg-white/70 px-2.5 py-1 text-[11px] font-medium leading-none text-[var(--primary)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
-                {item}
-              </span>
-            ))}
+        <span className="pointer-events-none absolute -right-8 -top-9 h-32 w-32 rounded-full border border-[rgba(19,111,99,0.12)] bg-[radial-gradient(circle,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0)_66%)]" />
+        <span className="pointer-events-none absolute right-9 top-5 h-12 w-12 rounded-full border border-[rgba(19,111,99,0.1)]" />
+        <span className="mobile-brand-marquee pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.68)_42%,rgba(34,211,238,0.16)_64%,rgba(255,255,255,0)_100%)]" />
+        <span className="mobile-brand-glowline pointer-events-none absolute inset-x-5 bottom-2 h-px bg-[linear-gradient(90deg,rgba(19,111,99,0)_0%,rgba(19,111,99,0.36)_50%,rgba(19,111,99,0)_100%)]" />
+        <span className="relative z-[1] flex min-w-0 flex-col justify-center">
+          <span className="text-[11px] font-semibold uppercase leading-none tracking-[0.18em] text-[var(--primary)]/70">Zero</span>
+          <span className="mt-2 max-w-full truncate text-[clamp(20px,6vw,26px)] font-semibold leading-tight tracking-[0.01em] text-[var(--foreground)]">
+            {title}
           </span>
         </span>
       </Link>
@@ -66,7 +61,7 @@ export async function AppShell({
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-[14px] pb-24 pt-3 md:px-6 md:pb-10 md:pt-6">
         <header className="mb-3 grid items-center gap-3 md:mb-5 md:grid-cols-[auto_1fr_auto] md:gap-6">
-          <BrandSlot />
+          <BrandSlot title={title} />
 
           {showNavigation ? <TopNav /> : <div className="hidden md:block" />}
 

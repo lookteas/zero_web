@@ -143,20 +143,38 @@ select {
 }
 
 .mobile-brand-marquee {
-  animation: mobile-brand-sweep 4.8s ease-in-out infinite;
+  animation: mobile-brand-sweep 5.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.mobile-brand-glowline {
+  animation: mobile-brand-glowline 5.8s ease-in-out infinite;
   transform-origin: center;
 }
 
 @keyframes mobile-brand-sweep {
   0%,
   100% {
-    opacity: 0.38;
-    transform: translateX(-18%) scaleX(0.72);
+    opacity: 0.12;
+    transform: translateX(-78%) skewX(-14deg);
   }
 
   50% {
-    opacity: 0.9;
-    transform: translateX(18%) scaleX(1);
+    opacity: 0.88;
+    transform: translateX(142%) skewX(-14deg);
+  }
+}
+
+@keyframes mobile-brand-glowline {
+  0%,
+  100% {
+    opacity: 0.34;
+    transform: scaleX(0.58);
+  }
+
+  50% {
+    opacity: 0.92;
+    transform: scaleX(1);
   }
 }
 
@@ -625,7 +643,8 @@ select {
   .reviews-hero-glow,
   .reviews-hero-orbit,
   .reviews-hero-dot,
-  .mobile-brand-marquee {
+  .mobile-brand-marquee,
+  .mobile-brand-glowline {
     animation: none;
   }
 }
