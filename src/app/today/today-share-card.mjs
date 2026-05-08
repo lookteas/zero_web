@@ -61,15 +61,24 @@ function wrapText(value, maxUnits = 25, maxLines = 3) {
   return lines.length > 0 ? lines : ['']
 }
 
-function line(label, value, y) {
-  const lines = wrapText(value)
+const FONT_STACK = '"Microsoft YaHei", "PingFang SC", Arial, sans-serif'
+
+function textLines(value, options = {}) {
+  const { x = 104, y, fill = '#2A352E', size = 28, weight = 500, lineGap = 43, maxUnits = 31, maxLines = 3 } = options
+  const lines = wrapText(value, maxUnits, maxLines)
   const tspans = lines
-    .map((item, index) => `<tspan x="88" dy="${index === 0 ? 0 : 48}">${escapeXml(item)}</tspan>`)
+    .map((item, index) => `<tspan x="${x}" dy="${index === 0 ? 0 : lineGap}">${escapeXml(item)}</tspan>`)
     .join('')
 
+  return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" font-family="${FONT_STACK}">${tspans}</text>`
+}
+
+function section(label, value, y) {
   return `
-    <text x="88" y="${y}" fill="#5B6B63" font-size="22" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${escapeXml(label)}</text>
-    <text x="88" y="${y + 60}" fill="#17221D" font-size="34" font-weight="600" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${tspans}</text>
+    <circle cx="106" cy="${y - 8}" r="5" fill="#D99B6A"/>
+    <text x="126" y="${y}" fill="#728077" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(label)}</text>
+    ${textLines(value, { y: y + 50 })}
+    <line x1="104" y1="${y + 154}" x2="976" y2="${y + 154}" stroke="#ECE4D8" stroke-width="2"/>
   `
 }
 
@@ -84,23 +93,31 @@ export function buildTodayShareCardSvg(payload) {
     <svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="bg" x1="0" y1="0" x2="1080" y2="1350" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F5FAF7"/>
-          <stop offset="1" stop-color="#ECF4F0"/>
+          <stop stop-color="#FBF7EF"/>
+          <stop offset="1" stop-color="#EEF6F0"/>
         </linearGradient>
         <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
-          <stop stop-color="#1B7C68"/>
-          <stop offset="1" stop-color="#155E51"/>
+          <stop stop-color="#D99B6A"/>
+          <stop offset="1" stop-color="#2F8B70"/>
         </linearGradient>
       </defs>
       <rect width="1080" height="1350" rx="40" fill="url(#bg)"/>
-      <rect x="40" y="40" width="1000" height="1270" rx="34" fill="#FFFFFF" fill-opacity="0.9" stroke="#DCE8E2"/>
-      <text x="88" y="120" fill="#6B7E73" font-size="24" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${escapeXml(payload.dateLabel)}</text>
-      <text x="88" y="198" fill="#17221D" font-size="54" font-weight="700" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${escapeXml(cardTitle)}</text>
-      <rect x="88" y="236" width="88" height="4" rx="2" fill="url(#accent)"/>
-      ${line(topicLabel, payload.topicTitle, 320)}
-      ${line(weaknessLabel, payload.weakness, 530)}
-      ${line(planLabel, payload.improvementPlan, 740)}
-      ${line(verificationLabel, payload.verificationPath, 950)}
+      <rect x="40" y="40" width="1000" height="1270" rx="34" fill="#FFFDF8" fill-opacity="0.96" stroke="#E6DDD0"/>
+      <path d="M832 82C890 96 940 139 972 198" stroke="#E2C6A8" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+      <circle cx="928" cy="142" r="48" fill="#F2E7D9"/>
+      <circle cx="928" cy="142" r="19" fill="#D99B6A" fill-opacity="0.28"/>
+      <text x="104" y="126" fill="#7D877F" font-size="23" font-weight="500" font-family="${FONT_STACK}">${escapeXml(payload.dateLabel)}</text>
+      <text x="104" y="194" fill="#213229" font-size="46" font-weight="700" font-family="${FONT_STACK}">${escapeXml(cardTitle)}</text>
+      <rect x="104" y="232" width="74" height="4" rx="2" fill="url(#accent)"/>
+      <text x="104" y="316" fill="#728077" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(topicLabel)}</text>
+      <rect x="104" y="342" width="516" height="76" rx="24" fill="#F4EEE4" stroke="#E5D4BF"/>
+      <circle cx="144" cy="380" r="8" fill="#2F8B70"/>
+      <text x="166" y="392" fill="#26372F" font-size="33" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
+      <line x1="104" y1="470" x2="976" y2="470" stroke="#ECE4D8" stroke-width="2"/>
+      ${section(weaknessLabel, payload.weakness, 542)}
+      ${section(planLabel, payload.improvementPlan, 764)}
+      ${section(verificationLabel, payload.verificationPath, 986)}
+      <text x="104" y="1240" fill="#9A8E82" font-size="20" font-weight="500" font-family="${FONT_STACK}">${escapeXml(decodeEscaped('\\u628a\\u53d8\\u5316\\u8bb0\\u4e0b\\u6765\\uff0c\\u8ba9\\u81ea\\u5df1\\u6162\\u6162\\u53d8\\u6e05\\u6670'))}</text>
     </svg>
   `.trim()
 }
