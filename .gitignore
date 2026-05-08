@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local agent worktrees
+.worktrees/
+
 tmp-utf8-test.txt
 
 scripts/deploy-web.sh
