@@ -38,6 +38,21 @@ test('home page uses tighter mobile spacing around the status row and task actio
   assert.equal(homePage.includes('mt-4 flex flex-col gap-2 md:flex-row md:gap-3'), true)
 })
 
+test('home page keeps the hero, status row, and today focus in a clearer workbench stack', () => {
+  assert.equal(homePage.includes('HomeMoodHero topicTitle={home.todayTask?.topicTitle}'), true)
+  assert.equal(homePage.includes('className="grid grid-cols-2 gap-2 md:max-w-lg md:gap-3"'), true)
+  assert.equal(
+    homePage.includes(
+      'className="overflow-hidden rounded-[30px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] px-4 py-4 shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)] md:px-6 md:py-6"'
+    ),
+    true
+  )
+  assert.equal(
+    homePage.includes('className="mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5"'),
+    true
+  )
+})
+
 test('home page replaces generic page hero with a custom orbit hero section', () => {
   assert.equal(homePage.includes('hideHero'), true)
   assert.equal(homePage.includes('function HomeMoodHero('), true)
@@ -62,7 +77,7 @@ test('home page adds colored icon accents for status cards and today focus label
   assert.equal(homePage.includes('ornamentKind={statusItems[0].ornamentKind}'), true)
   assert.equal(homePage.includes('items-center gap-2.5 text-[18px] font-semibold tracking-[0.01em] text-[var(--primary)]'), true)
   assert.equal(homePage.includes('inline-flex h-8 w-8 items-center justify-center rounded-full'), true)
-  assert.equal(homePage.includes('rounded-[28px] border border-[rgba(204,219,212,0.92)]'), true)
+  assert.equal(homePage.includes('rounded-[30px] border border-[rgba(204,219,212,0.92)]'), true)
   assert.equal(homePage.includes('rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92'), true)
 })
 

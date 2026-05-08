@@ -134,7 +134,7 @@ export default async function Home() {
 
           if (section.key === "todayFocus") {
             return (
-              <section key={section.key} className="overflow-hidden rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] px-4 py-4 shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)] md:px-6 md:py-6">
+              <section key={section.key} className="overflow-hidden rounded-[30px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] px-4 py-4 shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)] md:px-6 md:py-6">
                 <div className="p-1 md:p-2">
                   <h2 className="inline-flex items-center gap-2.5 text-[18px] font-semibold tracking-[0.01em] text-[var(--primary)]">
                     <TodayFocusIcon />

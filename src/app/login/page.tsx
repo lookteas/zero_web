@@ -36,7 +36,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </section>
       ) : null}
 
-      <section className="overflow-hidden rounded-[34px] border border-[var(--border-soft)]/90 bg-white/85 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur">
+      <section className="overflow-hidden rounded-[34px] border border-[var(--border-soft)]/90 bg-white/85 shadow-[0_24px_60px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur">
         <div className="app-auth-hero min-h-[18rem] px-6 pb-28 pt-8 md:min-h-[22rem] md:px-10 md:pb-32 md:pt-10">
           <p className="text-sm font-medium tracking-[0.08em] text-[var(--primary)]/90">{hero.eyebrow}</p>
           <h1 className="mt-4 max-w-xs text-[34px] font-semibold leading-[1.2] tracking-tight text-[var(--foreground)] md:max-w-sm md:text-[42px]">
@@ -48,7 +48,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </div>
 
         <div className="px-4 pb-4 md:px-8 md:pb-8">
-          <section className="-mt-20 rounded-[30px] border border-white/80 bg-[rgba(255,255,255,0.94)] p-5 shadow-[0_20px_46px_rgba(15,23,42,0.08)] backdrop-blur md:ml-2 md:max-w-md md:p-6">
+          <section className="-mt-20 rounded-[30px] border border-white/80 bg-[rgba(255,255,255,0.94)] p-5 shadow-[0_20px_46px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur md:ml-2 md:max-w-md md:p-6">
             <form className="space-y-4">
               <FormField
                 name="account"
