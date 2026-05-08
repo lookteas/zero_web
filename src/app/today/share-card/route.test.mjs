@@ -11,8 +11,10 @@ const hasCopy = (source, escaped) => source.includes(escaped) || source.includes
 
 test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   const svg = buildTodayShareCardSvg({
+    taskDate: '2026-04-18',
     dateLabel: textValue('u0034', 'u6708', 'u0031', 'u0038', 'u65e5'),
     topicTitle: textValue('u9047', 'u5230', 'u538b', 'u529b', 'u65f6', 'u5148', 'u505c', 'u4e00', 'u4e0b', 'u518d', 'u56de', 'u5e94'),
+    topicSummary: textValue('u5148', 'u505c', 'u4e00', 'u4e0b', 'uff0c', 'u518d', 'u51b3', 'u5b9a', 'u600e', 'u4e48', 'u56de', 'u5e94'),
     weakness: textValue('u522b', 'u4eba', 'u4e00', 'u50ac', 'u5c31', 'u5bb9', 'u6613', 'u4e71'),
     improvementPlan: textValue('u5148', 'u505c', 'u4e09', 'u79d2', 'u518d', 'u5f00', 'u53e3'),
     verificationPath: textValue('u4eca', 'u665a', 'u56de', 'u770b', 'u6709', 'u6ca1', 'u6709', 'u81f3', 'u5c11', 'u505a', 'u5230', 'u4e00', 'u6b21'),
@@ -20,7 +22,9 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
 
   assert.equal(svg.includes('<svg'), true)
   assert.equal(svg.includes(textValue('u0034', 'u6708', 'u0031', 'u0038', 'u65e5')), true)
-  assert.equal(svg.includes(textValue('u4eca', 'u65e5', 'u63d0', 'u5347', 'u70b9')), true)
+  assert.equal(svg.includes(textValue('u4eca', 'u5929', 'u7684', 'u610f', 'u8bc6', 'u5f3a', 'u5ea6', 'u63d0', 'u5347')), false)
+  assert.equal(svg.includes(textValue('u4e3b', 'u9898', 'u6458', 'u8981')), true)
+  assert.equal(svg.includes(textValue('u5148', 'u505c', 'u4e00', 'u4e0b')), true)
   assert.equal(svg.includes(textValue('u5f53', 'u524d', 'u5361', 'u70b9')), true)
   assert.equal(svg.includes(textValue('u6539', 'u8fdb', 'u884c', 'u52a8')), true)
   assert.equal(svg.includes(textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f')), true)
@@ -29,15 +33,36 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   assert.equal(svg.includes('font-family=""'), false)
   assert.equal(svg.includes('font-size="28" font-weight="500"'), true)
   assert.equal(svg.includes('font-size="34" font-weight="600"'), false)
-  assert.equal(svg.includes('fill="#FFFDF8"'), true)
-  assert.equal(svg.includes('fill="#F4EEE4"'), true)
-  assert.equal(svg.includes('fill="#D99B6A"'), true)
+  assert.equal(/<rect x="40" y="40"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
+  assert.equal(/<rect x="104" y="342"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
+  assert.equal(/<stop stop-color="#[A-F0-9]+"/.test(svg), true)
   assert.equal(svg.includes('<line x1="104"'), true)
   assert.equal(/Zero|logo/.test(svg), false)
 })
 
+test('buildTodayShareCardSvg uses stable daily visual variants', () => {
+  const basePayload = {
+    dateLabel: textValue('u0034', 'u6708', 'u0031', 'u0038', 'u65e5'),
+    topicTitle: textValue('u4e00', 'u4e2a', 'u5f88', 'u957f', 'u7684', 'u4e3b', 'u9898', 'u540d', 'u79f0', 'u9700', 'u8981', 'u81ea', 'u52a8', 'u8c03', 'u6574', 'u5b57', 'u53f7'),
+    topicSummary: textValue('u5148', 'u628a', 'u8fd9', 'u6761', 'u6458', 'u8981', 'u8bb2', 'u6e05', 'u695a'),
+    weakness: textValue('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: textValue('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+  }
+  const first = buildTodayShareCardSvg({ ...basePayload, taskDate: '2026-04-18' })
+  const sameDay = buildTodayShareCardSvg({ ...basePayload, taskDate: '2026-04-18' })
+  const nextDay = buildTodayShareCardSvg({ ...basePayload, taskDate: '2026-04-19' })
+
+  assert.equal(first, sameDay)
+  assert.notEqual(first.match(/<stop stop-color="#[A-F0-9]+"/)?.[0], nextDay.match(/<stop stop-color="#[A-F0-9]+"/)?.[0])
+  assert.equal(/font-size="(3[6-9]|4[0-9])" font-weight="700"[^>]*>一个很长/.test(first), true)
+  assert.equal(/font-size="2[4-9]" font-weight="600"[^>]*>先把这条摘要/.test(first), true)
+  assert.equal(/y="1244"[^>]*font-size="26"/.test(first), true)
+})
+
 test('route file keeps readable chinese fallbacks', () => {
   assert.equal(hasCopy(routeSource, String.raw`今天`), true)
+  assert.equal(hasCopy(routeSource, String.raw`重点概要`), true)
   assert.equal(hasCopy(routeSource, String.raw`当前卡点`), true)
   assert.equal(hasCopy(routeSource, String.raw`认真执行`), true)
   assert.equal(hasCopy(routeSource, String.raw`今晚回看`), true)

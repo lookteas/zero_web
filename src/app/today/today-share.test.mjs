@@ -17,6 +17,7 @@ test('formatTodayShareText returns a ready-to-send group message', () => {
   })
 
   assert.equal(payload.dateLabel, messageText('u0034', 'u6708', 'u0031', 'u0038', 'u65e5'))
+  assert.equal(payload.taskDate, '2026-04-18')
   assert.equal(formatTodayShareText(payload), [
     messageText('u0034', 'u6708', 'u0031', 'u0038', 'u65e5', 'u610f', 'u8bc6', 'u5f3a', 'u5ea6', 'u63d0', 'u5347'),
     '',
@@ -29,6 +30,19 @@ test('formatTodayShareText returns a ready-to-send group message', () => {
     '',
     messageText('u9a8c', 'u8bc1', 'u65b9', 'u5f0f', 'uff1a') + '\n' + messageText('u4eca', 'u665a', 'u56de', 'u770b', 'u6709', 'u6ca1', 'u6709', 'u81f3', 'u5c11', 'u505a', 'u5230', 'u4e00', 'u6b21'),
   ].join('\n'))
+})
+
+test('buildTodaySharePayload carries summary into share card query', () => {
+  const payload = buildTodaySharePayload({
+    taskDate: '2026-04-18',
+    topicTitle: messageText('u957f', 'u4e00', 'u70b9', 'u7684', 'u4e3b', 'u9898'),
+    topicSummary: messageText('u8fd9', 'u662f', 'u4e3b', 'u9898', 'u6458', 'u8981'),
+    weakness: messageText('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: messageText('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: messageText('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+  })
+
+  assert.equal(payload.topicSummary, messageText('u8fd9', 'u662f', 'u4e3b', 'u9898', 'u6458', 'u8981'))
 })
 
 test('buildTodaySharePayload provides restrained fallbacks for empty fields', () => {

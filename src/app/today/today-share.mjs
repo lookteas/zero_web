@@ -36,6 +36,7 @@ function fill(value, fallback) {
 
 export function buildTodaySharePayload(task) {
   return {
+    taskDate: String(task?.taskDate || ''),
     dateLabel: toDateLabel(task?.taskDate),
     topicTitle: fill(task?.topicTitle, COPY.todayFallback),
     topicSummary: fill(task?.topicSummary, COPY.summaryFallback),

@@ -10,6 +10,7 @@ import { buildTodaySharePayload, formatTodayShareText } from "./today-share.mjs"
 type TodayShareTask = {
   taskDate: string;
   topicTitle: string;
+  topicSummary?: string;
   weakness?: string;
   improvementPlan?: string;
   verificationPath?: string;
