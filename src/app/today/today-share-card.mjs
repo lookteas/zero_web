@@ -19,12 +19,57 @@ function escapeXml(value) {
     .replaceAll("'", '&apos;')
 }
 
+function charWidth(char) {
+  return /[\u0000-\u00ff]/.test(char) ? 0.56 : 1
+}
+
+function wrapText(value, maxUnits = 25, maxLines = 3) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim()
+  const lines = []
+  let current = ''
+  let units = 0
+
+  for (const char of text) {
+    const width = charWidth(char)
+
+    if (current && units + width > maxUnits) {
+      lines.push(current)
+      current = char
+      units = width
+
+      if (lines.length === maxLines) {
+        break
+      }
+      continue
+    }
+
+    current += char
+    units += width
+  }
+
+  if (current && lines.length < maxLines) {
+    lines.push(current)
+  }
+
+  if (text && lines.length === maxLines) {
+    const visibleText = lines.join('')
+    if (visibleText.length < text.length) {
+      lines[maxLines - 1] = `${lines[maxLines - 1].replace(/[，。；、,.!?！？\s]+$/, '')}…`
+    }
+  }
+
+  return lines.length > 0 ? lines : ['']
+}
+
 function line(label, value, y) {
+  const lines = wrapText(value)
+  const tspans = lines
+    .map((item, index) => `<tspan x="88" dy="${index === 0 ? 0 : 48}">${escapeXml(item)}</tspan>`)
+    .join('')
+
   return `
     <text x="88" y="${y}" fill="#5B6B63" font-size="22" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${escapeXml(label)}</text>
-    <foreignObject x="88" y="${y + 18}" width="904" height="106">
-      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Arial, PingFang SC, Microsoft YaHei, sans-serif; font-size: 34px; line-height: 1.45; color: #17221D; font-weight: 600; word-break: break-word;">${escapeXml(value)}</div>
-    </foreignObject>
+    <text x="88" y="${y + 60}" fill="#17221D" font-size="34" font-weight="600" font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif">${tspans}</text>
   `
 }
 
