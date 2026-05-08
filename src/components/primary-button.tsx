@@ -37,7 +37,7 @@ export function getPrimaryButtonClassName({
   }[variant];
 
   return [
-    "inline-flex min-h-[46px] items-center justify-center rounded-[18px] px-4 text-[14px] font-medium leading-5 transition duration-200 disabled:cursor-not-allowed disabled:opacity-60 md:min-h-12 md:px-5 md:text-sm",
+    "inline-flex min-h-[46px] cursor-pointer items-center justify-center rounded-[18px] px-4 text-[14px] font-medium leading-5 transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-12 md:px-5 md:text-sm",
     block ? "w-full" : "w-auto",
     variantClassName,
     className ?? "",

@@ -33,7 +33,7 @@ export function FormField(props: FormFieldProps) {
             className ?? "",
           ].join(" ")}
         />
-        {hint ? <span className="block text-[12px] leading-5 text-[var(--foreground-soft)]">{hint}</span> : null}
+        {hint ? <span className="block text-[13px] leading-6 text-[var(--foreground-soft)]">{hint}</span> : null}
       </label>
     );
   }
@@ -51,7 +51,7 @@ export function FormField(props: FormFieldProps) {
           className ?? "",
         ].join(" ")}
       />
-      {hint ? <span className="block text-[12px] leading-5 text-[var(--foreground-soft)]">{hint}</span> : null}
+      {hint ? <span className="block text-[13px] leading-6 text-[var(--foreground-soft)]">{hint}</span> : null}
     </label>
   );
 }

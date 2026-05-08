@@ -8,7 +8,7 @@ type SectionCardProps = {
 
 export function SectionCard({ title, description, children }: SectionCardProps) {
   return (
-    <section className="app-surface px-4 py-4 md:px-6 md:py-6">
+    <section className="rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(238,248,247,0.94)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6">
       <div className="mb-4 md:mb-5">
         <h2 className="text-[18px] font-semibold tracking-tight text-[var(--foreground)] md:text-[22px]">
           {title}
