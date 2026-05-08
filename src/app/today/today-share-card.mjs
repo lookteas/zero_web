@@ -186,6 +186,12 @@ export function buildTodayShareCardSvg(payload) {
           <stop offset="0.58" stop-color="${theme.soft}" stop-opacity="0.68"/>
           <stop offset="1" stop-color="${theme.soft}" stop-opacity="0"/>
         </radialGradient>
+        <linearGradient id="summaryFade" x1="104" y1="406" x2="864" y2="406" gradientUnits="userSpaceOnUse">
+          <stop stop-color="${theme.soft}"/>
+          <stop offset="0.58" stop-color="${theme.soft}" stop-opacity="0.92"/>
+          <stop offset="0.82" stop-color="${theme.soft}" stop-opacity="0.42"/>
+          <stop offset="1" stop-color="${theme.soft}" stop-opacity="0"/>
+        </linearGradient>
       </defs>
       <rect width="1080" height="1350" rx="40" fill="url(#bg)"/>
       <rect x="40" y="40" width="1000" height="1270" rx="34" fill="${theme.paper}" fill-opacity="0.96" stroke="${theme.border}"/>
@@ -194,7 +200,9 @@ export function buildTodayShareCardSvg(payload) {
       <text x="104" y="194" fill="${theme.text}" font-size="${titleSize}" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
       <rect x="104" y="232" width="74" height="4" rx="2" fill="url(#accent)"/>
       <text x="104" y="316" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(topicLabel)}</text>
-      <rect x="104" y="342" width="760" height="128" rx="26" fill="${theme.soft}" stroke="${theme.softBorder}"/>
+      <path d="M104 342H816C842 342 864 364 864 390V470H104Z" fill="url(#summaryFade)"/>
+      <path d="M104 342H816C842 342 864 364 864 390" stroke="${theme.softBorder}" stroke-width="2" stroke-linecap="round" opacity="0.62"/>
+      <path d="M104 470H760" stroke="${theme.softBorder}" stroke-width="2" stroke-linecap="round" opacity="0.34"/>
       <circle cx="144" cy="386" r="8" fill="${theme.accent2}"/>
       ${summaryText(payload.topicSummary, theme)}
       <line x1="104" y1="520" x2="976" y2="520" stroke="${theme.rule}" stroke-width="2"/>

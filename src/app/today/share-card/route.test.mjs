@@ -34,7 +34,7 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   assert.equal(svg.includes('font-size="28" font-weight="500"'), true)
   assert.equal(svg.includes('font-size="34" font-weight="600"'), false)
   assert.equal(/<rect x="40" y="40"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
-  assert.equal(/<rect x="104" y="342"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
+  assert.equal(svg.includes('fill="url(#summaryFade)"'), true)
   assert.equal(/<stop stop-color="#[A-F0-9]+"/.test(svg), true)
   assert.equal(svg.includes('<line x1="104"'), true)
   assert.equal(/Zero|logo/.test(svg), false)
@@ -73,7 +73,10 @@ test('buildTodayShareCardSvg wraps long topic summary inside the summary block',
 
   assert.equal(/<text x="166" y="392"[^>]*><tspan x="166" dy="0">/.test(svg), true)
   assert.equal(svg.includes('<tspan x="166" dy="40">'), true)
-  assert.equal(/<rect x="104" y="342" width="760" height="128"/.test(svg), true)
+  assert.equal(svg.includes('id="summaryFade"'), true)
+  assert.equal(/<path d="M104 342H816C842 342 864 364 864 390V470H104Z"/.test(svg), true)
+  assert.equal(svg.includes('fill="url(#summaryFade)"'), true)
+  assert.equal(svg.includes('stroke="${theme.softBorder}"'), false)
   assert.equal(/<text x="166"[^>]*>与人沟通中能否真实直接表达自己的想法。比如：既能由衷赞美别人/.test(svg), false)
 })
 
