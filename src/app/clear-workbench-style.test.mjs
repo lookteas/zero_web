@@ -22,6 +22,7 @@ test("globals define the clear workbench surface and hero style contract", () =>
 
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /\.home-hero-glow,\s*\.home-hero-orbit,\s*\.home-hero-dot,/);
+  assert.match(css, /\.mobile-brand-marquee/);
   assert.match(css, /animation:\s*none;/);
 });
 
