@@ -98,6 +98,35 @@ function EmptyStateCard({ kind }: { kind: "todayLogs" | "logs" | "reviews" }) {
   );
 }
 
+function WorkbenchShell({
+  badge,
+  title,
+  description,
+  children,
+}: {
+  badge: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-[30px] border border-[rgba(204,219,212,0.92)] bg-[var(--surface)] shadow-[var(--shadow-card)]">
+      <div className="border-b border-[var(--border-soft)] bg-[var(--surface-muted)] px-4 py-4 md:px-5 md:py-5">
+        <div className="space-y-2">
+          <span className="inline-flex items-center rounded-full border border-[rgba(41,122,106,0.16)] bg-white/86 px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-[var(--primary)] shadow-[0_6px_16px_rgba(19,111,99,0.06)]">
+            {badge}
+          </span>
+          <div>
+            <h2 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">{title}</h2>
+            <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">{description}</p>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 py-4 md:px-5 md:py-5">{children}</div>
+    </section>
+  );
+}
+
 function TodayFieldModule({
   field,
   hint,
@@ -114,7 +143,7 @@ function TodayFieldModule({
   return (
     <section
       className={[
-        "rounded-[20px] border px-4 py-4 shadow-[0_12px_26px_rgba(15,23,42,0.04)] md:px-4 md:py-4",
+        "rounded-[18px] border px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)] md:px-4 md:py-4",
         chrome.panelClassName,
       ].join(" ")}
     >
@@ -139,7 +168,7 @@ function TodayFieldModule({
         defaultValue={defaultValue}
         placeholder={placeholder}
         label={undefined}
-        className="min-h-[104px] border-white/75 bg-white/96 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_18px_rgba(15,23,42,0.03)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.28)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08),0_10px_22px_rgba(15,23,42,0.04)]"
+        className="min-h-[104px] border-white/75 bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_6px_14px_rgba(15,48,60,0.028)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.28)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08)]"
       />
     </section>
   );
@@ -147,22 +176,8 @@ function TodayFieldModule({
 
 function TodayTaskDetailCard({ task }: { task: DailyTask }) {
   return (
-    <section className="overflow-hidden rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)]">
-      <div className="border-b border-[rgba(205,219,212,0.72)] bg-[radial-gradient(circle_at_top_left,rgba(35,133,117,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(246,250,248,0.9)_100%)] px-4 py-4 md:px-5 md:py-5">
-        <div className="space-y-2">
-          <span className="inline-flex items-center rounded-full border border-[rgba(41,122,106,0.18)] bg-white/80 px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-[var(--primary)] shadow-[0_6px_16px_rgba(19,111,99,0.08)]">
-            {COPY.topicCardTitle}
-          </span>
-          <div>
-            <h2 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">{task.topicTitle}</h2>
-            <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
-              {COPY.taskDetailDescription}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4 py-4 md:px-5 md:py-5">
+    <WorkbenchShell badge={COPY.topicCardTitle} title={task.topicTitle} description={COPY.taskDetailDescription}>
+      <div>
         <div className="flex flex-wrap gap-2">
           <TodayMetaPill>{`${COPY.dateLabel}${task.taskDate}`}</TodayMetaPill>
           <TodayMetaPill>{taskStatusLabelMap[task.status] || COPY.statusFallback}</TodayMetaPill>
@@ -184,13 +199,13 @@ function TodayTaskDetailCard({ task }: { task: DailyTask }) {
           </div>
         </div>
       </div>
-    </section>
+    </WorkbenchShell>
   );
 }
 
 function TodaySubmittedSummaryCard({ task }: { task: DailyTask }) {
   return (
-    <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] md:p-5">
+    <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_10px_22px_rgba(15,48,60,0.04)] md:p-5">
       <div className="flex flex-wrap gap-2">
         <TodayMetaPill>{COPY.submittedCardTitle}</TodayMetaPill>
         {task.submittedAt ? <TodayMetaPill>{`${COPY.submittedAtLabel}${task.submittedAt}`}</TodayMetaPill> : null}
@@ -199,15 +214,15 @@ function TodaySubmittedSummaryCard({ task }: { task: DailyTask }) {
         {COPY.submittedCardDescription}
       </p>
       <div className="mt-4 grid gap-3 md:grid-cols-3">
-        <section className="rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/92 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+        <section className="rounded-[18px] border border-[rgba(210,221,215,0.86)] bg-white/95 px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)]">
           <p className="text-[12px] font-medium text-[var(--foreground-soft)]">{getTodayFieldChrome("weakness").label}</p>
           <p className="mt-2 text-[13px] leading-6 text-[var(--foreground)] md:text-sm md:leading-7">{task.weakness || COPY.emptyLogFallback}</p>
         </section>
-        <section className="rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/92 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+        <section className="rounded-[18px] border border-[rgba(210,221,215,0.86)] bg-white/95 px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)]">
           <p className="text-[12px] font-medium text-[var(--foreground-soft)]">{getTodayFieldChrome("improvementPlan").label}</p>
           <p className="mt-2 text-[13px] leading-6 text-[var(--foreground)] md:text-sm md:leading-7">{task.improvementPlan || COPY.emptyLogFallback}</p>
         </section>
-        <section className="rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/92 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+        <section className="rounded-[18px] border border-[rgba(210,221,215,0.86)] bg-white/95 px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)]">
           <p className="text-[12px] font-medium text-[var(--foreground-soft)]">{getTodayFieldChrome("verificationPath").label}</p>
           <p className="mt-2 text-[13px] leading-6 text-[var(--foreground)] md:text-sm md:leading-7">{task.verificationPath || COPY.emptyLogFallback}</p>
         </section>
@@ -276,22 +291,8 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
 
       <TodayTaskDetailCard task={task} />
 
-      <section className="overflow-hidden rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)]">
-        <div className="border-b border-[rgba(205,219,212,0.72)] bg-[radial-gradient(circle_at_top_left,rgba(35,133,117,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(246,250,248,0.9)_100%)] px-4 py-4 md:px-5 md:py-5">
-          <div className="space-y-2">
-            <span className="inline-flex items-center rounded-full border border-[rgba(41,122,106,0.18)] bg-white/80 px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-[var(--primary)] shadow-[0_6px_16px_rgba(19,111,99,0.08)]">
-              {formPanelBadge}
-            </span>
-            <div>
-              <h2 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">{formPanelTitle}</h2>
-              <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
-                {formPanelDescription}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="px-4 py-4 md:px-5 md:py-5">
+      <WorkbenchShell badge={formPanelBadge} title={formPanelTitle} description={formPanelDescription}>
+        <div>
           {task.status === "submitted" && !task.canEditContent ? (
             <TodaySubmittedSummaryCard task={task} />
           ) : canEditSubmittedContent ? (
@@ -375,7 +376,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
             </section>
           )}
         </div>
-      </section>
+      </WorkbenchShell>
 
       {isSubmitted ? <TodaySharePanel task={task} /> : null}
 

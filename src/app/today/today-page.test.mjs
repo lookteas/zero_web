@@ -4,6 +4,8 @@ import test from 'node:test'
 
 const todayPage = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8')
 
+const hasTokens = (source, tokens) => tokens.every((token) => source.includes(token))
+
 test('today keeps awareness history collapsed by default', () => {
   assert.equal(todayPage.includes('\\u4eca\\u65e5\\u89c9\\u5bdf\\u8bb0\\u5f55'), true)
   assert.equal(todayPage.includes('<details'), true)
@@ -35,14 +37,30 @@ test('today page uses more compact mobile spacing between task detail and form b
 })
 
 test('today page uses share-panel surfaces for detail and form sections', () => {
-  assert.equal(todayPage.includes('rounded-[28px] border border-[rgba(204,219,212,0.92)]'), true)
-  assert.equal(todayPage.includes('rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92'), true)
-  assert.equal(todayPage.includes('rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)]'), true)
+  assert.equal(hasTokens(todayPage, ['rounded-[30px]', 'border-[rgba(204,219,212,0.92)]', 'bg-[var(--surface)]']), true)
+  assert.equal(hasTokens(todayPage, ['rounded-[24px]', 'border-[rgba(210,221,215,0.86)]', 'bg-white/92']), true)
+  assert.equal(hasTokens(todayPage, ['rounded-[24px]', 'border-[rgba(210,221,215,0.86)]', 'bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)]']), true)
+})
+
+test('today writing workflow uses the clear workbench shell family', () => {
+  assert.equal(todayPage.includes('function WorkbenchShell('), true)
+  assert.equal(todayPage.includes('<WorkbenchShell badge={COPY.topicCardTitle}'), true)
+  assert.equal(todayPage.includes('<WorkbenchShell badge={formPanelBadge}'), true)
+  assert.equal(hasTokens(todayPage, ['rounded-[30px]', 'border-[rgba(204,219,212,0.92)]', 'bg-[var(--surface)]', 'shadow-[var(--shadow-card)]']), true)
+  assert.equal(hasTokens(todayPage, ['bg-[var(--surface-muted)]', 'border-[var(--border-soft)]', 'text-[var(--foreground-soft)]']), true)
+})
+
+test('today writing modules stay distinct without heavy card depth', () => {
+  assert.equal(hasTokens(todayPage, ['rounded-[18px]', 'shadow-[0_8px_18px_rgba(15,48,60,0.035)]', 'TodayFieldModule']), true)
+  assert.equal(hasTokens(todayPage, ['min-h-[104px]', 'bg-white/95', 'focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08)]']), true)
+  assert.equal(todayPage.includes('shadow-[0_12px_26px_rgba(15,23,42,0.04)]'), false)
+  assert.equal(todayPage.includes('action={saveTodayTaskAction}'), true)
+  assert.equal(todayPage.includes('formAction={submitTodayTaskAction}'), true)
 })
 test('today page removes old section-card wrapper around detail and form blocks', () => {
   assert.equal(todayPage.includes('SectionCard title={COPY.topicCardTitle}'), false)
   assert.equal(todayPage.includes('SectionCard title={COPY.formTitle}'), false)
-  assert.equal(todayPage.includes('border-b border-[rgba(205,219,212,0.72)] bg-[radial-gradient(circle_at_top_left,rgba(35,133,117,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(246,250,248,0.9)_100%)]'), true)
+  assert.equal(hasTokens(todayPage, ['border-b', 'border-[var(--border-soft)]', 'bg-[var(--surface-muted)]']), true)
 })
 
 test('today page keeps submitted tasks editable within 48 hours', () => {

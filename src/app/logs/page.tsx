@@ -75,7 +75,7 @@ function EmptyStateCard({ kind }: { kind: "todayLogs" | "logs" | "reviews" }) {
 
 function LogsMoodHero() {
   return (
-    <section className="logs-hero app-surface relative overflow-hidden px-5 pt-6 pb-5 md:px-7 md:pt-7 md:pb-6">
+    <section className="logs-hero app-surface relative overflow-hidden bg-[var(--surface)] px-5 pt-6 pb-5 md:px-7 md:pt-7 md:pb-6">
       <div className="logs-hero-glow logs-hero-glow-left" />
       <div className="logs-hero-glow logs-hero-glow-right" />
       <div className="logs-hero-orbit logs-hero-orbit-outer" />
@@ -87,7 +87,7 @@ function LogsMoodHero() {
       <div className="logs-hero-dot logs-hero-dot-4" />
 
       <div className="relative z-[1] max-w-xl">
-        <span className="inline-flex items-center rounded-full border border-[rgba(105,190,198,0.28)] bg-white/68 px-3 py-1 text-[12px] font-medium tracking-[0.04em] text-[var(--foreground-soft)] backdrop-blur-sm">
+        <span className="inline-flex items-center rounded-full border border-[rgba(105,190,198,0.24)] bg-white/72 px-3 py-1 text-[12px] font-medium tracking-[0.04em] text-[var(--primary-deep)] backdrop-blur-sm">
           先停一下，看看这一刻
         </span>
         <h2 className="mt-4 text-[28px] font-semibold tracking-[-0.04em] text-[var(--foreground)] md:text-[40px]">
@@ -116,7 +116,7 @@ function LogsFieldModule({
   return (
     <section
       className={[
-        "rounded-[20px] border px-4 py-4 shadow-[0_12px_26px_rgba(15,23,42,0.04)] md:px-4 md:py-4",
+        "rounded-[18px] border px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)] md:px-4 md:py-4",
         chrome.panelClassName,
       ].join(" ")}
     >
@@ -140,13 +140,13 @@ function LogsFieldModule({
         hint={hint}
         placeholder={placeholder}
         label={undefined}
-        className="border-white/75 bg-white/96 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_18px_rgba(15,23,42,0.03)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.28)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08),0_10px_22px_rgba(15,23,42,0.04)]"
+        className="border-white/75 bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_6px_14px_rgba(15,48,60,0.028)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.28)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08)]"
       />
     </section>
   );
 }
 
-function ShareLikeShell({
+function WorkbenchShell({
   badge,
   title,
   description,
@@ -158,10 +158,10 @@ function ShareLikeShell({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-[linear-gradient(180deg,rgba(245,250,247,0.96)_0%,rgba(255,255,255,0.98)_48%,rgba(243,248,245,0.96)_100%)] shadow-[0_18px_46px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.94)]">
-      <div className="border-b border-[rgba(205,219,212,0.72)] bg-[radial-gradient(circle_at_top_left,rgba(35,133,117,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(246,250,248,0.9)_100%)] px-4 py-4 md:px-5 md:py-5">
+    <section className="overflow-hidden rounded-[30px] border border-[rgba(204,219,212,0.92)] bg-[var(--surface)] shadow-[var(--shadow-card)]">
+      <div className="border-b border-[var(--border-soft)] bg-[var(--surface-muted)] px-4 py-4 md:px-5 md:py-5">
         <div className="space-y-2">
-          <span className="inline-flex items-center rounded-full border border-[rgba(41,122,106,0.18)] bg-white/80 px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-[var(--primary)] shadow-[0_6px_16px_rgba(19,111,99,0.08)]">
+          <span className="inline-flex items-center rounded-full border border-[rgba(41,122,106,0.16)] bg-white/86 px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-[var(--primary)] shadow-[0_6px_16px_rgba(19,111,99,0.06)]">
             {badge}
           </span>
           <div>
@@ -213,7 +213,7 @@ export default async function LogsPage() {
   return (
     <AppShell title={COPY.pageTitle} hideHero>
       <LogsMoodHero />
-      <ShareLikeShell badge={COPY.topicCardBadge} title={COPY.topicCardTitle} description={relationDescription}>
+      <WorkbenchShell badge={COPY.topicCardBadge} title={COPY.topicCardTitle} description={relationDescription}>
         <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5">
           {latestTask ? (
             <>
@@ -226,15 +226,15 @@ export default async function LogsPage() {
             <h3 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">{COPY.noTaskTitle}</h3>
           )}
         </section>
-      </ShareLikeShell>
+      </WorkbenchShell>
 
-      <ShareLikeShell
+      <WorkbenchShell
         badge={COPY.formBadge}
         title={COPY.formTitle}
         description={latestTask ? COPY.formDescription : COPY.waitBody}
       >
         {latestTask ? (
-          <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] md:p-5">
+          <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_10px_22px_rgba(15,48,60,0.04)] md:p-5">
             <form action={createLogAction} className="space-y-4">
               <input type="hidden" name="taskId" value={latestTask.id} />
               <input type="hidden" name="topicTitle" value={latestTask.topicTitle} />
@@ -251,10 +251,10 @@ export default async function LogsPage() {
             <h3 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">{COPY.waitTitle}</h3>
           </section>
         )}
-      </ShareLikeShell>
+      </WorkbenchShell>
 
-      <ShareLikeShell badge={COPY.historyBadge} title={COPY.historyTitle} description={COPY.historyDescription}>
-        <details className="group rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
+      <WorkbenchShell badge={COPY.historyBadge} title={COPY.historyTitle} description={COPY.historyDescription}>
+        <details className="group rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_10px_22px_rgba(15,48,60,0.04)]">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-[var(--foreground)] marker:hidden">
             <span>{COPY.historySummary}</span>
             <span className="inline-flex min-h-10 items-center rounded-full border border-[var(--border-soft)] bg-white/90 px-3 text-[12px] font-medium text-[var(--foreground-soft)] transition group-open:border-[var(--border-strong)] group-open:text-[var(--foreground)]">
@@ -271,11 +271,11 @@ export default async function LogsPage() {
                 return (
                   <div
                     key={item.id}
-                    className="rounded-[22px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.95)_100%)] px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
+                    className="rounded-[20px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.95)_100%)] px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)]"
                   >
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
                       <span className="inline-flex items-center rounded-full border border-[var(--border-soft)] bg-white/92 px-3 py-1 text-[11px] font-medium leading-5 text-[var(--foreground-soft)]">
-                        {item.logTime}
+                        <span className="tabular-nums">{item.logTime}</span>
                       </span>
                       <span className="inline-flex items-center rounded-full border border-[rgba(205,219,212,0.86)] bg-[rgba(243,249,246,0.9)] px-3 py-1 text-[11px] font-medium leading-5 text-[var(--primary)]">
                         {COPY.linkedTopicLabel}{awareness.topicTitle || COPY.linkedTopicFallback}
@@ -288,8 +288,10 @@ export default async function LogsPage() {
 
                     <div className="mt-3 rounded-[18px] border border-[rgba(216,226,221,0.9)] bg-[rgba(243,249,246,0.82)] px-3 py-2">
                       <div className="space-y-1 text-[13px] leading-6 text-[var(--foreground-soft)]">
-                        {awareness.change ? <p>{COPY.changeRowLabel}{awareness.change}</p> : null}
-                        {awareness.note ? <p>{COPY.noteRowLabel}{awareness.note}</p> : null}
+                        <div className="grid gap-2 md:grid-cols-2">
+                          {awareness.change ? <p>{COPY.changeRowLabel}{awareness.change}</p> : null}
+                          {awareness.note ? <p>{COPY.noteRowLabel}{awareness.note}</p> : null}
+                        </div>
                         {!awareness.change && !awareness.note ? <p>{COPY.emptyLogFallback}</p> : null}
                       </div>
                     </div>
@@ -301,7 +303,7 @@ export default async function LogsPage() {
             )}
           </div>
         </details>
-      </ShareLikeShell>
+      </WorkbenchShell>
     </AppShell>
   );
 }
