@@ -36,7 +36,9 @@ test('logs writing workflow uses calmer clear workbench surfaces', () => {
 test('logs records are easier to scan with compact readable rows', () => {
   assert.equal(hasTokens(logsPage, ['rounded-[20px]', 'border-[var(--border-soft)]', 'shadow-[0_8px_18px_rgba(15,48,60,0.035)]']), true)
   assert.equal(hasTokens(logsPage, ['grid gap-2 md:grid-cols-[minmax(0,1fr)_auto]', 'tabular-nums', 'leading-7']), true)
-  assert.equal(hasTokens(logsPage, ['grid gap-2 md:grid-cols-2', 'COPY.changeRowLabel', 'COPY.noteRowLabel']), true)
+  assert.equal(hasTokens(logsPage, ['COPY.changeRowLabel', 'COPY.noteRowLabel', 'detailRows.length === 2 ? "grid gap-2 md:grid-cols-2" : "space-y-1"']), true)
+  assert.equal(logsPage.includes('const detailRows = ['), true)
+  assert.equal(logsPage.includes('.filter((entry): entry is { key: string; content: string } => Boolean(entry))'), true)
   assert.equal(logsPage.includes('shadow-[0_10px_24px_rgba(15,23,42,0.04)]'), false)
 })
 

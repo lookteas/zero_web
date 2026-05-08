@@ -267,6 +267,10 @@ export default async function LogsPage() {
             {logs.length > 0 ? (
               logs.map((item) => {
                 const awareness = parseAwarenessRecord(item);
+                const detailRows = [
+                  awareness.change ? { key: "change", content: `${COPY.changeRowLabel}${awareness.change}` } : null,
+                  awareness.note ? { key: "note", content: `${COPY.noteRowLabel}${awareness.note}` } : null,
+                ].filter((entry): entry is { key: string; content: string } => Boolean(entry));
 
                 return (
                   <div
@@ -288,11 +292,15 @@ export default async function LogsPage() {
 
                     <div className="mt-3 rounded-[18px] border border-[rgba(216,226,221,0.9)] bg-[rgba(243,249,246,0.82)] px-3 py-2">
                       <div className="space-y-1 text-[13px] leading-6 text-[var(--foreground-soft)]">
-                        <div className="grid gap-2 md:grid-cols-2">
-                          {awareness.change ? <p>{COPY.changeRowLabel}{awareness.change}</p> : null}
-                          {awareness.note ? <p>{COPY.noteRowLabel}{awareness.note}</p> : null}
-                        </div>
-                        {!awareness.change && !awareness.note ? <p>{COPY.emptyLogFallback}</p> : null}
+                        {detailRows.length > 0 ? (
+                          <div className={detailRows.length === 2 ? "grid gap-2 md:grid-cols-2" : "space-y-1"}>
+                            {detailRows.map((entry) => (
+                              <p key={entry.key}>{entry.content}</p>
+                            ))}
+                          </div>
+                        ) : (
+                          <p>{COPY.emptyLogFallback}</p>
+                        )}
                       </div>
                     </div>
                   </div>
