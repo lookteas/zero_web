@@ -26,6 +26,7 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   assert.equal(svg.includes(textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f')), true)
   assert.equal(svg.includes('<foreignObject'), false)
   assert.equal(svg.includes('xmlns="http://www.w3.org/1999/xhtml"'), false)
+  assert.equal(svg.includes('font-family=""'), false)
   assert.equal(svg.includes('font-size="28" font-weight="500"'), true)
   assert.equal(svg.includes('font-size="34" font-weight="600"'), false)
   assert.equal(svg.includes('fill="#FFFDF8"'), true)

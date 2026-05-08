@@ -61,7 +61,7 @@ function wrapText(value, maxUnits = 25, maxLines = 3) {
   return lines.length > 0 ? lines : ['']
 }
 
-const FONT_STACK = '"Microsoft YaHei", "PingFang SC", Arial, sans-serif'
+const FONT_STACK = "'Microsoft YaHei', 'PingFang SC', Arial, sans-serif"
 
 function textLines(value, options = {}) {
   const { x = 104, y, fill = '#2A352E', size = 28, weight = 500, lineGap = 43, maxUnits = 31, maxLines = 3 } = options
