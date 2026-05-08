@@ -34,6 +34,7 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   assert.equal(svg.includes('font-size="28" font-weight="500"'), true)
   assert.equal(svg.includes('font-size="34" font-weight="600"'), false)
   assert.equal(/<rect x="40" y="40"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
+  assert.equal(svg.includes('<rect x="104" y="232" width="132" height="4" rx="2" fill="url(#accent)"/>'), true)
   assert.equal(svg.includes('fill="url(#summaryFade)"'), true)
   assert.equal(/<stop stop-color="#[A-F0-9]+"/.test(svg), true)
   assert.equal(svg.includes('<line x1="104"'), true)

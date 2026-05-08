@@ -198,9 +198,9 @@ export function buildTodayShareCardSvg(payload) {
       ${ornament(theme)}
       <text x="104" y="126" fill="${theme.label}" font-size="23" font-weight="500" font-family="${FONT_STACK}">${escapeXml(payload.dateLabel)}</text>
       <text x="104" y="194" fill="${theme.text}" font-size="${titleSize}" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
-      <rect x="104" y="232" width="74" height="4" rx="2" fill="url(#accent)"/>
+      <rect x="104" y="232" width="139" height="4" rx="2" fill="url(#accent)"/>
       <text x="104" y="316" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(topicLabel)}</text>
-      <path d="M104 342H816C842 342 864 364 864 390V470H104Z" fill="url(#summaryFade)"/>
+      <path d="M104 342H816C842 342 922 364 922 390V470H104Z" fill="url(#summaryFade)"/>
       <path d="M104 342H816C842 342 864 364 864 390" stroke="${theme.softBorder}" stroke-width="2" stroke-linecap="round" opacity="0.62"/>
       <path d="M104 470H760" stroke="${theme.softBorder}" stroke-width="2" stroke-linecap="round" opacity="0.34"/>
       <circle cx="144" cy="386" r="8" fill="${theme.accent2}"/>
