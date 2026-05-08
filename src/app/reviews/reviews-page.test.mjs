@@ -61,14 +61,22 @@ test('reviews page tightens hero-to-workbench transition', () => {
 })
 
 test('reviews page uses clear-workbench separation between task context and writing cards', () => {
-  assert.equal(hasTokens(reviewsPage, ['function ReviewInfoCard', 'bg-[var(--surface-muted)]', 'shadow-none']), true)
+  assert.equal(hasTokens(reviewsPage, ['function ReviewInfoCard', 'contextKind', 'reviewContextToneMap']), true)
   assert.equal(hasTokens(reviewsPage, ['function ReviewWritingModule', 'bg-[var(--surface)]', 'border-[var(--border-soft)]']), true)
   assert.equal(hasTokens(reviewsPage, ['rounded-[30px]', 'bg-[var(--surface)]', 'shadow-[var(--shadow-card)]']), true)
 })
 
+test('reviews page gives the original task context clear colored meanings', () => {
+  assert.equal(hasTokens(reviewsPage, ['contextKind="background"', 'contextKind="plan"', 'contextKind="weakness"', 'contextKind="verification"']), true)
+  assert.equal(hasTokens(reviewsPage, ['当时为什么练这个', '当时打算采取的动作', '当时预判会卡住的地方', '当时用来判断有没有做到的方法']), true)
+  assert.equal(hasTokens(reviewsPage, ['bg-[rgba(232,244,238,0.9)]', 'bg-[rgba(239,246,255,0.9)]', 'bg-[rgba(255,247,237,0.92)]', 'bg-[rgba(245,243,255,0.9)]']), true)
+  assert.equal(reviewsPage.includes('01'), true)
+  assert.equal(reviewsPage.includes('04'), true)
+})
+
 test('reviews recovery groups keep amber identity with lighter backgrounds', () => {
   assert.equal(hasTokens(reviewsPage, ['border-amber-200', 'bg-[rgba(255,251,245,0.78)]']), true)
-  assert.equal(hasTokens(reviewsPage, ['border-amber-200/70', 'bg-white/86']), true)
+  assert.equal(hasTokens(reviewsPage, ['ring-1 ring-amber-100/80', 'contextKind="background" recovery']), true)
   assert.equal(hasTokens(reviewsPage, ['peer-checked:border-amber-300', 'peer-checked:bg-[rgba(255,247,237,0.92)]']), true)
 })
 

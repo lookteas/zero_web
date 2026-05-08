@@ -33,6 +33,48 @@ type ReviewsPageProps = {
   searchParams: Promise<{ submitted?: string }>;
 };
 
+type ReviewContextKind = "background" | "plan" | "weakness" | "verification";
+
+const reviewContextToneMap: Record<
+  ReviewContextKind,
+  {
+    index: string;
+    note: string;
+    className: string;
+    markerClassName: string;
+    indexClassName: string;
+  }
+> = {
+  background: {
+    index: "01",
+    note: "当时为什么练这个",
+    className: "border-[rgba(167,211,190,0.82)] bg-[rgba(232,244,238,0.9)]",
+    markerClassName: "bg-[var(--primary)]",
+    indexClassName: "text-[var(--primary)]",
+  },
+  plan: {
+    index: "02",
+    note: "当时打算采取的动作",
+    className: "border-[rgba(147,197,253,0.72)] bg-[rgba(239,246,255,0.9)]",
+    markerClassName: "bg-[#3b82f6]",
+    indexClassName: "text-[#2563eb]",
+  },
+  weakness: {
+    index: "03",
+    note: "当时预判会卡住的地方",
+    className: "border-[rgba(251,191,36,0.58)] bg-[rgba(255,247,237,0.92)]",
+    markerClassName: "bg-[#d97706]",
+    indexClassName: "text-[#b45309]",
+  },
+  verification: {
+    index: "04",
+    note: "当时用来判断有没有做到的方法",
+    className: "border-[rgba(196,181,253,0.74)] bg-[rgba(245,243,255,0.9)]",
+    markerClassName: "bg-[#8b5cf6]",
+    indexClassName: "text-[#7c3aed]",
+  },
+};
+
 function ReviewMetaPill({ children, recovery = false }: { children: ReactNode; recovery?: boolean }) {
   return (
     <span
@@ -51,20 +93,36 @@ function ReviewMetaPill({ children, recovery = false }: { children: ReactNode; r
 function ReviewInfoCard({
   title,
   children,
+  contextKind,
   recovery = false,
 }: {
   title: string;
   children: ReactNode;
+  contextKind: ReviewContextKind;
   recovery?: boolean;
 }) {
+  const tone = reviewContextToneMap[contextKind];
+
   return (
     <div
       className={[
         "rounded-[22px] border px-4 py-4 shadow-none",
-        recovery ? "border-amber-200/70 bg-white/86" : "border-[var(--border-soft)] bg-[var(--surface-muted)]",
+        tone.className,
+        recovery ? "ring-1 ring-amber-100/80" : "",
       ].join(" ")}
     >
-      <p className="text-[13px] font-semibold text-[var(--foreground)] md:text-sm">{title}</p>
+      <div className="flex items-start gap-3">
+        <span className={["mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full", tone.markerClassName].join(" ")} />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className={["text-[11px] font-semibold tracking-[0.16em]", tone.indexClassName].join(" ")}>
+              {tone.index}
+            </span>
+            <p className="text-[13px] font-semibold text-[var(--foreground)] md:text-sm">{title}</p>
+          </div>
+          <p className="mt-1 text-[12px] leading-5 text-[var(--foreground-faint)]">{tone.note}</p>
+        </div>
+      </div>
       <div className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">{children}</div>
     </div>
   );
@@ -296,16 +354,16 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
                   </section>
 
                   <div className="grid gap-3 md:grid-cols-2">
-                    <ReviewInfoCard title="当时的任务背景">
+                    <ReviewInfoCard title="当时的任务背景" contextKind="background">
                       {item.dailyTask.topicDescription || item.dailyTask.topicSummary || "这条任务当时没有额外补充背景说明。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时准备怎么练">
+                    <ReviewInfoCard title="当时准备怎么练" contextKind="plan">
                       {item.dailyTask.improvementPlan || "当时没有额外写下这次准备怎么练。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时的卡点">
+                    <ReviewInfoCard title="当时的卡点" contextKind="weakness">
                       {item.dailyTask.weakness || "当时没有额外写下具体卡点。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时的验证方式">
+                    <ReviewInfoCard title="当时的验证方式" contextKind="verification">
                       {item.dailyTask.verificationPath || "当时没有额外写下验证方式。"}
                     </ReviewInfoCard>
                   </div>
@@ -347,16 +405,16 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
                   </section>
 
                   <div className="grid gap-3 md:grid-cols-2">
-                    <ReviewInfoCard title="当时的任务背景" recovery>
+                    <ReviewInfoCard title="当时的任务背景" contextKind="background" recovery>
                       {group.dailyTask.topicDescription || group.dailyTask.topicSummary || "这组任务当时没有额外补充背景说明。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时准备怎么练" recovery>
+                    <ReviewInfoCard title="当时准备怎么练" contextKind="plan" recovery>
                       {group.dailyTask.improvementPlan || "当时没有额外写下这段准备怎么练。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时的卡点" recovery>
+                    <ReviewInfoCard title="当时的卡点" contextKind="weakness" recovery>
                       {group.dailyTask.weakness || "当时没有额外写下具体卡点。"}
                     </ReviewInfoCard>
-                    <ReviewInfoCard title="当时的验证方式" recovery>
+                    <ReviewInfoCard title="当时的验证方式" contextKind="verification" recovery>
                       {group.dailyTask.verificationPath || "当时没有额外写下验证方式。"}
                     </ReviewInfoCard>
                   </div>
