@@ -60,8 +60,8 @@ function ReviewInfoCard({
   return (
     <div
       className={[
-        "rounded-[22px] border px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]",
-        recovery ? "border-amber-200/80 bg-white/78" : "border-[var(--border-soft)] bg-white/84",
+        "rounded-[22px] border px-4 py-4 shadow-none",
+        recovery ? "border-amber-200/70 bg-white/86" : "border-[var(--border-soft)] bg-[var(--surface-muted)]",
       ].join(" ")}
     >
       <p className="text-[13px] font-semibold text-[var(--foreground)] md:text-sm">{title}</p>
@@ -153,7 +153,7 @@ function ReviewResultGroup({
                 className={[
                   "inline-flex min-h-[46px] w-full items-center justify-center rounded-[18px] border px-4 text-center text-[13px] font-medium leading-5 transition md:min-h-12 md:text-sm",
                   recovery
-                    ? "border-amber-200 bg-white/90 text-[var(--foreground-soft)] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] peer-checked:border-amber-300 peer-checked:bg-[linear-gradient(180deg,#fff7ed_0%,#ffedd5_100%)] peer-checked:text-[var(--warning-text)] peer-checked:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_20px_rgba(180,83,9,0.12)]"
+                    ? "border-amber-200 bg-white/92 text-[var(--foreground-soft)] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] peer-checked:border-amber-300 peer-checked:bg-[rgba(255,247,237,0.92)] peer-checked:text-[var(--warning-text)] peer-checked:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_18px_rgba(180,83,9,0.08)]"
                     : "border-[var(--border-soft)] bg-[var(--surface-soft)] text-[var(--foreground-soft)] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] peer-checked:border-[color:rgba(19,111,99,0.2)] peer-checked:bg-[linear-gradient(180deg,rgba(232,244,238,0.98)_0%,rgba(219,238,229,0.96)_100%)] peer-checked:text-[var(--primary)] peer-checked:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_22px_rgba(19,111,99,0.14)]",
                 ].join(" ")}
               >
@@ -179,7 +179,7 @@ function ReviewWritingModule({
   const chrome = getReviewsFieldChrome(field);
 
   return (
-    <section className={["rounded-[20px] border px-4 py-4 shadow-[0_12px_24px_rgba(15,23,42,0.04)] md:px-5 md:py-5", chrome.panelClassName].join(" ")}>
+    <section className={["rounded-[20px] border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-4 shadow-[0_8px_18px_rgba(15,23,42,0.025)] md:px-5 md:py-5", chrome.panelClassName].join(" ")}>
       <div className="mb-3 flex items-center gap-2.5">
         <span className={["relative flex h-3 w-3 items-center justify-center", chrome.dotClassName].join(" ")}>
           <span className="h-1.5 w-1.5 rounded-full bg-white/90" />
@@ -194,7 +194,7 @@ function ReviewWritingModule({
         name={field}
         hint={hint}
         placeholder={placeholder}
-        className="min-h-[108px] border-white/78 bg-white/97 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_8px_18px_rgba(15,23,42,0.03)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.22)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.07),0_10px_20px_rgba(15,23,42,0.035)]"
+        className="min-h-[108px] border-[var(--border-soft)] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.92)] hover:border-[var(--border-strong)] focus:border-[rgba(19,111,99,0.22)] focus:shadow-[0_0_0_4px_rgba(19,111,99,0.06)]"
       />
     </section>
   );
@@ -266,7 +266,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
             ) : null}
 
             {recoveryRemainingCount > 0 ? (
-              <section className="rounded-[20px] border border-[rgba(240,205,154,0.8)] bg-[rgba(255,248,238,0.86)] px-4 py-3 text-[13px] leading-6 text-[var(--foreground-soft)]">
+              <section className="rounded-[20px] border border-[rgba(240,205,154,0.8)] bg-[rgba(255,251,245,0.78)] px-4 py-3 text-[13px] leading-6 text-[var(--foreground-soft)]">
                 {`后面还有 ${recoveryRemainingCount} 组待恢复复盘，完成当前这组后再继续。`}
               </section>
             ) : null}
@@ -279,11 +279,11 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
                 <form
                   key={item.id}
                   action={submitReviewAction}
-                  className={`space-y-4 rounded-[30px] border p-4 shadow-[0_14px_32px_rgba(15,23,42,0.05)] md:space-y-5 md:p-6 ${tone.className}`}
+                  className={`space-y-4 rounded-[30px] border p-4 shadow-[var(--shadow-card)] md:space-y-5 md:p-6 ${tone.className}`}
                 >
                   <input type="hidden" name="reviewItemId" value={item.id} />
 
-                  <section className="rounded-[24px] border border-white/80 bg-white/92 px-4 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:px-5 md:py-5">
+                  <section className="rounded-[24px] border border-white/80 bg-[var(--surface)] px-4 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:px-5 md:py-5">
                     <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]">{tone.title}</p>
                     <h3 className="mt-3 text-[17px] font-semibold leading-7 text-[var(--foreground)] md:text-[20px] md:leading-8">
                       {item.dailyTask.topicTitle}
@@ -330,11 +330,11 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
                 <form
                   key={`${group.dailyTaskId}-${group.reviewItemIds.join("-")}`}
                   action={submitRecoveryReviewAction}
-                  className={`space-y-4 rounded-[30px] border p-4 shadow-[0_14px_32px_rgba(180,83,9,0.08)] md:space-y-5 md:p-6 ${tone.className}`}
+                  className={`space-y-4 rounded-[30px] border p-4 shadow-[var(--shadow-card)] md:space-y-5 md:p-6 ${tone.className}`}
                 >
                   <input type="hidden" name="reviewItemIds" value={group.reviewItemIds.join(",")} />
 
-                  <section className="rounded-[24px] border border-white/80 bg-white/92 px-4 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:px-5 md:py-5">
+                  <section className="rounded-[24px] border border-white/80 bg-[var(--surface)] px-4 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:px-5 md:py-5">
                     <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--warning-text)]">{tone.title}</p>
                     <h3 className="mt-3 text-[17px] font-semibold leading-7 text-[var(--foreground)] md:text-[20px] md:leading-8">
                       {group.dailyTask.topicTitle}

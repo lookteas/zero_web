@@ -4,6 +4,10 @@ import test from 'node:test'
 
 const reviewsPage = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8')
 
+function hasTokens(source, tokens) {
+  return tokens.every((token) => source.includes(token))
+}
+
 test('reviews page keeps review queues and form modules', () => {
   assert.equal(reviewsPage.includes('submitReviewAction'), true)
   assert.equal(reviewsPage.includes('submitRecoveryReviewAction'), true)
@@ -54,4 +58,22 @@ test('reviews page merges task context into one block without awareness section'
 test('reviews page tightens hero-to-workbench transition', () => {
   assert.equal(reviewsPage.includes('reviews-hero app-surface relative overflow-hidden px-5 pt-6 pb-5 md:px-7 md:pt-7 md:pb-6'), true)
   assert.equal(reviewsPage.includes('flex flex-col gap-3 md:flex-row md:items-end md:justify-between'), true)
+})
+
+test('reviews page uses clear-workbench separation between task context and writing cards', () => {
+  assert.equal(hasTokens(reviewsPage, ['function ReviewInfoCard', 'bg-[var(--surface-muted)]', 'shadow-none']), true)
+  assert.equal(hasTokens(reviewsPage, ['function ReviewWritingModule', 'bg-[var(--surface)]', 'border-[var(--border-soft)]']), true)
+  assert.equal(hasTokens(reviewsPage, ['rounded-[30px]', 'bg-[var(--surface)]', 'shadow-[var(--shadow-card)]']), true)
+})
+
+test('reviews recovery groups keep amber identity with lighter backgrounds', () => {
+  assert.equal(hasTokens(reviewsPage, ['border-amber-200', 'bg-[rgba(255,251,245,0.78)]']), true)
+  assert.equal(hasTokens(reviewsPage, ['border-amber-200/70', 'bg-white/86']), true)
+  assert.equal(hasTokens(reviewsPage, ['peer-checked:border-amber-300', 'peer-checked:bg-[rgba(255,247,237,0.92)]']), true)
+})
+
+test('reviews writing surfaces stay lighter than task context surfaces', () => {
+  assert.equal(hasTokens(reviewsPage, ['className="min-h-[108px]', 'bg-white', 'focus:shadow-[0_0_0_4px_rgba(19,111,99,0.06)]']), true)
+  assert.equal(hasTokens(reviewsPage, ['ReviewWritingModule field="actualSituation"', 'ReviewWritingModule field="suggestion"']), true)
+  assert.equal(reviewsPage.includes('bg-white/97'), false)
 })
