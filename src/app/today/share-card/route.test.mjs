@@ -71,9 +71,27 @@ test('buildTodayShareCardSvg wraps long topic summary inside the summary block',
     verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
   })
 
-  assert.equal(/<text x="166" y="390"[^>]*><tspan x="166" dy="0">/.test(svg), true)
-  assert.equal(svg.includes('<tspan x="166" dy="38">'), true)
+  assert.equal(/<text x="166" y="392"[^>]*><tspan x="166" dy="0">/.test(svg), true)
+  assert.equal(svg.includes('<tspan x="166" dy="40">'), true)
+  assert.equal(/<rect x="104" y="342" width="760" height="128"/.test(svg), true)
   assert.equal(/<text x="166"[^>]*>与人沟通中能否真实直接表达自己的想法。比如：既能由衷赞美别人/.test(svg), false)
+})
+
+test('buildTodayShareCardSvg uses a refined top-right ornament', () => {
+  const svg = buildTodayShareCardSvg({
+    taskDate: '2026-05-07',
+    dateLabel: textValue('u0035', 'u6708', 'u0037', 'u65e5'),
+    topicTitle: textValue('u771f', 'u5b9e', 'u8868', 'u8fbe', 'u7684', 'u80fd', 'u529b'),
+    topicSummary: textValue('u4e3b', 'u9898', 'u6458', 'u8981'),
+    weakness: textValue('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: textValue('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+  })
+
+  assert.equal(svg.includes('id="ornamentGlow"'), true)
+  assert.equal(svg.includes('stroke-dasharray="6 16"'), true)
+  assert.equal(svg.includes('<path d="M838 112C888 88 948 96 990 136"'), true)
+  assert.equal(svg.includes('<circle cx="928" cy="142" r="64"'), true)
 })
 
 test('route file keeps readable chinese fallbacks', () => {

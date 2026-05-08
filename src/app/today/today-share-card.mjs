@@ -126,14 +126,30 @@ function textLines(value, options = {}) {
 function summaryText(value, theme) {
   return textLines(value, {
     x: 166,
-    y: 390,
+    y: 392,
     fill: theme.text,
     size: 27,
     weight: 600,
-    lineGap: 38,
-    maxUnits: 26,
+    lineGap: 40,
+    maxUnits: 31,
     maxLines: 2,
   })
+}
+
+function ornament(theme) {
+  return `
+      <g opacity="0.92">
+        <circle cx="928" cy="142" r="64" fill="url(#ornamentGlow)"/>
+        <circle cx="928" cy="142" r="45" fill="${theme.soft}" stroke="${theme.border}" stroke-width="2"/>
+        <circle cx="928" cy="142" r="22" fill="${theme.accent}" fill-opacity="0.18"/>
+        <circle cx="928" cy="142" r="10" fill="${theme.accent2}" fill-opacity="0.28"/>
+        <circle cx="928" cy="142" r="58" stroke="${theme.accent}" stroke-width="2" stroke-dasharray="6 16" opacity="0.4"/>
+        <path d="M838 112C888 88 948 96 990 136" stroke="${theme.accent}" stroke-width="4" stroke-linecap="round" opacity="0.28"/>
+        <path d="M876 204C914 226 962 216 996 180" stroke="${theme.accent2}" stroke-width="3" stroke-linecap="round" opacity="0.18"/>
+        <path d="M884 88L872 64" stroke="${theme.accent}" stroke-width="3" stroke-linecap="round" opacity="0.26"/>
+        <path d="M976 196L994 224" stroke="${theme.accent2}" stroke-width="3" stroke-linecap="round" opacity="0.22"/>
+      </g>
+  `
 }
 
 function section(label, value, y, theme) {
@@ -165,23 +181,26 @@ export function buildTodayShareCardSvg(payload) {
           <stop stop-color="${theme.accent}"/>
           <stop offset="1" stop-color="${theme.accent2}"/>
         </linearGradient>
+        <radialGradient id="ornamentGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(928 142) rotate(90) scale(68)">
+          <stop stop-color="${theme.soft}"/>
+          <stop offset="0.58" stop-color="${theme.soft}" stop-opacity="0.68"/>
+          <stop offset="1" stop-color="${theme.soft}" stop-opacity="0"/>
+        </radialGradient>
       </defs>
       <rect width="1080" height="1350" rx="40" fill="url(#bg)"/>
       <rect x="40" y="40" width="1000" height="1270" rx="34" fill="${theme.paper}" fill-opacity="0.96" stroke="${theme.border}"/>
-      <path d="M832 82C890 96 940 139 972 198" stroke="${theme.accent}" stroke-width="3" stroke-linecap="round" opacity="0.28"/>
-      <circle cx="928" cy="142" r="48" fill="${theme.soft}"/>
-      <circle cx="928" cy="142" r="19" fill="${theme.accent}" fill-opacity="0.28"/>
+      ${ornament(theme)}
       <text x="104" y="126" fill="${theme.label}" font-size="23" font-weight="500" font-family="${FONT_STACK}">${escapeXml(payload.dateLabel)}</text>
       <text x="104" y="194" fill="${theme.text}" font-size="${titleSize}" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
       <rect x="104" y="232" width="74" height="4" rx="2" fill="url(#accent)"/>
       <text x="104" y="316" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(topicLabel)}</text>
-      <rect x="104" y="342" width="680" height="104" rx="24" fill="${theme.soft}" stroke="${theme.softBorder}"/>
-      <circle cx="144" cy="384" r="8" fill="${theme.accent2}"/>
+      <rect x="104" y="342" width="760" height="128" rx="26" fill="${theme.soft}" stroke="${theme.softBorder}"/>
+      <circle cx="144" cy="386" r="8" fill="${theme.accent2}"/>
       ${summaryText(payload.topicSummary, theme)}
-      <line x1="104" y1="498" x2="976" y2="498" stroke="${theme.rule}" stroke-width="2"/>
-      ${section(weaknessLabel, payload.weakness, 568, theme)}
-      ${section(planLabel, payload.improvementPlan, 790, theme)}
-      ${section(verificationLabel, payload.verificationPath, 1012, theme)}
+      <line x1="104" y1="520" x2="976" y2="520" stroke="${theme.rule}" stroke-width="2"/>
+      ${section(weaknessLabel, payload.weakness, 590, theme)}
+      ${section(planLabel, payload.improvementPlan, 812, theme)}
+      ${section(verificationLabel, payload.verificationPath, 1034, theme)}
       <text x="104" y="1244" fill="${theme.footer}" font-size="26" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
     </svg>
   `.trim()
