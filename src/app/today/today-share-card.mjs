@@ -123,6 +123,19 @@ function textLines(value, options = {}) {
   return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" font-family="${FONT_STACK}">${tspans}</text>`
 }
 
+function summaryText(value, theme) {
+  return textLines(value, {
+    x: 166,
+    y: 390,
+    fill: theme.text,
+    size: 27,
+    weight: 600,
+    lineGap: 38,
+    maxUnits: 26,
+    maxLines: 2,
+  })
+}
+
 function section(label, value, y, theme) {
   return `
     <circle cx="106" cy="${y - 8}" r="5" fill="${theme.accent}"/>
@@ -140,7 +153,6 @@ export function buildTodayShareCardSvg(payload) {
   const theme = pickDaily(THEMES, payload.taskDate)
   const footer = decodeEscaped(pickDaily(FOOTERS, payload.taskDate))
   const titleSize = fitFontSize(payload.topicTitle, { maxUnits: 18, maxSize: 46, minSize: 36 })
-  const summarySize = fitFontSize(payload.topicSummary, { maxUnits: 23, maxSize: 29, minSize: 24 })
 
   return `
     <svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -163,13 +175,13 @@ export function buildTodayShareCardSvg(payload) {
       <text x="104" y="194" fill="${theme.text}" font-size="${titleSize}" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
       <rect x="104" y="232" width="74" height="4" rx="2" fill="url(#accent)"/>
       <text x="104" y="316" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(topicLabel)}</text>
-      <rect x="104" y="342" width="680" height="84" rx="24" fill="${theme.soft}" stroke="${theme.softBorder}"/>
+      <rect x="104" y="342" width="680" height="104" rx="24" fill="${theme.soft}" stroke="${theme.softBorder}"/>
       <circle cx="144" cy="384" r="8" fill="${theme.accent2}"/>
-      <text x="166" y="394" fill="${theme.text}" font-size="${summarySize}" font-weight="600" font-family="${FONT_STACK}">${escapeXml(payload.topicSummary)}</text>
-      <line x1="104" y1="478" x2="976" y2="478" stroke="${theme.rule}" stroke-width="2"/>
-      ${section(weaknessLabel, payload.weakness, 548, theme)}
-      ${section(planLabel, payload.improvementPlan, 770, theme)}
-      ${section(verificationLabel, payload.verificationPath, 992, theme)}
+      ${summaryText(payload.topicSummary, theme)}
+      <line x1="104" y1="498" x2="976" y2="498" stroke="${theme.rule}" stroke-width="2"/>
+      ${section(weaknessLabel, payload.weakness, 568, theme)}
+      ${section(planLabel, payload.improvementPlan, 790, theme)}
+      ${section(verificationLabel, payload.verificationPath, 1012, theme)}
       <text x="104" y="1244" fill="${theme.footer}" font-size="26" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
     </svg>
   `.trim()

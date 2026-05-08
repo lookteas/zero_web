@@ -56,8 +56,24 @@ test('buildTodayShareCardSvg uses stable daily visual variants', () => {
   assert.equal(first, sameDay)
   assert.notEqual(first.match(/<stop stop-color="#[A-F0-9]+"/)?.[0], nextDay.match(/<stop stop-color="#[A-F0-9]+"/)?.[0])
   assert.equal(/font-size="(3[6-9]|4[0-9])" font-weight="700"[^>]*>一个很长/.test(first), true)
-  assert.equal(/font-size="2[4-9]" font-weight="600"[^>]*>先把这条摘要/.test(first), true)
+  assert.equal(/font-size="27" font-weight="600"[^>]*><tspan x="166" dy="0">先把这条摘要/.test(first), true)
   assert.equal(/y="1244"[^>]*font-size="26"/.test(first), true)
+})
+
+test('buildTodayShareCardSvg wraps long topic summary inside the summary block', () => {
+  const svg = buildTodayShareCardSvg({
+    taskDate: '2026-05-07',
+    dateLabel: textValue('u0035', 'u6708', 'u0037', 'u65e5'),
+    topicTitle: textValue('u771f', 'u5b9e', 'u8868', 'u8fbe', 'u7684', 'u80fd', 'u529b'),
+    topicSummary: textValue('u4e0e', 'u4eba', 'u6c9f', 'u901a', 'u4e2d', 'u80fd', 'u5426', 'u771f', 'u5b9e', 'u76f4', 'u63a5', 'u8868', 'u8fbe', 'u81ea', 'u5df1', 'u7684', 'u60f3', 'u6cd5', 'u3002', 'u6bd4', 'u5982', 'uff1a', 'u65e2', 'u80fd', 'u7531', 'u8877', 'u8d5e', 'u7f8e', 'u522b', 'u4eba', 'uff0c', 'u4e5f', 'u80fd', 'u8bda', 'u6073', 'u63d0', 'u51fa', 'u95ee', 'u9898'),
+    weakness: textValue('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: textValue('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+  })
+
+  assert.equal(/<text x="166" y="390"[^>]*><tspan x="166" dy="0">/.test(svg), true)
+  assert.equal(svg.includes('<tspan x="166" dy="38">'), true)
+  assert.equal(/<text x="166"[^>]*>与人沟通中能否真实直接表达自己的想法。比如：既能由衷赞美别人/.test(svg), false)
 })
 
 test('route file keeps readable chinese fallbacks', () => {
