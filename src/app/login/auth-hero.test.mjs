@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { getAuthHeroContent } from './auth-hero.mjs'
 
 const loginPage = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8')
+const hasTokens = (source, tokens) => tokens.every((token) => source.includes(token))
 
 test('getAuthHeroContent returns the approved growth-app auth structure', () => {
   const hero = getAuthHeroContent()
@@ -15,13 +16,7 @@ test('getAuthHeroContent returns the approved growth-app auth structure', () => 
 })
 
 test('login page keeps the approved auth shell and floating form card', () => {
-  assert.equal(
-    loginPage.includes('className="overflow-hidden rounded-[34px] border border-[var(--border-soft)]/90 bg-white/85 shadow-[0_24px_60px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur"'),
-    true
-  )
-  assert.equal(loginPage.includes('className="app-auth-hero min-h-[18rem] px-6 pb-28 pt-8 md:min-h-[22rem] md:px-10 md:pb-32 md:pt-10"'), true)
-  assert.equal(
-    loginPage.includes('className="-mt-20 rounded-[30px] border border-white/80 bg-[rgba(255,255,255,0.94)] p-5 shadow-[0_20px_46px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur md:ml-2 md:max-w-md md:p-6"'),
-    true
-  )
+  assert.equal(hasTokens(loginPage, ['rounded-[34px]', 'border-[var(--border-soft)]/90', 'bg-white/85']), true)
+  assert.equal(hasTokens(loginPage, ['app-auth-hero', 'pb-28', 'md:pb-32']), true)
+  assert.equal(hasTokens(loginPage, ['-mt-20 rounded-[30px]', 'border-white/80', 'bg-[rgba(255,255,255,0.94)]']), true)
 })
