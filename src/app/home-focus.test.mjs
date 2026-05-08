@@ -34,14 +34,16 @@ test('home page keeps directive task preview content', () => {
 })
 
 test('home page uses tighter mobile spacing around the status row and task actions', () => {
-  assert.equal(homePage.includes('grid grid-cols-2 gap-2 md:max-w-lg md:gap-3'), true)
+  assert.equal(homePage.includes('grid grid-cols-2 items-stretch gap-2 md:gap-4'), true)
+  assert.equal(homePage.includes('className="h-full"'), true)
+  assert.equal(homePage.includes('className="block h-full rounded-[28px]'), true)
   assert.equal(homePage.includes('mt-4 rounded-[24px]'), true)
   assert.equal(homePage.includes('mt-4 flex flex-col gap-2 md:flex-row md:gap-3'), true)
 })
 
 test('home page keeps the hero, status row, and today focus in a clearer workbench stack', () => {
   assert.equal(homePage.includes('HomeMoodHero topicTitle={home.todayTask?.topicTitle}'), true)
-  assert.equal(homePage.includes('grid grid-cols-2 gap-2 md:max-w-lg md:gap-3'), true)
+  assert.equal(homePage.includes('grid grid-cols-2 items-stretch gap-2 md:gap-4'), true)
   assert.equal(hasTokens(homePage, ['rounded-[30px]', 'border-[rgba(204,219,212,0.92)]', 'md:px-6 md:py-6']), true)
   assert.equal(hasTokens(homePage, ['mt-4 rounded-[24px]', 'border-[rgba(210,221,215,0.86)]', 'bg-white/92']), true)
 })
@@ -56,12 +58,14 @@ test('home page replaces generic page hero with a custom orbit hero section', ()
 
 test('home page adds colored icon accents for status cards and today focus label', () => {
   assert.equal(statusCard.includes('icon?: ReactNode;'), true)
+  assert.equal(statusCard.includes('className?: string;'), true)
   assert.equal(statusCard.includes('accentClassName?: string;'), true)
   assert.equal(statusCard.includes('badges?: Array<{ label: string; tone?: "primary" | "warning" }>;'), true)
   assert.equal(statusCard.includes('ornamentKind?: "orbit";'), true)
   assert.equal(statusCard.includes('absolute -bottom-6 right-[-6px] h-28 w-28 rounded-full border'), true)
   assert.equal(statusCard.includes('inline-flex flex-wrap gap-2'), true)
   assert.equal(statusCard.includes('bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.9)_0,rgba(255,255,255,0)_38%)]'), true)
+  assert.equal(statusCard.includes('min-h-[168px]'), true)
   assert.equal(homePage.includes('kind="continuousDays"'), true)
   assert.equal(homePage.includes('kind="pendingReviewCount"'), true)
   assert.equal(homePage.includes('metric={statusItems[0].metric}'), true)

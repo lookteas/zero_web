@@ -12,6 +12,7 @@ type StatusCardProps = {
   badges?: Array<{ label: string; tone?: "primary" | "warning" }>;
   ornamentKind?: "orbit";
   accentClassName?: string;
+  className?: string;
 };
 
 function getBadgeClassName(tone: StatusBadge["tone"]) {
@@ -32,12 +33,14 @@ export function StatusCard({
   badges,
   ornamentKind,
   accentClassName,
+  className,
 }: StatusCardProps) {
   return (
     <div
       className={[
-        "app-surface app-soft-ring relative overflow-hidden px-4 py-4 md:px-5 md:py-5",
+        "app-surface app-soft-ring relative min-h-[168px] overflow-hidden px-4 py-4 md:px-5 md:py-5",
         accentClassName ?? "",
+        className ?? "",
       ].join(" ")}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.9)_0,rgba(255,255,255,0)_38%)]" />

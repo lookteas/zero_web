@@ -89,7 +89,7 @@ export default async function Home() {
         {sections.map((section) => {
           if (section.key === "statusRow") {
             return (
-              <div key={section.key} className="grid grid-cols-2 gap-2 md:max-w-lg md:gap-3">
+              <div key={section.key} className="grid grid-cols-2 items-stretch gap-2 md:gap-4">
                 <StatusCard
                   label={statusItems[0].label}
                   value={statusItems[0].value}
@@ -100,9 +100,10 @@ export default async function Home() {
                   badges={statusItems[0].badges}
                   ornamentKind={statusItems[0].ornamentKind}
                   accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(214,245,229,0.92)_0,rgba(214,245,229,0)_32%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.97)_100%)]"
+                  className="h-full"
                 />
                 {pendingReviewCount > 0 ? (
-                  <Link href="/reviews" aria-label="查看待复盘" className="block rounded-[28px] transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--primary)]">
+                  <Link href="/reviews" aria-label="查看待复盘" className="block h-full rounded-[28px] transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--primary)]">
                     <StatusCard
                       label={statusItems[1].label}
                       value={statusItems[1].value}
@@ -113,6 +114,7 @@ export default async function Home() {
                       badges={statusItems[1].badges}
                       ornamentKind={statusItems[1].ornamentKind}
                       accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(255,238,214,0.9)_0,rgba(255,238,214,0)_34%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(251,249,245,0.97)_100%)]"
+                      className="h-full"
                     />
                   </Link>
                 ) : (
@@ -126,6 +128,7 @@ export default async function Home() {
                     badges={statusItems[1].badges}
                     ornamentKind={statusItems[1].ornamentKind}
                     accentClassName="bg-[radial-gradient(circle_at_top_left,rgba(255,238,214,0.9)_0,rgba(255,238,214,0)_34%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(251,249,245,0.97)_100%)]"
+                    className="h-full"
                   />
                 )}
               </div>
