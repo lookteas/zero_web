@@ -42,21 +42,21 @@ const featureToneMap: Record<
 const growthFeatures = [
   {
     title: "意识强度检测",
-    description: "把最近的打卡、觉察和复盘整理成一份个人状态评估。",
-    status: "优先规划",
+    description: "基于打卡、觉察和复盘记录，形成阶段性的意识状态参考。",
+    status: "规划中",
     tone: "primary" as const,
   },
   {
     title: "潜催文档优化",
-    description: "根据你的练习目标，辅助梳理更清晰、更容易执行的潜催文档。",
-    status: "可使用",
+    description: "整理互催记录，生成结构统一、便于复盘的标准文档。",
+    status: "已开放",
     tone: "cyan" as const,
     href: "/me/hypnosis-documents",
   },
   {
     title: "AI 辅助",
-    description: "在写打卡、做复盘时提供提示、追问和表达优化。",
-    status: "即将开放",
+    description: "在打卡、复盘和文档整理中提供提示、追问与表达优化。",
+    status: "即将上线",
     tone: "violet" as const,
   },
 ];
@@ -64,8 +64,8 @@ const growthFeatures = [
 const securityFeatures = [
   {
     title: "密码修改",
-    description: "更新登录密码，保护当前账号的长期记录。",
-    status: "待接入",
+    description: "支持自主更新登录密码，进一步保护个人练习数据。",
+    status: "待开放",
     tone: "amber" as const,
   },
 ];
@@ -169,9 +169,9 @@ function AccountHero({ account }: { account: string }) {
             {initial}
           </div>
           <div className="min-w-0">
-            <p className="text-[12px] font-semibold uppercase leading-none tracking-[0.16em] text-[var(--primary)]/70">Zero Account</p>
+            <p className="text-[12px] font-semibold uppercase leading-none tracking-[0.16em] text-[var(--primary)]/70">Zero 试用账号</p>
             <h1 className="mt-2 truncate text-[24px] font-semibold tracking-tight text-[var(--foreground)] md:text-[30px]">{account}</h1>
-            <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm">把练习记录、复盘提醒和后续智能能力统一放在这里。</p>
+            <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm">集中管理你的练习记录、复盘工具和账号安全设置。</p>
           </div>
         </div>
 
@@ -182,7 +182,7 @@ function AccountHero({ account }: { account: string }) {
           </div>
           <div className="rounded-[20px] border border-white/78 bg-white/72 px-3 py-3 shadow-[0_8px_18px_rgba(15,48,60,0.04)]">
             <p className="text-[11px] text-[var(--foreground-faint)]">能力中心</p>
-            <p className="mt-1 text-[14px] font-semibold text-[var(--foreground)]">建设中</p>
+            <p className="mt-1 text-[14px] font-semibold text-[var(--foreground)]">试用开放</p>
           </div>
         </div>
       </div>
@@ -197,13 +197,13 @@ export default async function MePage() {
   const account = cookieStore.get("zero_user_account")?.value || "当前账号";
 
   return (
-    <AppShell title="我的" mobileThemeTitle="个人中心" description="查看当前登录账号，并从这里安全退出。" hideHero>
+    <AppShell title="我的" mobileThemeTitle="个人中心" description="管理账号、工具和个人练习数据。" hideHero>
       <AccountHero account={account} />
 
       <FeatureSection
-        eyebrow="成长工具"
-        title="下一步要完善的个人能力"
-        description="把会反复使用的能力整理成入口，先让方向和优先级清楚，后续逐步接入真实功能。"
+        eyebrow="能力中心"
+        title="个人练习工具"
+        description="常用能力会逐步集中到这里，当前先开放文档整理工具，其他能力按试用反馈持续完善。"
       >
         <div className="grid gap-3 md:grid-cols-3">
           {growthFeatures.map((feature) => (
@@ -215,7 +215,7 @@ export default async function MePage() {
       <FeatureSection
         eyebrow="账号安全"
         title="登录与安全设置"
-        description="安全相关能力单独放置，和成长工具区分开，后续接入时用户会更容易找到。"
+        description="账号相关操作统一放在这里，便于后续管理个人资料与安全设置。"
       >
         <div className="grid gap-3 md:grid-cols-2">
           {securityFeatures.map((feature) => (
@@ -224,7 +224,7 @@ export default async function MePage() {
           <form action={logoutAction} className="rounded-[24px] border border-[var(--border-soft)] bg-white/90 px-4 py-4 shadow-[0_10px_24px_rgba(15,48,60,0.04)]">
             <div className="mb-3">
               <h3 className="text-[15px] font-semibold text-[var(--foreground)] md:text-[16px]">退出当前账号</h3>
-              <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm">退出后需要重新登录才能继续记录和复盘。</p>
+              <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm">退出后需重新登录，才能继续使用个人练习工具。</p>
             </div>
             <PrimaryButton type="submit" variant="secondary">
               退出登录
