@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 import { logoutAction } from "@/app/login/actions";
@@ -48,8 +49,9 @@ const growthFeatures = [
   {
     title: "潜催文档优化",
     description: "根据你的练习目标，辅助梳理更清晰、更容易执行的潜催文档。",
-    status: "规划中",
+    status: "可使用",
     tone: "cyan" as const,
+    href: "/me/hypnosis-documents",
   },
   {
     title: "AI 辅助",
@@ -84,16 +86,18 @@ function FeatureCard({
   description,
   status,
   tone,
+  href,
 }: {
   title: string;
   description: string;
   status: string;
   tone: FeatureTone;
+  href?: string;
 }) {
   const toneClass = featureToneMap[tone];
 
-  return (
-    <article className={["rounded-[24px] border px-4 py-4 shadow-[0_10px_24px_rgba(15,48,60,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,48,60,0.07)]", toneClass.panel].join(" ")}>
+  const content = (
+    <>
       <div className="flex items-start gap-3">
         <FeatureIcon tone={tone} />
         <div className="min-w-0 flex-1">
@@ -106,6 +110,22 @@ function FeatureCard({
           <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm">{description}</p>
         </div>
       </div>
+    </>
+  );
+
+  const className = ["block rounded-[24px] border px-4 py-4 shadow-[0_10px_24px_rgba(15,48,60,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,48,60,0.07)]", toneClass.panel].join(" ");
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <article className={className}>
+      {content}
     </article>
   );
 }

@@ -18,7 +18,7 @@ test('me page exposes planned feature entries with clear status labels', () => {
   assert.equal(source.includes('AI 辅助'), true)
   assert.equal(source.includes('密码修改'), true)
   assert.equal(source.includes('优先规划'), true)
-  assert.equal(source.includes('规划中'), true)
+  assert.equal(source.includes('可使用'), true)
   assert.equal(source.includes('即将开放'), true)
   assert.equal(source.includes('待接入'), true)
 })
