@@ -15,14 +15,14 @@ type LoginPageProps = {
 
 function AuthGrowthVisual() {
   return (
-    <div className="auth-growth-visual pointer-events-none absolute right-8 top-8 hidden h-[18rem] w-[45%] min-w-[25rem] overflow-hidden rounded-[32px] border border-white/45 bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-[2px] md:block lg:right-12 lg:top-10 lg:h-[20rem] lg:w-[44%]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.62)_0,rgba(255,255,255,0)_30%),linear-gradient(135deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_60%)]" />
+    <div className="auth-growth-visual pointer-events-none absolute bottom-8 right-8 top-8 hidden w-[45%] min-w-[25rem] overflow-hidden rounded-[32px] border border-white/45 bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-[2px] md:block lg:bottom-10 lg:right-12 lg:top-10 lg:w-[44%]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,255,255,0.62)_0,rgba(255,255,255,0)_28%),radial-gradient(circle_at_22%_78%,rgba(167,230,220,0.36)_0,rgba(167,230,220,0)_30%),linear-gradient(135deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0)_62%)]" />
 
-      <svg className="auth-growth-path absolute inset-x-8 top-8 h-40 w-[calc(100%-4rem)]" viewBox="0 0 520 180" fill="none" aria-hidden="true">
-        <path className="auth-growth-path-line" d="M24 136C94 62 160 146 226 88C291 30 352 98 496 40" stroke="url(#authGrowthLine)" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M24 136C94 62 160 146 226 88C291 30 352 98 496 40" stroke="rgba(255,255,255,0.62)" strokeWidth="10" strokeLinecap="round" opacity="0.36" />
+      <svg className="auth-growth-path absolute inset-x-8 inset-y-8 h-[calc(100%-4rem)] w-[calc(100%-4rem)]" viewBox="0 0 520 560" fill="none" aria-hidden="true" preserveAspectRatio="none">
+        <path className="auth-growth-path-line" d="M54 82C166 18 214 150 304 112C408 68 466 142 414 230C354 332 182 238 142 352C108 450 230 516 470 466" stroke="url(#authGrowthLine)" strokeWidth="4" strokeLinecap="round" />
+        <path d="M54 82C166 18 214 150 304 112C408 68 466 142 414 230C354 332 182 238 142 352C108 450 230 516 470 466" stroke="rgba(255,255,255,0.62)" strokeWidth="12" strokeLinecap="round" opacity="0.28" />
         <defs>
-          <linearGradient id="authGrowthLine" x1="24" y1="136" x2="496" y2="40" gradientUnits="userSpaceOnUse">
+          <linearGradient id="authGrowthLine" x1="54" y1="82" x2="470" y2="466" gradientUnits="userSpaceOnUse">
             <stop stopColor="#136f63" stopOpacity="0.18" />
             <stop offset="0.48" stopColor="#0f766e" stopOpacity="0.72" />
             <stop offset="1" stopColor="#22c7b8" stopOpacity="0.92" />
@@ -30,11 +30,12 @@ function AuthGrowthVisual() {
         </defs>
       </svg>
 
-      <span className="auth-growth-node left-[13%] top-[58%]" />
-      <span className="auth-growth-node auth-growth-node-delay left-[44%] top-[33%]" />
-      <span className="auth-growth-node left-[78%] top-[21%]" />
+      <span className="auth-growth-node left-[15%] top-[15%]" />
+      <span className="auth-growth-node auth-growth-node-delay left-[56%] top-[25%]" />
+      <span className="auth-growth-node left-[35%] top-[60%]" />
+      <span className="auth-growth-node auth-growth-node-delay left-[78%] top-[78%]" />
 
-      <div className="auth-growth-card absolute bottom-8 right-8 w-[17rem] rounded-[28px] border border-white/72 bg-white/76 p-5 shadow-[0_22px_44px_rgba(15,48,60,0.12)]">
+      <div className="auth-growth-card absolute right-8 top-10 w-[17rem] rounded-[28px] border border-white/72 bg-white/76 p-5 shadow-[0_22px_44px_rgba(15,48,60,0.12)]">
         <p className="text-[12px] font-semibold tracking-[0.16em] text-[var(--primary)]/75">今日觉察</p>
         <p className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">把变化留在今天</p>
         <div className="mt-4 grid gap-2">
@@ -42,6 +43,11 @@ function AuthGrowthVisual() {
           <span className="h-2 w-4/5 rounded-full bg-[rgba(19,111,99,0.12)]" />
           <span className="h-2 w-2/3 rounded-full bg-[rgba(19,111,99,0.09)]" />
         </div>
+      </div>
+
+      <div className="auth-growth-summary absolute bottom-10 left-8 w-[15rem] rounded-[26px] border border-white/64 bg-white/66 p-4 shadow-[0_18px_36px_rgba(15,48,60,0.1)]">
+        <p className="text-[11px] font-semibold tracking-[0.14em] text-[var(--primary)]/70">复盘提醒</p>
+        <p className="mt-2 text-[17px] font-semibold leading-snug text-[var(--foreground)]">今晚回看一次，确认自己真的前进了。</p>
       </div>
     </div>
   );
@@ -70,7 +76,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </section>
       ) : null}
 
-      <section className="overflow-hidden rounded-[34px] border border-[var(--border-soft)]/90 bg-white/85 shadow-[0_24px_60px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur">
+      <section className="relative overflow-hidden rounded-[34px] border border-[var(--border-soft)]/90 bg-white/85 shadow-[0_24px_60px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur">
+        <AuthGrowthVisual />
         <div className="app-auth-hero relative min-h-[18rem] px-6 pb-28 pt-8 md:min-h-[22rem] md:px-10 md:pb-32 md:pt-10">
           <div className="relative z-[1] md:max-w-[42%] lg:max-w-[40%]">
             <p className="text-sm font-medium tracking-[0.08em] text-[var(--primary)]/90">{hero.eyebrow}</p>
@@ -81,7 +88,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               {hero.description}
             </p>
           </div>
-          <AuthGrowthVisual />
         </div>
 
         <div className="px-4 pb-4 md:px-8 md:pb-8">

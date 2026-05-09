@@ -22,6 +22,7 @@ test('login page keeps the approved auth shell and floating form card', () => {
 })
 
 test('login page fills the desktop hero with a calm growth visual', () => {
-  assert.equal(hasTokens(loginPage, ['auth-growth-visual', 'auth-growth-path', 'auth-growth-card']), true)
+  assert.equal(hasTokens(loginPage, ['auth-growth-visual', 'auth-growth-path', 'auth-growth-card', 'auth-growth-summary']), true)
   assert.equal(loginPage.includes('今日觉察'), true)
+  assert.equal(loginPage.includes('复盘提醒'), true)
 })
