@@ -17,9 +17,23 @@ test('hypnosis document page exposes upload and metadata fields', () => {
   assert.equal(page.includes('潜催文档标准化'), true)
   assert.equal(form.includes('name="file"'), true)
   assert.equal(form.includes('accept=".docx'), true)
-  for (const field of ['topic', 'date', 'duration', 'hostName', 'subjectName', 'hostReview', 'subjectReview']) {
-    assert.equal(form.includes(`name="${field}"`), true)
+  assert.equal(form.includes('name="topic"'), true)
+  for (const field of ['date', 'duration', 'hostName', 'subjectName']) {
+    assert.equal(form.includes(`formData.set("${field}"`), true)
   }
+  for (const removedField of ['hostReview', 'subjectReview']) {
+    assert.equal(form.includes(removedField), false)
+  }
+})
+
+test('hypnosis document form analyzes speakers before standardizing', () => {
+  assert.equal(actions.includes('/hypnosis-documents/analyze'), true)
+  assert.equal(form.includes('analyzeHypnosisDocumentAction'), true)
+  assert.equal(form.includes('识别结果'), true)
+  for (const label of ['主催', '被催']) {
+    assert.equal(form.includes(label), true)
+  }
+  assert.equal(form.includes('<select'), true)
 })
 
 test('hypnosis document action posts multipart form and downloads returned docx', () => {

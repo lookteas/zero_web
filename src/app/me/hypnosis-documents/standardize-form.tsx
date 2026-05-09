@@ -1,48 +1,114 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { ChangeEvent, useMemo, useState, useTransition } from "react";
 
 import { PrimaryButton } from "@/components/primary-button";
 
-import { standardizeHypnosisDocumentAction } from "./actions";
+import { analyzeHypnosisDocumentAction, standardizeHypnosisDocumentAction } from "./actions";
 
-type ActionState = Awaited<ReturnType<typeof standardizeHypnosisDocumentAction>> | null;
+type Speaker = {
+  name: string;
+  count: number;
+};
+
+type AnalysisState = {
+  speakers: Speaker[];
+  date: string;
+  duration: string;
+};
 
 function filenameFromDisposition(disposition: string) {
   const match = /filename="([^"]+)"/.exec(disposition);
   return match?.[1] || "hypnosis-standardized.docx";
 }
 
-export function HypnosisStandardizeForm() {
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    async (_previousState, formData) => standardizeHypnosisDocumentAction(formData),
-    null
-  );
+function downloadBase64Docx(base64: string, contentType: string, disposition: string) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
 
-  useEffect(() => {
-    if (!state?.ok || !state.base64) {
+  const blob = new Blob([bytes], { type: contentType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filenameFromDisposition(disposition);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function HypnosisStandardizeForm() {
+  const [file, setFile] = useState<File | null>(null);
+  const [analysis, setAnalysis] = useState<AnalysisState | null>(null);
+  const [hostName, setHostName] = useState("");
+  const [subjectName, setSubjectName] = useState("");
+  const [message, setMessage] = useState("");
+  const [isAnalyzing, startAnalyzeTransition] = useTransition();
+  const [isSubmitting, startSubmitTransition] = useTransition();
+
+  const canSubmit = useMemo(() => Boolean(file && analysis && hostName && subjectName && hostName !== subjectName), [analysis, file, hostName, subjectName]);
+
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const selectedFile = event.target.files?.[0] ?? null;
+    setFile(selectedFile);
+    setAnalysis(null);
+    setHostName("");
+    setSubjectName("");
+    setMessage("");
+
+    if (!selectedFile) {
       return;
     }
 
-    const binary = atob(state.base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let index = 0; index < binary.length; index += 1) {
-      bytes[index] = binary.charCodeAt(index);
+    startAnalyzeTransition(async () => {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      const result = await analyzeHypnosisDocumentAction(formData);
+
+      if (!result.ok) {
+        setMessage(result.message || "识别失败，请检查上传文件。");
+        return;
+      }
+
+      setAnalysis(result.data);
+      setHostName(result.data.speakers[0]?.name || "");
+      setSubjectName(result.data.speakers[1]?.name || result.data.speakers[0]?.name || "");
+      if (result.data.speakers.length < 2) {
+        setMessage("未识别到两个说话人，请确认文档里包含“姓名(00:00:00):”格式的逐字稿。");
+      }
+    });
+  }
+
+  function handleSubmit(formData: FormData) {
+    if (!file || !analysis) {
+      setMessage("请先上传并识别 docx 文档。");
+      return;
     }
 
-    const blob = new Blob([bytes], { type: state.contentType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filenameFromDisposition(state.disposition);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-  }, [state]);
+    formData.set("file", file);
+    formData.set("date", analysis.date);
+    formData.set("duration", analysis.duration);
+    formData.set("hostName", hostName);
+    formData.set("subjectName", subjectName);
+
+    startSubmitTransition(async () => {
+      setMessage("");
+      const result = await standardizeHypnosisDocumentAction(formData);
+
+      if (!result.ok) {
+        setMessage(result.message || "处理失败，请检查上传文件。");
+        return;
+      }
+
+      downloadBase64Docx(result.base64, result.contentType, result.disposition);
+    });
+  }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={handleSubmit} className="space-y-4">
       <section className="rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-white/92 px-4 py-4 shadow-[var(--shadow-card)] md:px-5 md:py-5">
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block space-y-2 md:col-span-2">
@@ -52,55 +118,61 @@ export function HypnosisStandardizeForm() {
               type="file"
               accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               required
+              onChange={handleFileChange}
               className="block w-full rounded-[18px] border border-[var(--border-soft)] bg-white/96 px-4 py-3 text-[14px] text-[var(--foreground-soft)] file:mr-4 file:rounded-full file:border-0 file:bg-[var(--surface-muted)] file:px-4 file:py-2 file:text-[13px] file:font-medium file:text-[var(--primary)]"
             />
-            <span className="block text-[13px] leading-6 text-[var(--foreground-soft)]">上传互催逐字稿，系统会生成一份新的标准化 Word 文档。</span>
+            <span className="block text-[13px] leading-6 text-[var(--foreground-soft)]">上传后会自动识别说话人、日期和时长估算。</span>
           </label>
 
-          <label className="block space-y-2">
+          <label className="block space-y-2 md:col-span-2">
             <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">互催主题</span>
-            <input name="topic" className="app-input min-h-12 px-4 py-3 text-sm" placeholder="例如：潜意识探索" />
-          </label>
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">互催日期</span>
-            <input name="date" className="app-input min-h-12 px-4 py-3 text-sm" placeholder="例如：2026年02月09日" />
-          </label>
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">互催时长</span>
-            <input name="duration" className="app-input min-h-12 px-4 py-3 text-sm" placeholder="例如：约2小时" />
-          </label>
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">主催名称</span>
-            <input name="hostName" className="app-input min-h-12 px-4 py-3 text-sm" placeholder="原文里的主催姓名" />
-          </label>
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">被催名称</span>
-            <input name="subjectName" className="app-input min-h-12 px-4 py-3 text-sm" placeholder="原文里的被催姓名" />
+            <input name="topic" required className="app-input min-h-12 px-4 py-3 text-sm" placeholder="例如：潜意识探索-复合体灵探索" />
           </label>
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-white/92 px-4 py-4 shadow-[var(--shadow-card)] md:px-5 md:py-5">
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">主催复盘</span>
-            <textarea name="hostReview" className="app-input min-h-[132px] px-4 py-3 text-sm leading-7" />
-          </label>
-          <label className="block space-y-2">
-            <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">被催复盘</span>
-            <textarea name="subjectReview" className="app-input min-h-[132px] px-4 py-3 text-sm leading-7" />
-          </label>
-        </div>
-      </section>
+      {analysis ? (
+        <section className="rounded-[28px] border border-[rgba(204,219,212,0.92)] bg-white/92 px-4 py-4 shadow-[var(--shadow-card)] md:px-5 md:py-5">
+          <div className="mb-4">
+            <h2 className="text-[18px] font-semibold tracking-[0.01em] text-[var(--foreground)] md:text-[20px]">识别结果</h2>
+            <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
+              互催日期：{analysis.date || "当天"}；互催时长：{analysis.duration || "未识别到时间戳"}
+            </p>
+          </div>
 
-      {state && !state.ok ? (
-        <section className="app-alert border border-rose-200 bg-rose-50 text-rose-700">
-          {state.message || "处理失败，请检查上传文件。"}
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="block space-y-2">
+              <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">主催</span>
+              <select value={hostName} onChange={(event) => setHostName(event.target.value)} className="app-input min-h-12 px-4 py-3 text-sm">
+                {analysis.speakers.map((speaker) => (
+                  <option key={speaker.name} value={speaker.name}>
+                    {speaker.name}（{speaker.count} 条）
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block space-y-2">
+              <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">被催</span>
+              <select value={subjectName} onChange={(event) => setSubjectName(event.target.value)} className="app-input min-h-12 px-4 py-3 text-sm">
+                {analysis.speakers.map((speaker) => (
+                  <option key={speaker.name} value={speaker.name}>
+                    {speaker.name}（{speaker.count} 条）
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         </section>
       ) : null}
 
-      <PrimaryButton type="submit" disabled={pending}>
-        {pending ? "正在生成标准文档" : "生成并下载标准文档"}
+      {message ? (
+        <section className="app-alert border border-amber-200 bg-amber-50 text-amber-700">
+          {message}
+        </section>
+      ) : null}
+
+      <PrimaryButton type="submit" disabled={!canSubmit || isAnalyzing || isSubmitting}>
+        {isAnalyzing ? "正在识别文档" : isSubmitting ? "正在生成标准文档" : "生成并下载标准文档"}
       </PrimaryButton>
     </form>
   );
