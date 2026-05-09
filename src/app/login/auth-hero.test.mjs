@@ -20,3 +20,8 @@ test('login page keeps the approved auth shell and floating form card', () => {
   assert.equal(hasTokens(loginPage, ['app-auth-hero', 'pb-28', 'md:pb-32']), true)
   assert.equal(hasTokens(loginPage, ['-mt-20 rounded-[30px]', 'border-white/80', 'bg-[rgba(255,255,255,0.94)]']), true)
 })
+
+test('login page fills the desktop hero with a calm growth visual', () => {
+  assert.equal(hasTokens(loginPage, ['auth-growth-visual', 'auth-growth-path', 'auth-growth-card']), true)
+  assert.equal(loginPage.includes('今日觉察'), true)
+})
