@@ -33,7 +33,9 @@ test('hypnosis document form analyzes speakers before standardizing', () => {
   for (const label of ['主催', '被催']) {
     assert.equal(form.includes(label), true)
   }
-  assert.equal(form.includes('<select'), true)
+  assert.equal((form.match(/<select/g) || []).length, 1)
+  assert.equal(form.includes('analysis.speakers.find((speaker) => speaker.name !== hostName)'), true)
+  assert.equal(form.includes('请先选择主催'), true)
 })
 
 test('hypnosis document action posts multipart form and downloads returned docx', () => {

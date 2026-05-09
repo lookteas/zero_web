@@ -44,11 +44,17 @@ export function HypnosisStandardizeForm() {
   const [file, setFile] = useState<File | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisState | null>(null);
   const [hostName, setHostName] = useState("");
-  const [subjectName, setSubjectName] = useState("");
   const [message, setMessage] = useState("");
   const [isAnalyzing, startAnalyzeTransition] = useTransition();
   const [isSubmitting, startSubmitTransition] = useTransition();
 
+  const subjectName = useMemo(() => {
+    if (!analysis) {
+      return "";
+    }
+
+    return analysis.speakers.find((speaker) => speaker.name !== hostName)?.name || "";
+  }, [analysis, hostName]);
   const canSubmit = useMemo(() => Boolean(file && analysis && hostName && subjectName && hostName !== subjectName), [analysis, file, hostName, subjectName]);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -56,7 +62,6 @@ export function HypnosisStandardizeForm() {
     setFile(selectedFile);
     setAnalysis(null);
     setHostName("");
-    setSubjectName("");
     setMessage("");
 
     if (!selectedFile) {
@@ -76,7 +81,6 @@ export function HypnosisStandardizeForm() {
       const data = result.data;
       setAnalysis(data);
       setHostName(data.speakers[0]?.name || "");
-      setSubjectName(data.speakers[1]?.name || data.speakers[0]?.name || "");
       if (data.speakers.length < 2) {
         setMessage("未识别到两个说话人，请确认文档里包含“姓名(00:00:00):”格式的逐字稿。");
       }
@@ -152,16 +156,12 @@ export function HypnosisStandardizeForm() {
                 ))}
               </select>
             </label>
-            <label className="block space-y-2">
+            <div className="block space-y-2">
               <span className="block text-[13px] font-medium text-[var(--foreground)] md:text-sm">被催</span>
-              <select value={subjectName} onChange={(event) => setSubjectName(event.target.value)} className="app-input min-h-12 px-4 py-3 text-sm">
-                {analysis.speakers.map((speaker) => (
-                  <option key={speaker.name} value={speaker.name}>
-                    {speaker.name}（{speaker.count} 条）
-                  </option>
-                ))}
-              </select>
-            </label>
+              <div className="app-input flex min-h-12 items-center px-4 py-3 text-sm text-[var(--foreground-soft)]">
+                {subjectName || "请先选择主催"}
+              </div>
+            </div>
           </div>
         </section>
       ) : null}
