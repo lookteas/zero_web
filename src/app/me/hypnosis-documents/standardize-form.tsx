@@ -73,10 +73,11 @@ export function HypnosisStandardizeForm() {
         return;
       }
 
-      setAnalysis(result.data);
-      setHostName(result.data.speakers[0]?.name || "");
-      setSubjectName(result.data.speakers[1]?.name || result.data.speakers[0]?.name || "");
-      if (result.data.speakers.length < 2) {
+      const data = result.data;
+      setAnalysis(data);
+      setHostName(data.speakers[0]?.name || "");
+      setSubjectName(data.speakers[1]?.name || data.speakers[0]?.name || "");
+      if (data.speakers.length < 2) {
         setMessage("未识别到两个说话人，请确认文档里包含“姓名(00:00:00):”格式的逐字稿。");
       }
     });

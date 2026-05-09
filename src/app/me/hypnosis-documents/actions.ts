@@ -4,7 +4,21 @@ import { cookies } from 'next/headers'
 
 import { apiBaseUrl } from '@/lib/env'
 
-export async function analyzeHypnosisDocumentAction(formData: FormData) {
+type HypnosisAnalysisData = {
+  speakers: Array<{ name: string; count: number }>
+  date: string
+  duration: string
+}
+
+type HypnosisAnalysisActionResult =
+  | { ok: true; data: HypnosisAnalysisData }
+  | { ok: false; message: string }
+
+type StandardizeHypnosisDocumentActionResult =
+  | { ok: true; contentType: string; disposition: string; base64: string }
+  | { ok: false; message: string }
+
+export async function analyzeHypnosisDocumentAction(formData: FormData): Promise<HypnosisAnalysisActionResult> {
   const cookieStore = await cookies()
   const userId = cookieStore.get('zero_user_id')?.value
 
@@ -37,7 +51,7 @@ export async function analyzeHypnosisDocumentAction(formData: FormData) {
   }
 }
 
-export async function standardizeHypnosisDocumentAction(formData: FormData) {
+export async function standardizeHypnosisDocumentAction(formData: FormData): Promise<StandardizeHypnosisDocumentActionResult> {
   const cookieStore = await cookies()
   const userId = cookieStore.get('zero_user_id')?.value
 
