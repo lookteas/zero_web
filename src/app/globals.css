@@ -138,31 +138,24 @@ select {
     linear-gradient(180deg, #d9efed 0%, #eef8f7 56%, #ffffff 100%);
 }
 
-.auth-growth-visual {
-  animation: auth-growth-breathe 8s ease-in-out infinite;
+.auth-premium-orb {
+  animation: auth-premium-orb 10s ease-in-out infinite;
 }
 
-.auth-growth-path-line {
-  stroke-dasharray: 10 12;
-  animation: auth-growth-flow 11s linear infinite;
+.auth-premium-ribbon {
+  animation: auth-premium-ribbon 9s ease-in-out infinite;
 }
 
-.auth-growth-node {
-  position: absolute;
-  width: 0.9rem;
-  height: 0.9rem;
-  border-radius: 999px;
-  background: rgba(18, 120, 109, 0.88);
-  box-shadow: 0 0 0 10px rgba(18, 120, 109, 0.1);
-  animation: auth-growth-pulse 3.8s ease-in-out infinite;
+.auth-premium-glow {
+  animation: auth-premium-glow 11s ease-in-out infinite;
 }
 
-.auth-growth-node-delay {
-  animation-delay: -1.4s;
+.auth-premium-glow-delay {
+  animation-delay: -4s;
 }
 
-.auth-growth-card {
-  animation: auth-growth-card-float 7s ease-in-out infinite;
+.auth-premium-glass {
+  animation: auth-premium-glass 8s ease-in-out infinite;
 }
 
 .app-soft-ring {
@@ -205,48 +198,50 @@ select {
   }
 }
 
-@keyframes auth-growth-breathe {
+@keyframes auth-premium-orb {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translate(-50%, -50%) scale(1);
   }
 
   50% {
-    transform: translateY(-4px);
+    transform: translate(-50%, -50%) scale(1.035);
   }
 }
 
-@keyframes auth-growth-flow {
-  from {
-    stroke-dashoffset: 0;
-  }
-
-  to {
-    stroke-dashoffset: -220;
-  }
-}
-
-@keyframes auth-growth-pulse {
+@keyframes auth-premium-ribbon {
   0%,
   100% {
-    transform: scale(0.92);
-    opacity: 0.76;
+    opacity: 0.38;
+    transform: translateX(-5%) rotate(-18deg);
+  }
+  50% {
+    opacity: 0.82;
+    transform: translateX(7%) rotate(-18deg);
+  }
+}
+
+@keyframes auth-premium-glow {
+  0%,
+  100% {
+    opacity: 0.56;
+    transform: scale(0.96);
   }
 
   50% {
+    opacity: 0.92;
     transform: scale(1.08);
-    opacity: 1;
   }
 }
 
-@keyframes auth-growth-card-float {
+@keyframes auth-premium-glass {
   0%,
   100% {
     transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
   }
 }
 

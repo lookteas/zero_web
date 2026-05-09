@@ -15,39 +15,20 @@ type LoginPageProps = {
 
 function AuthGrowthVisual() {
   return (
-    <div className="auth-growth-visual pointer-events-none absolute bottom-8 right-8 top-8 hidden w-[45%] min-w-[25rem] overflow-hidden rounded-[32px] border border-white/45 bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-[2px] md:block lg:bottom-10 lg:right-12 lg:top-10 lg:w-[44%]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,255,255,0.62)_0,rgba(255,255,255,0)_28%),radial-gradient(circle_at_22%_78%,rgba(167,230,220,0.36)_0,rgba(167,230,220,0)_30%),linear-gradient(135deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0)_62%)]" />
+    <div className="auth-premium-visual pointer-events-none absolute bottom-8 right-8 top-8 hidden w-[45%] min-w-[25rem] overflow-hidden rounded-[34px] border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.38),rgba(227,247,244,0.16)_46%,rgba(255,255,255,0.24))] shadow-[inset_0_1px_0_rgba(255,255,255,0.62),0_28px_70px_rgba(15,48,60,0.1)] backdrop-blur-md md:block lg:bottom-10 lg:right-12 lg:top-10 lg:w-[44%]">
+      <span className="auth-premium-glow absolute left-[12%] top-[9%] h-48 w-48 rounded-full bg-[rgba(255,255,255,0.62)] blur-3xl" />
+      <span className="auth-premium-glow auth-premium-glow-delay absolute bottom-[6%] right-[10%] h-56 w-56 rounded-full bg-[rgba(58,193,178,0.18)] blur-3xl" />
+      <span className="auth-premium-ribbon absolute left-[-18%] top-[32%] h-28 w-[140%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.76)_36%,rgba(67,201,188,0.24)_54%,rgba(255,255,255,0)_100%)] blur-[1px]" />
 
-      <svg className="auth-growth-path absolute inset-x-8 inset-y-8 h-[calc(100%-4rem)] w-[calc(100%-4rem)]" viewBox="0 0 520 560" fill="none" aria-hidden="true" preserveAspectRatio="none">
-        <path className="auth-growth-path-line" d="M54 82C166 18 214 150 304 112C408 68 466 142 414 230C354 332 182 238 142 352C108 450 230 516 470 466" stroke="url(#authGrowthLine)" strokeWidth="4" strokeLinecap="round" />
-        <path d="M54 82C166 18 214 150 304 112C408 68 466 142 414 230C354 332 182 238 142 352C108 450 230 516 470 466" stroke="rgba(255,255,255,0.62)" strokeWidth="12" strokeLinecap="round" opacity="0.28" />
-        <defs>
-          <linearGradient id="authGrowthLine" x1="54" y1="82" x2="470" y2="466" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#136f63" stopOpacity="0.18" />
-            <stop offset="0.48" stopColor="#0f766e" stopOpacity="0.72" />
-            <stop offset="1" stopColor="#22c7b8" stopOpacity="0.92" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <span className="auth-growth-node left-[15%] top-[15%]" />
-      <span className="auth-growth-node auth-growth-node-delay left-[56%] top-[25%]" />
-      <span className="auth-growth-node left-[35%] top-[60%]" />
-      <span className="auth-growth-node auth-growth-node-delay left-[78%] top-[78%]" />
-
-      <div className="auth-growth-card absolute right-8 top-10 w-[17rem] rounded-[28px] border border-white/72 bg-white/76 p-5 shadow-[0_22px_44px_rgba(15,48,60,0.12)]">
-        <p className="text-[12px] font-semibold tracking-[0.16em] text-[var(--primary)]/75">今日觉察</p>
-        <p className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">把变化留在今天</p>
-        <div className="mt-4 grid gap-2">
-          <span className="h-2 rounded-full bg-[rgba(19,111,99,0.18)]" />
-          <span className="h-2 w-4/5 rounded-full bg-[rgba(19,111,99,0.12)]" />
-          <span className="h-2 w-2/3 rounded-full bg-[rgba(19,111,99,0.09)]" />
-        </div>
+      <div className="auth-premium-orb absolute left-1/2 top-1/2 h-[21rem] w-[21rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-[radial-gradient(circle_at_32%_28%,rgba(255,255,255,0.96)_0,rgba(255,255,255,0.34)_23%,rgba(109,217,207,0.16)_47%,rgba(19,111,99,0.05)_70%,rgba(255,255,255,0.1)_100%)] shadow-[inset_0_2px_18px_rgba(255,255,255,0.75),inset_0_-28px_60px_rgba(31,139,128,0.1),0_36px_90px_rgba(15,48,60,0.18)]">
+        <span className="absolute inset-[14%] rounded-full border border-white/54" />
+        <span className="absolute inset-[28%] rounded-full border border-[rgba(19,111,99,0.12)] bg-white/16" />
+        <span className="absolute left-[36%] top-[33%] h-16 w-16 rounded-full bg-white/70 blur-xl" />
       </div>
 
-      <div className="auth-growth-summary absolute bottom-10 left-8 w-[15rem] rounded-[26px] border border-white/64 bg-white/66 p-4 shadow-[0_18px_36px_rgba(15,48,60,0.1)]">
-        <p className="text-[11px] font-semibold tracking-[0.14em] text-[var(--primary)]/70">复盘提醒</p>
-        <p className="mt-2 text-[17px] font-semibold leading-snug text-[var(--foreground)]">今晚回看一次，确认自己真的前进了。</p>
+      <div className="auth-premium-glass absolute bottom-10 left-10 right-10 rounded-[30px] border border-white/68 bg-white/54 px-6 py-5 shadow-[0_24px_56px_rgba(15,48,60,0.12)] backdrop-blur-xl">
+        <p className="text-[12px] font-semibold tracking-[0.2em] text-[var(--primary)]/70">ZERO PRACTICE</p>
+        <p className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">把细微的改变，沉淀成看得见的成长。</p>
       </div>
     </div>
   );
