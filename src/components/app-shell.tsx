@@ -10,6 +10,7 @@ import { getDesktopAccountAreaClassName } from "@/lib/app-shell-ui.mjs";
 
 type AppShellProps = {
   title: string;
+  mobileThemeTitle?: string;
   description?: string;
   children: ReactNode;
   hideNavigation?: boolean;
@@ -48,6 +49,7 @@ function BrandSlot({ title }: { title: string }) {
 
 export async function AppShell({
   title,
+  mobileThemeTitle,
   description,
   children,
   hideNavigation = false,
@@ -61,7 +63,7 @@ export async function AppShell({
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-[14px] pb-24 pt-3 md:px-6 md:pb-10 md:pt-6">
         <header className="mb-3 grid items-center gap-3 md:mb-5 md:grid-cols-[auto_1fr_auto] md:gap-6">
-          <BrandSlot title={title} />
+          <BrandSlot title={mobileThemeTitle ?? title} />
 
           {showNavigation ? <TopNav /> : <div className="hidden md:block" />}
 

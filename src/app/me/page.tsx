@@ -13,7 +13,7 @@ export default async function MePage() {
   const account = cookieStore.get("zero_user_account")?.value || "当前账号";
 
   return (
-    <AppShell title="我的" description="查看当前登录账号，并从这里安全退出。">
+    <AppShell title="我的" mobileThemeTitle="个人中心" description="查看当前登录账号，并从这里安全退出。">
       <SectionCard title="当前账号" description="后续头像、昵称和更多个人信息也会放在这里。">
         <div className="space-y-4 text-sm text-[var(--foreground-soft)]">
           <p className="rounded-[20px] border border-[var(--border-soft)] bg-[var(--surface-muted)] px-4 py-4 text-[var(--foreground)]">

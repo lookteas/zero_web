@@ -248,7 +248,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
       const apiUnavailable = getApiUnavailableCopy();
 
       return (
-        <AppShell title={COPY.pageTitle} description={apiUnavailable.pageDescription} hideHero>
+        <AppShell title={COPY.pageTitle} mobileThemeTitle="今日提升点" description={apiUnavailable.pageDescription} hideHero>
           <SectionCard title={apiUnavailable.cardTitle} description={apiUnavailable.cardDescription}>
             <p className="text-sm text-[var(--foreground-soft)]">{apiUnavailable.hint}</p>
           </SectionCard>
@@ -272,7 +272,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
   const formPanelDescription = canEditSubmittedContent ? COPY.submittedEditableDescription : COPY.formDescription;
 
   return (
-    <AppShell title={COPY.pageTitle} hideHero>
+    <AppShell title={COPY.pageTitle} mobileThemeTitle="今日提升点" hideHero>
       <div className="flex flex-col gap-2.5 md:flex-row md:items-center md:justify-between">
         <Link
           href="/today/history"

@@ -271,7 +271,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
     const apiUnavailable = getApiUnavailableCopy();
 
     return (
-      <AppShell title="复盘" description={apiUnavailable.pageDescription}>
+      <AppShell title="复盘" mobileThemeTitle="自我复盘" description={apiUnavailable.pageDescription}>
         <SectionCard title={apiUnavailable.cardTitle} description={apiUnavailable.cardDescription}>
           <p className="text-sm text-[var(--foreground-soft)]">{apiUnavailable.hint}</p>
         </SectionCard>
@@ -285,7 +285,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   const recoveryRemainingCount = reviewsData.recoveryRemainingCount ?? 0;
 
   return (
-    <AppShell title="复盘" description={pageCopy.formDescription} hideHero>
+    <AppShell title="复盘" mobileThemeTitle="自我复盘" description={pageCopy.formDescription} hideHero>
       <ReviewsMoodHero />
 
       {query.submitted ? <QuietSuccessNotice>这次复盘已经记下来了。</QuietSuccessNotice> : null}

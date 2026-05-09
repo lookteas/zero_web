@@ -83,7 +83,7 @@ export default async function Home() {
     const secondaryButtonChrome = getFeedbackChrome("secondaryButton");
 
     return (
-      <AppShell title="首页" description="先看清今天最重要的一件事，再决定下一步要不要展开更多内容。" hideHero>
+      <AppShell title="首页" mobileThemeTitle="顺其自然，大道至简" description="先看清今天最重要的一件事，再决定下一步要不要展开更多内容。" hideHero>
         <HomeMoodHero topicTitle={home.todayTask?.topicTitle} />
 
         {sections.map((section) => {
@@ -189,7 +189,7 @@ export default async function Home() {
     const apiUnavailable = getApiUnavailableCopy();
 
     return (
-      <AppShell title="首页" description={apiUnavailable.pageDescription}>
+      <AppShell title="首页" mobileThemeTitle="顺其自然，大道至简" description={apiUnavailable.pageDescription}>
         <SectionCard title={apiUnavailable.cardTitle} description={apiUnavailable.cardDescription}>
           <p className="text-sm text-[var(--foreground-soft)]">{apiUnavailable.hint}</p>
         </SectionCard>
