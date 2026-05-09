@@ -22,9 +22,10 @@ test('login page keeps the approved auth shell and floating form card', () => {
 })
 
 test('login page fills the desktop hero with a premium abstract visual', () => {
-  assert.equal(hasTokens(loginPage, ['auth-premium-visual', 'auth-premium-orb', 'auth-premium-glass', 'auth-premium-ribbon']), true)
-  assert.equal(hasTokens(loginPage, ['top-0', 'bottom-0', 'right-0', 'md:w-[52%]']), true)
+  assert.equal(hasTokens(loginPage, ['app-auth-stage', 'auth-premium-visual', 'auth-premium-orb', 'auth-premium-glass', 'auth-premium-ribbon']), true)
+  assert.equal(hasTokens(loginPage, ['top-0', 'bottom-0', 'right-0', 'z-0', 'md:w-[54%]']), true)
   assert.equal(loginPage.includes('bottom-8 right-8 top-8'), false)
+  assert.equal(loginPage.includes('ZERO PRACTICE'), false)
   assert.equal(loginPage.includes('auth-growth-path'), false)
   assert.equal(loginPage.includes('复盘提醒'), false)
 })
