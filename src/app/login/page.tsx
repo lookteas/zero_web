@@ -15,18 +15,20 @@ type LoginPageProps = {
 
 function AuthGrowthVisual() {
   return (
-    <div className="auth-premium-visual pointer-events-none absolute bottom-8 right-8 top-8 hidden w-[45%] min-w-[25rem] overflow-hidden rounded-[34px] border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.38),rgba(227,247,244,0.16)_46%,rgba(255,255,255,0.24))] shadow-[inset_0_1px_0_rgba(255,255,255,0.62),0_28px_70px_rgba(15,48,60,0.1)] backdrop-blur-md md:block lg:bottom-10 lg:right-12 lg:top-10 lg:w-[44%]">
-      <span className="auth-premium-glow absolute left-[12%] top-[9%] h-48 w-48 rounded-full bg-[rgba(255,255,255,0.62)] blur-3xl" />
-      <span className="auth-premium-glow auth-premium-glow-delay absolute bottom-[6%] right-[10%] h-56 w-56 rounded-full bg-[rgba(58,193,178,0.18)] blur-3xl" />
-      <span className="auth-premium-ribbon absolute left-[-18%] top-[32%] h-28 w-[140%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.76)_36%,rgba(67,201,188,0.24)_54%,rgba(255,255,255,0)_100%)] blur-[1px]" />
+    <div className="auth-premium-visual pointer-events-none absolute bottom-0 right-0 top-0 hidden min-w-[30rem] overflow-hidden rounded-r-[34px] bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.28)_24%,rgba(228,248,245,0.54)_58%,rgba(255,255,255,0.46)_100%)] md:block md:w-[52%] lg:w-[54%]">
+      <span className="absolute inset-y-0 left-0 w-28 bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.62)_100%)]" />
+      <span className="auth-premium-glow absolute right-[8%] top-[4%] h-72 w-72 rounded-full bg-[rgba(255,255,255,0.74)] blur-3xl" />
+      <span className="auth-premium-glow auth-premium-glow-delay absolute bottom-[-4%] left-[18%] h-80 w-80 rounded-full bg-[rgba(58,193,178,0.2)] blur-3xl" />
+      <span className="auth-premium-ribbon absolute left-[-24%] top-[16%] h-32 w-[150%] [--auth-ribbon-rotate:-16deg] rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.8)_34%,rgba(67,201,188,0.22)_54%,rgba(255,255,255,0)_100%)] blur-[1px]" />
+      <span className="auth-premium-ribbon auth-premium-ribbon-delay absolute bottom-[16%] left-[-18%] h-28 w-[142%] [--auth-ribbon-rotate:14deg] rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.62)_38%,rgba(19,111,99,0.12)_58%,rgba(255,255,255,0)_100%)] blur-[1px]" />
 
-      <div className="auth-premium-orb absolute left-1/2 top-1/2 h-[21rem] w-[21rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-[radial-gradient(circle_at_32%_28%,rgba(255,255,255,0.96)_0,rgba(255,255,255,0.34)_23%,rgba(109,217,207,0.16)_47%,rgba(19,111,99,0.05)_70%,rgba(255,255,255,0.1)_100%)] shadow-[inset_0_2px_18px_rgba(255,255,255,0.75),inset_0_-28px_60px_rgba(31,139,128,0.1),0_36px_90px_rgba(15,48,60,0.18)]">
+      <div className="auth-premium-orb absolute left-[58%] top-[42%] h-[27rem] w-[27rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-[radial-gradient(circle_at_32%_28%,rgba(255,255,255,0.96)_0,rgba(255,255,255,0.34)_23%,rgba(109,217,207,0.16)_47%,rgba(19,111,99,0.05)_70%,rgba(255,255,255,0.1)_100%)] shadow-[inset_0_2px_18px_rgba(255,255,255,0.75),inset_0_-28px_60px_rgba(31,139,128,0.1),0_42px_100px_rgba(15,48,60,0.18)]">
         <span className="absolute inset-[14%] rounded-full border border-white/54" />
         <span className="absolute inset-[28%] rounded-full border border-[rgba(19,111,99,0.12)] bg-white/16" />
         <span className="absolute left-[36%] top-[33%] h-16 w-16 rounded-full bg-white/70 blur-xl" />
       </div>
 
-      <div className="auth-premium-glass absolute bottom-10 left-10 right-10 rounded-[30px] border border-white/68 bg-white/54 px-6 py-5 shadow-[0_24px_56px_rgba(15,48,60,0.12)] backdrop-blur-xl">
+      <div className="auth-premium-glass absolute bottom-[11%] left-[18%] right-[8%] rounded-[30px] border border-white/68 bg-white/54 px-6 py-5 shadow-[0_24px_56px_rgba(15,48,60,0.12)] backdrop-blur-xl">
         <p className="text-[12px] font-semibold tracking-[0.2em] text-[var(--primary)]/70">ZERO PRACTICE</p>
         <p className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">把细微的改变，沉淀成看得见的成长。</p>
       </div>

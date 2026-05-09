@@ -146,6 +146,10 @@ select {
   animation: auth-premium-ribbon 9s ease-in-out infinite;
 }
 
+.auth-premium-ribbon-delay {
+  animation-delay: -4.5s;
+}
+
 .auth-premium-glow {
   animation: auth-premium-glow 11s ease-in-out infinite;
 }
@@ -213,11 +217,11 @@ select {
   0%,
   100% {
     opacity: 0.38;
-    transform: translateX(-5%) rotate(-18deg);
+    transform: translateX(-5%) rotate(var(--auth-ribbon-rotate));
   }
   50% {
     opacity: 0.82;
-    transform: translateX(7%) rotate(-18deg);
+    transform: translateX(7%) rotate(var(--auth-ribbon-rotate));
   }
 }
 
