@@ -13,6 +13,16 @@ test('today page handles awareness cycle rest days', () => {
   assert.equal(todayPage.includes('/today/history'), true)
 })
 
+test('today rest days preserve query notices before the rest card', () => {
+  const restBranch = todayPage.slice(todayPage.indexOf('if (task?.isRestDay)'), todayPage.indexOf('let awarenessLogs'))
+  const noticeUsageCount = todayPage.split('<TodayQueryNotices query={query} />').length - 1
+
+  assert.equal(todayPage.includes('function TodayQueryNotices('), true)
+  assert.equal(noticeUsageCount, 2)
+  assert.equal(restBranch.includes('<TodayQueryNotices query={query} />'), true)
+  assert.equal(restBranch.indexOf('<TodayQueryNotices query={query} />') < restBranch.indexOf('<TodayRestStateCard task={task} />'), true)
+})
+
 test('today keeps awareness history collapsed by default', () => {
   assert.equal(todayPage.includes('\\u4eca\\u65e5\\u89c9\\u5bdf\\u8bb0\\u5f55'), true)
   assert.equal(todayPage.includes('<details'), true)

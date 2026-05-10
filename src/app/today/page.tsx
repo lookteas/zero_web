@@ -22,6 +22,8 @@ type TodayPageProps = {
   searchParams: Promise<{ saved?: string; submitted?: string; error?: string }>;
 };
 
+type TodayQuery = Awaited<TodayPageProps["searchParams"]>;
+
 const COPY = {
   pageTitle: "\u4eca\u65e5",
   savedNotice: "\u4eca\u5929\u7684\u6253\u5361\u5185\u5bb9\u5df2\u4fdd\u5b58\u3002",
@@ -89,6 +91,16 @@ function QuietSuccessNotice({ children }: { children: ReactNode }) {
       <span className={["mt-1 flex h-3 w-3 shrink-0 rounded-full", chrome.markerClassName].join(" ")} />
       <p>{children}</p>
     </section>
+  );
+}
+
+function TodayQueryNotices({ query }: { query: TodayQuery }) {
+  return (
+    <>
+      {query.saved ? <QuietSuccessNotice>{COPY.savedNotice}</QuietSuccessNotice> : null}
+      {query.submitted ? <QuietSuccessNotice>{COPY.submittedNotice}</QuietSuccessNotice> : null}
+      {query.error ? <section className="app-alert border border-rose-200 bg-rose-50 text-rose-700">{COPY.errorNotice}</section> : null}
+    </>
   );
 }
 
@@ -304,6 +316,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
   if (task?.isRestDay) {
     return (
       <AppShell title={COPY.pageTitle} mobileThemeTitle="今日提升点" hideHero>
+        <TodayQueryNotices query={query} />
         <TodayRestStateCard task={task} />
       </AppShell>
     );
@@ -337,9 +350,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
         </Link>
       </div>
 
-      {query.saved ? <QuietSuccessNotice>{COPY.savedNotice}</QuietSuccessNotice> : null}
-      {query.submitted ? <QuietSuccessNotice>{COPY.submittedNotice}</QuietSuccessNotice> : null}
-      {query.error ? <section className="app-alert border border-rose-200 bg-rose-50 text-rose-700">{COPY.errorNotice}</section> : null}
+      <TodayQueryNotices query={query} />
 
       <TodayTaskDetailCard task={task} />
 
