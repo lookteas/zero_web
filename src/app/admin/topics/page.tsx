@@ -16,10 +16,11 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
   await requireAdmin();
 
   const query = await searchParams;
-  const topics = await listAdminTopics();
-  const nextOrderNo = topics.length > 0 ? Math.max(...topics.map((item) => item.orderNo)) + 1 : 1;
   const timelineStart = parseTimelineStart(query.weekStart, new Date());
-  const timelineSlots = buildTopicTimeline(topics, timelineStart);
+  const scheduleTopics = await listAdminTopics({ weekStart: timelineStart });
+  const legacyTopics = await listAdminTopics();
+  const nextOrderNo = legacyTopics.length > 0 ? Math.max(...legacyTopics.map((item) => item.orderNo)) + 1 : 1;
+  const timelineSlots = buildTopicTimeline(scheduleTopics, timelineStart);
   const timelineSummary = getTimelineSummary(timelineSlots);
   const previousWeekStart = shiftTimelineStart(timelineStart, -7);
   const nextWeekStart = shiftTimelineStart(timelineStart, 7);
@@ -130,7 +131,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
         description="仅用于兼容旧数据的修正文案、排序、启停状态或安排日期；新的每日练习主题不再以这里作为主来源。"
       >
         <div className="space-y-4">
-          {topics.map((item) => (
+          {legacyTopics.map((item) => (
             <form key={item.id} action={updateTopicAction} className="grid gap-4 rounded-2xl border border-slate-200 p-4 text-sm text-slate-700 md:grid-cols-2">
               <input type="hidden" name="topicId" value={item.id} />
               <input type="hidden" name="returnWeekStart" value={timelineStart} />

@@ -17,6 +17,10 @@ export type Topic = {
   orderNo: number;
   status: number;
   scheduleDate?: string;
+  awarenessId?: number;
+  awarenessTheme?: string;
+  referenceMin?: string;
+  referenceMax?: string;
   isRestDay?: boolean;
 };
 
@@ -393,10 +397,11 @@ export async function createRecoveryReview(payload: {
 }
 
 
-export async function listAdminTopics(filters?: { status?: number; keyword?: string }) {
+export async function listAdminTopics(filters?: { status?: number; keyword?: string; weekStart?: string }) {
   const params = new URLSearchParams();
   if (filters?.status === 0 || filters?.status === 1) params.set("status", String(filters.status));
   if (filters?.keyword) params.set("keyword", filters.keyword);
+  if (filters?.weekStart) params.set("weekStart", filters.weekStart);
   const query = params.toString();
   const data = await requestAdmin<{ list: Topic[] }>(query ? `/admin/topics?${query}` : "/admin/topics");
   return data.list;
