@@ -27,10 +27,13 @@ function createFallbackUserSummary() {
 }
 
 export async function loadAdminDashboardData(loaders) {
+  const loadCurrentWeeklyVote = typeof loaders.getCurrentWeeklyVote === 'function'
+    ? loaders.getCurrentWeeklyVote()
+    : Promise.resolve(createFallbackVote())
   const [topicsResult, usersResult, voteResult, discussionResult] = await Promise.allSettled([
     loaders.listAdminTopics(),
     loaders.listAdminUsers(),
-    loaders.getCurrentWeeklyVote(),
+    loadCurrentWeeklyVote,
     loaders.getCurrentDiscussion(),
   ])
 

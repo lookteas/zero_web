@@ -83,3 +83,26 @@ test('loadAdminDashboardData keeps admin dashboard usable when vote and discussi
   assert.equal(data.warnings.length, 1)
   assert.match(data.warnings[0], /主题设置/)
 })
+
+test('loadAdminDashboardData supports awareness-first dashboard without weekly vote loader', async () => {
+  const data = await loadAdminDashboardData({
+    listAdminTopics: async () => [{ id: 1, title: '旧主题', status: 1 }],
+    listAdminUsers: async () => ({
+      list: [],
+      pagination: { page: 1, pageSize: 100, total: 18 },
+      summary: { total: 18, active: 18, withEmail: 0, withMobile: 0 },
+    }),
+    getCurrentDiscussion: async () => ({
+      discussionTitle: '本周复盘讨论',
+      topicTitle: '本周复盘讨论',
+      meetingTime: '',
+      meetingLink: '',
+      status: 'draft',
+    }),
+  })
+
+  assert.deepEqual(data.vote.candidates, [])
+  assert.equal(data.userSummary.total, 18)
+  assert.equal(data.discussion.discussionTitle, '本周复盘讨论')
+  assert.equal(data.warnings.length, 0)
+})
