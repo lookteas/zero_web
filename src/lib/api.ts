@@ -152,6 +152,25 @@ export type CycleSummary = {
   nextCycleStartDate?: string;
 };
 
+export type AwarenessCycleDay = {
+  date: string;
+  title: string;
+  summary?: string;
+  isRestDay: boolean;
+  awarenessId?: number;
+  orderNo?: number;
+};
+
+export type AwarenessCycleAdminInfo = {
+  startDate: string;
+  restDays: number;
+  eligibleAwarenessCount: number;
+  weekStart: string;
+  normalDayCount: number;
+  restDayCount: number;
+  weekDays: AwarenessCycleDay[];
+};
+
 export type VoteCandidate = {
 	id: number;
 	topicId: number;
@@ -405,6 +424,17 @@ export async function listAdminTopics(filters?: { status?: number; keyword?: str
   const query = params.toString();
   const data = await requestAdmin<{ list: Topic[] }>(query ? `/admin/topics?${query}` : "/admin/topics");
   return data.list;
+}
+
+export async function getAdminAwarenessCycle() {
+  return requestAdmin<AwarenessCycleAdminInfo>("/admin/awareness-cycle");
+}
+
+export async function updateAdminAwarenessCycle(payload: { startDate: string; restDays?: number }) {
+  return requestAdmin<{ code?: number }>("/admin/awareness-cycle", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function createAdminTopic(payload: {

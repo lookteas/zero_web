@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { actionErrorCopy, resolveActionErrorMessage } from '@/app/action-copy.mjs'
-import { createAdminTopic, updateAdminTopic } from '@/lib/api'
+import { createAdminTopic, updateAdminAwarenessCycle, updateAdminTopic } from '@/lib/api'
 import { requireAdmin } from '@/lib/admin-auth'
 
 function returnWeekStartQuery(formData: FormData) {
@@ -56,4 +56,22 @@ export async function updateTopicAction(formData: FormData) {
   revalidatePath('/today')
   revalidatePath('/vote')
   redirect(`/admin/topics?updated=1${returnWeekQuery}`)
+}
+
+export async function updateAwarenessCycleAction(formData: FormData) {
+  await requireAdmin()
+  const returnWeekQuery = returnWeekStartQuery(formData)
+  const startDate = String(formData.get('startDate') ?? '').trim()
+  const restDays = Number(formData.get('restDays') ?? 7)
+
+  try {
+    await updateAdminAwarenessCycle({ startDate, restDays })
+  } catch (error) {
+    redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/topics')
+  revalidatePath('/today')
+  redirect(`/admin/topics?cycleUpdated=1${returnWeekQuery}`)
 }
