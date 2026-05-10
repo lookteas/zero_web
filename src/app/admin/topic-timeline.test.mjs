@@ -30,9 +30,11 @@ test('buildTopicTimeline creates seven day slots and marks missing days', () => 
 test('buildTopicTimeline marks rest-day slots as present rest days', () => {
   const timeline = buildTopicTimeline([
     {
+      id: 3,
       scheduleDate: '2026-05-03',
       title: '本轮结束，休息整合中',
       summary: '今天不生成新的练习任务',
+      description: '休息日不生成新的练习任务',
       orderNo: 0,
       status: 1,
       isRestDay: true,

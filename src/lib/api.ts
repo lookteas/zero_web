@@ -17,6 +17,7 @@ export type Topic = {
   orderNo: number;
   status: number;
   scheduleDate?: string;
+  isRestDay?: boolean;
 };
 
 export type AdminUser = {

@@ -90,7 +90,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
         >
           <form action={createTopicAction} className="grid gap-4 text-sm text-slate-700 md:grid-cols-2">
             <label className="grid gap-2">
-              <span>主题标题</span>
+              <span>旧主题标题</span>
               <input name="title" className="rounded-2xl border border-slate-200 px-4 py-3" placeholder="例如：情绪触发点拆解" required />
             </label>
             <label className="grid gap-2">
@@ -99,7 +99,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
             </label>
             <label className="grid gap-2 md:col-span-2">
               <span>一句摘要</span>
-              <input name="summary" className="rounded-2xl border border-slate-200 px-4 py-3" placeholder="用于投票和打卡页的简短说明" required />
+              <input name="summary" className="rounded-2xl border border-slate-200 px-4 py-3" placeholder="仅用于旧数据展示的简短说明" required />
             </label>
             <label className="grid gap-2 md:col-span-2">
               <span>详细描述</span>
@@ -119,7 +119,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
               </select>
             </label>
             <div className="flex items-end md:col-span-2">
-              <button type="submit" className="w-full rounded-full bg-slate-900 px-5 py-3 text-white md:w-auto">保存主题</button>
+              <button type="submit" className="w-full rounded-full bg-slate-900 px-5 py-3 text-white md:w-auto">保存旧主题</button>
             </div>
           </form>
         </SectionCard>
@@ -135,7 +135,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
               <input type="hidden" name="topicId" value={item.id} />
               <input type="hidden" name="returnWeekStart" value={timelineStart} />
               <label className="grid gap-2">
-                <span>主题标题</span>
+                <span>旧主题标题</span>
                 <input name="title" defaultValue={item.title} className="rounded-2xl border border-slate-200 px-4 py-3" required />
               </label>
               <label className="grid gap-2">
