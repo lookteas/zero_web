@@ -27,6 +27,25 @@ test('buildTopicTimeline creates seven day slots and marks missing days', () => 
   assert.equal(timeline[6].date, '2026-04-24')
 })
 
+test('buildTopicTimeline marks rest-day slots as present rest days', () => {
+  const timeline = buildTopicTimeline([
+    {
+      scheduleDate: '2026-05-03',
+      title: '本轮结束，休息整合中',
+      summary: '今天不生成新的练习任务',
+      orderNo: 0,
+      status: 1,
+      isRestDay: true,
+    },
+  ], '2026-05-01')
+
+  const restSlot = timeline.find((slot) => slot.date === '2026-05-03')
+
+  assert.equal(restSlot?.missing, false)
+  assert.equal(restSlot?.rest, true)
+  assert.equal(restSlot?.topic?.title, '本轮结束，休息整合中')
+})
+
 test('getTimelineSummary counts scheduled and missing days', () => {
   const summary = getTimelineSummary([
     { date: '2026-04-18', missing: false },

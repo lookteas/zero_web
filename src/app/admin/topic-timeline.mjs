@@ -55,12 +55,14 @@ export function buildTopicTimeline(topics = [], start) {
     const date = new Date(timelineStart.getTime() + index * DAY_MS)
     const dateKey = formatDate(date)
     const topic = topicMap.get(dateKey) || null
+    const rest = Boolean(topic?.isRestDay)
 
     return {
       date: dateKey,
       weekdayLabel: weekdayLabel(date),
       topic,
-      missing: !topic,
+      rest,
+      missing: !topic && !rest,
     }
   })
 }
