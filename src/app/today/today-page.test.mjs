@@ -6,6 +6,13 @@ const todayPage = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8')
 
 const hasTokens = (source, tokens) => tokens.every((token) => source.includes(token))
 
+test('today page handles awareness cycle rest days', () => {
+  assert.equal(todayPage.includes('本轮结束，休息整合中'), true)
+  assert.equal(todayPage.includes('isRestDay'), true)
+  assert.equal(todayPage.includes('/reviews'), true)
+  assert.equal(todayPage.includes('/today/history'), true)
+})
+
 test('today keeps awareness history collapsed by default', () => {
   assert.equal(todayPage.includes('\\u4eca\\u65e5\\u89c9\\u5bdf\\u8bb0\\u5f55'), true)
   assert.equal(todayPage.includes('<details'), true)

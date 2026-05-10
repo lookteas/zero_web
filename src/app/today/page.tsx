@@ -66,6 +66,13 @@ const COPY = {
   emptyLogFallback: "\u8fd9\u6b21\u8fd8\u6ca1\u8bb0\u4e0b",
 };
 
+const REST_COPY = {
+  title: "本轮结束，休息整合中",
+  description: "今天不生成新的练习任务，可以回看历史打卡和到期复盘，把这一轮练过的意识点整合一下。",
+  reviewsLink: "\u67e5\u770b\u5230\u671f\u590d\u76d8",
+  historyLink: COPY.historyLink,
+};
+
 function TodayMetaPill({ children }: { children: ReactNode }) {
   return (
     <span className="inline-flex items-center rounded-full border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-1 text-[12px] font-medium leading-5 text-[var(--foreground-soft)]">
@@ -82,6 +89,37 @@ function QuietSuccessNotice({ children }: { children: ReactNode }) {
       <span className={["mt-1 flex h-3 w-3 shrink-0 rounded-full", chrome.markerClassName].join(" ")} />
       <p>{children}</p>
     </section>
+  );
+}
+
+function TodayRestStateCard({ task }: { task?: DailyTask }) {
+  const secondaryButtonChrome = getFeedbackChrome("secondaryButton");
+  const title = task?.restTitle || REST_COPY.title;
+  const description = task?.restDescription || REST_COPY.description;
+
+  return (
+    <WorkbenchShell badge={COPY.currentState} title={title} description={description}>
+      <div className="grid gap-3 md:grid-cols-2">
+        <Link
+          href="/reviews"
+          className={[
+            "inline-flex min-h-12 items-center justify-center rounded-[18px] px-5 text-sm font-medium transition",
+            secondaryButtonChrome.className,
+          ].join(" ")}
+        >
+          {REST_COPY.reviewsLink}
+        </Link>
+        <Link
+          href="/today/history"
+          className={[
+            "inline-flex min-h-12 items-center justify-center rounded-[18px] px-5 text-sm font-medium transition",
+            secondaryButtonChrome.className,
+          ].join(" ")}
+        >
+          {REST_COPY.historyLink}
+        </Link>
+      </div>
+    </WorkbenchShell>
   );
 }
 
@@ -175,26 +213,32 @@ function TodayFieldModule({
 }
 
 function TodayTaskDetailCard({ task }: { task: DailyTask }) {
+  const title = task.awarenessTitle || task.topicTitle;
+  const summary = task.awarenessSummary || task.topicSummary || COPY.topicFallback;
+  const details = task.awarenessDetails || task.topicDescription || COPY.taskDetailFallback;
+  const hasReferenceRange = task.referenceMin || task.referenceMax;
+
   return (
-    <WorkbenchShell badge={COPY.topicCardTitle} title={task.topicTitle} description={COPY.taskDetailDescription}>
+    <WorkbenchShell badge={COPY.topicCardTitle} title={title} description={COPY.taskDetailDescription}>
       <div>
         <div className="flex flex-wrap gap-2">
           <TodayMetaPill>{`${COPY.dateLabel}${task.taskDate}`}</TodayMetaPill>
           <TodayMetaPill>{taskStatusLabelMap[task.status] || COPY.statusFallback}</TodayMetaPill>
+          {hasReferenceRange ? (
+            <TodayMetaPill>{`\u53c2\u8003\u8303\u56f4\uff1a${task.referenceMin || "-"}% - ${task.referenceMax || "-"}%`}</TodayMetaPill>
+          ) : null}
         </div>
 
         <div className="mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5">
           <div className="space-y-3">
             <div>
               <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskSummaryLabel}</p>
-              <p className="mt-2 text-sm leading-7 text-[var(--foreground-soft)]">{task.topicSummary || COPY.topicFallback}</p>
+              <p className="mt-2 text-sm leading-7 text-[var(--foreground-soft)]">{summary}</p>
             </div>
 
             <div>
               <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskDetailLabel}</p>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-[var(--foreground-soft)]">
-                {task.topicDescription || COPY.taskDetailFallback}
-              </p>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-[var(--foreground-soft)]">{details}</p>
             </div>
           </div>
         </div>
@@ -255,6 +299,14 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
         </AppShell>
       );
     }
+  }
+
+  if (task?.isRestDay) {
+    return (
+      <AppShell title={COPY.pageTitle} mobileThemeTitle="今日提升点" hideHero>
+        <TodayRestStateCard task={task} />
+      </AppShell>
+    );
   }
 
   let awarenessLogs: Awaited<ReturnType<typeof listDailyTaskLogs>> = [];

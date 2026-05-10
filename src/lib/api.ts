@@ -57,6 +57,17 @@ export type DailyTask = {
   topicTitle: string;
   topicSummary: string;
   topicDescription?: string;
+  awarenessId?: number;
+  awarenessTitle?: string;
+  awarenessTheme?: string;
+  awarenessSummary?: string;
+  awarenessDetails?: string;
+  referenceMin?: string;
+  referenceMax?: string;
+  betterDirection?: string;
+  isRestDay?: boolean;
+  restTitle?: string;
+  restDescription?: string;
   weakness?: string;
   improvementPlan?: string;
   verificationPath?: string;
