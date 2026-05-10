@@ -43,3 +43,17 @@ test('admin topics page shows this week awareness topics from cycle info', () =>
   assert.match(source, /day\.title/)
   assert.match(source, /day\.summary/)
 })
+
+test('admin topics page paginates legacy topics and keeps edit forms collapsed by default', () => {
+  assert.match(source, /legacyPage\?: string/)
+  assert.match(source, /const legacyPageSize = 10/)
+  assert.match(source, /const legacyPage = Math\.max\(1, Number\(query\.legacyPage \|\| 1\)\)/)
+  assert.match(source, /const pagedLegacyTopics = legacyTopics\.slice/)
+  assert.match(source, /pagedLegacyTopics\.map\(\(item\) =>/)
+  assert.match(source, /<details[\s\S]*<summary/)
+  assert.match(source, /item\.title[\s\S]*排序 \{item\.orderNo\}/)
+  assert.doesNotMatch(source, /<details[^>]*open/)
+  assert.match(source, /legacyPageCount/)
+  assert.match(source, /legacyPage=\$\{legacyPage - 1\}/)
+  assert.match(source, /legacyPage=\$\{legacyPage \+ 1\}/)
+})

@@ -9,7 +9,7 @@ import { createTopicAction, updateAwarenessCycleAction, updateTopicAction } from
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart, shiftTimelineStart } from "../topic-timeline.mjs";
 
 type AdminTopicsPageProps = {
-  searchParams: Promise<{ saved?: string; updated?: string; cycleUpdated?: string; error?: string; weekStart?: string; prefillDate?: string }>
+  searchParams: Promise<{ saved?: string; updated?: string; cycleUpdated?: string; error?: string; weekStart?: string; prefillDate?: string; legacyPage?: string }>
 }
 
 export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageProps) {
@@ -20,6 +20,11 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
   const cycleInfo = await getAdminAwarenessCycle();
   const scheduleTopics = await listAdminTopics({ weekStart: timelineStart });
   const legacyTopics = await listAdminTopics();
+  const legacyPageSize = 10;
+  const legacyPage = Math.max(1, Number(query.legacyPage || 1));
+  const legacyPageCount = Math.max(1, Math.ceil(legacyTopics.length / legacyPageSize));
+  const safeLegacyPage = Math.min(legacyPage, legacyPageCount);
+  const pagedLegacyTopics = legacyTopics.slice((safeLegacyPage - 1) * legacyPageSize, safeLegacyPage * legacyPageSize);
   const nextOrderNo = legacyTopics.length > 0 ? Math.max(...legacyTopics.map((item) => item.orderNo)) + 1 : 1;
   const timelineSlots = buildTopicTimeline(scheduleTopics, timelineStart);
   const timelineSummary = getTimelineSummary(timelineSlots);
@@ -196,42 +201,66 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
         title="已有旧主题"
         description="仅用于兼容旧数据的修正文案、排序、启停状态或安排日期；新的每日练习主题不再以这里作为主来源。"
       >
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <p>共 {legacyTopics.length} 条旧主题，当前第 {safeLegacyPage} / {legacyPageCount} 页，每页 {legacyPageSize} 条。</p>
+          <div className="flex flex-wrap gap-2">
+            {safeLegacyPage > 1 ? (
+              <Link href={`/admin/topics?weekStart=${timelineStart}&legacyPage=${legacyPage - 1}`} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-slate-700 transition hover:border-sky-300 hover:text-sky-700">上一页</Link>
+            ) : (
+              <span className="rounded-full border border-slate-200 px-4 py-2 text-slate-400">上一页</span>
+            )}
+            {safeLegacyPage < legacyPageCount ? (
+              <Link href={`/admin/topics?weekStart=${timelineStart}&legacyPage=${legacyPage + 1}`} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-slate-700 transition hover:border-sky-300 hover:text-sky-700">下一页</Link>
+            ) : (
+              <span className="rounded-full border border-slate-200 px-4 py-2 text-slate-400">下一页</span>
+            )}
+          </div>
+        </div>
         <div className="space-y-4">
-          {legacyTopics.map((item) => (
-            <form key={item.id} action={updateTopicAction} className="grid gap-4 rounded-2xl border border-slate-200 p-4 text-sm text-slate-700 md:grid-cols-2">
-              <input type="hidden" name="topicId" value={item.id} />
-              <input type="hidden" name="returnWeekStart" value={timelineStart} />
-              <label className="grid gap-2">
-                <span>旧主题标题</span>
-                <input name="title" defaultValue={item.title} className="rounded-2xl border border-slate-200 px-4 py-3" required />
-              </label>
-              <label className="grid gap-2">
-                <span>排序值</span>
-                <input name="orderNo" type="number" defaultValue={item.orderNo} className="rounded-2xl border border-slate-200 px-4 py-3" required />
-              </label>
-              <label className="grid gap-2 md:col-span-2">
-                <span>一句摘要</span>
-                <input name="summary" defaultValue={item.summary} className="rounded-2xl border border-slate-200 px-4 py-3" required />
-              </label>
-              <label className="grid gap-2 md:col-span-2">
-                <span>详细描述</span>
-                <textarea name="description" defaultValue={item.description} className="min-h-28 rounded-2xl border border-slate-200 px-4 py-3" />
-              </label>
-              <label className="grid gap-2">
-                <span>安排日期</span>
-                <input name="scheduleDate" type="date" defaultValue={item.scheduleDate} className="rounded-2xl border border-slate-200 px-4 py-3" />
-              </label>
-              <label className="grid gap-2">
-                <span>状态</span>
-                <select name="status" defaultValue={String(item.status)} className="rounded-2xl border border-slate-200 px-4 py-3">
-                  <option value="1">启用</option>
-                  <option value="0">停用</option>
-                </select>
-              </label>
-              <div className="flex items-end justify-end md:col-span-2">
-                <button type="submit" className="w-full rounded-full border border-slate-900 px-5 py-3 text-slate-900 md:w-auto">更新主题</button>
-              </div>
-            </form>
+          {pagedLegacyTopics.map((item) => (
+            <details key={item.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+              <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3">
+                <span className="font-medium text-slate-900">{item.title}</span>
+                <span className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">排序 {item.orderNo}</span>
+                  <span className="rounded-full border border-slate-200 px-3 py-1">展开编辑</span>
+                </span>
+              </summary>
+              <form action={updateTopicAction} className="mt-4 grid gap-4 border-t border-slate-100 pt-4 md:grid-cols-2">
+                <input type="hidden" name="topicId" value={item.id} />
+                <input type="hidden" name="returnWeekStart" value={timelineStart} />
+                <label className="grid gap-2">
+                  <span>旧主题标题</span>
+                  <input name="title" defaultValue={item.title} className="rounded-2xl border border-slate-200 px-4 py-3" required />
+                </label>
+                <label className="grid gap-2">
+                  <span>排序值</span>
+                  <input name="orderNo" type="number" defaultValue={item.orderNo} className="rounded-2xl border border-slate-200 px-4 py-3" required />
+                </label>
+                <label className="grid gap-2 md:col-span-2">
+                  <span>一句摘要</span>
+                  <input name="summary" defaultValue={item.summary} className="rounded-2xl border border-slate-200 px-4 py-3" required />
+                </label>
+                <label className="grid gap-2 md:col-span-2">
+                  <span>详细描述</span>
+                  <textarea name="description" defaultValue={item.description} className="min-h-28 rounded-2xl border border-slate-200 px-4 py-3" />
+                </label>
+                <label className="grid gap-2">
+                  <span>安排日期</span>
+                  <input name="scheduleDate" type="date" defaultValue={item.scheduleDate} className="rounded-2xl border border-slate-200 px-4 py-3" />
+                </label>
+                <label className="grid gap-2">
+                  <span>状态</span>
+                  <select name="status" defaultValue={String(item.status)} className="rounded-2xl border border-slate-200 px-4 py-3">
+                    <option value="1">启用</option>
+                    <option value="0">停用</option>
+                  </select>
+                </label>
+                <div className="flex items-end justify-end md:col-span-2">
+                  <button type="submit" className="w-full rounded-full border border-slate-900 px-5 py-3 text-slate-900 md:w-auto">更新主题</button>
+                </div>
+              </form>
+            </details>
           ))}
         </div>
       </SectionCard>
