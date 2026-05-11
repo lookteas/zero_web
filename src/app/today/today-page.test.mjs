@@ -95,4 +95,16 @@ test('today page keeps submitted tasks editable within 48 hours', () => {
   assert.equal(todayPage.includes('action={saveTodayTaskAction}'), true)
 })
 
+test('today submit action saves current form fields before submitting', () => {
+  const actionsSource = readFileSync(new URL('./actions.ts', import.meta.url), 'utf8')
+  const submitActionStart = actionsSource.indexOf('export async function submitTodayTaskAction')
+  const submitAction = actionsSource.slice(submitActionStart)
+
+  assert.notEqual(submitActionStart, -1)
+  assert.equal(submitAction.includes('weakness'), true)
+  assert.equal(submitAction.includes('improvementPlan'), true)
+  assert.equal(submitAction.includes('verificationPath'), true)
+  assert.equal(submitAction.indexOf('await updateDailyTask(taskId') < submitAction.indexOf('await submitDailyTask(taskId)'), true)
+})
+
 

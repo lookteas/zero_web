@@ -24,8 +24,16 @@ export async function saveTodayTaskAction(formData: FormData) {
 
 export async function submitTodayTaskAction(formData: FormData) {
   const taskId = Number(formData.get('taskId'))
+  const weakness = String(formData.get('weakness') ?? '')
+  const improvementPlan = String(formData.get('improvementPlan') ?? '')
+  const verificationPath = String(formData.get('verificationPath') ?? '')
 
   try {
+    await updateDailyTask(taskId, {
+      weakness,
+      improvementPlan,
+      verificationPath,
+    })
     await submitDailyTask(taskId)
   } catch {
     redirect('/today?error=1')
