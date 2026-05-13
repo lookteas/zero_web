@@ -60,3 +60,11 @@ test('admin topics page paginates legacy topics and keeps edit forms collapsed b
   assert.match(source, /legacyPage=\$\{legacyPage - 1\}/)
   assert.match(source, /legacyPage=\$\{legacyPage \+ 1\}/)
 })
+
+test('admin topics page uses dense setup and weekly planning surfaces', () => {
+  assert.match(source, /activityMetrics/)
+  assert.match(source, /grid gap-3 md:grid-cols-2 xl:grid-cols-4/)
+  assert.match(source, /rounded-\[14px\] border border-cyan-900\/10 bg-white/)
+  assert.match(source, /本周排期/)
+  assert.doesNotMatch(source, /rounded-3xl/)
+})
