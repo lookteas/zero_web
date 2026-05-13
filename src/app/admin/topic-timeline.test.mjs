@@ -3,28 +3,35 @@ import assert from 'node:assert/strict'
 
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart } from './topic-timeline.mjs'
 
-test('getDefaultTimelineStart returns saturday in current vote window', () => {
+test('getDefaultTimelineStart returns monday of the current week', () => {
   const start = getDefaultTimelineStart(new Date('2026-04-16T09:00:00'))
-  assert.equal(start, '2026-04-18')
+  assert.equal(start, '2026-04-13')
 })
 
-test('parseTimelineStart falls back to default when invalid', () => {
+test('parseTimelineStart falls back to current week monday when invalid', () => {
   const start = parseTimelineStart('bad-date', new Date('2026-04-16T09:00:00'))
-  assert.equal(start, '2026-04-18')
+  assert.equal(start, '2026-04-13')
 })
 
-test('buildTopicTimeline creates seven day slots and marks missing days', () => {
+test('parseTimelineStart normalizes any selected date to that week monday', () => {
+  const start = parseTimelineStart('2026-04-18', new Date('2026-04-16T09:00:00'))
+  assert.equal(start, '2026-04-13')
+})
+
+test('buildTopicTimeline creates monday to sunday slots and marks missing days', () => {
   const timeline = buildTopicTimeline([
-    { id: 1, title: '主题 A', status: 1, scheduleDate: '2026-04-18' },
-    { id: 2, title: '主题 B', status: 0, scheduleDate: '2026-04-20' },
+    { id: 1, title: '主题 A', status: 1, scheduleDate: '2026-04-13' },
+    { id: 2, title: '主题 B', status: 0, scheduleDate: '2026-04-15' },
   ], '2026-04-18')
 
   assert.equal(timeline.length, 7)
-  assert.equal(timeline[0].date, '2026-04-18')
+  assert.equal(timeline[0].date, '2026-04-13')
+  assert.equal(timeline[0].weekdayLabel, '周一')
   assert.equal(timeline[0].topic?.title, '主题 A')
   assert.equal(timeline[2].topic?.title, '主题 B')
   assert.equal(timeline[1].missing, true)
-  assert.equal(timeline[6].date, '2026-04-24')
+  assert.equal(timeline[6].date, '2026-04-19')
+  assert.equal(timeline[6].weekdayLabel, '周日')
 })
 
 test('buildTopicTimeline marks rest-day slots as present rest days', () => {

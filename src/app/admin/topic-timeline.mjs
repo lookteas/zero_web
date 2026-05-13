@@ -17,18 +17,20 @@ function weekdayLabel(date) {
   return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]
 }
 
-export function getDefaultTimelineStart(now = new Date()) {
-  const today = normalizeDate(now)
+function getWeekMonday(date) {
+  const today = normalizeDate(date)
   const day = today.getDay()
   const mondayOffset = day === 0 ? -6 : 1 - day
-  const monday = new Date(today.getTime() + mondayOffset * DAY_MS)
-  const saturday = new Date(monday.getTime() + 5 * DAY_MS)
-  return formatDate(saturday)
+  return new Date(today.getTime() + mondayOffset * DAY_MS)
+}
+
+export function getDefaultTimelineStart(now = new Date()) {
+  return formatDate(getWeekMonday(now))
 }
 
 export function parseTimelineStart(value, now = new Date()) {
   const parsed = parseDate(value)
-  return parsed ? formatDate(parsed) : getDefaultTimelineStart(now)
+  return parsed ? formatDate(getWeekMonday(parsed)) : getDefaultTimelineStart(now)
 }
 
 export function shiftTimelineStart(start, offsetDays) {
@@ -40,7 +42,7 @@ export function shiftTimelineStart(start, offsetDays) {
 }
 
 export function buildTopicTimeline(topics = [], start) {
-  const timelineStart = parseDate(start)
+  const timelineStart = parseDate(parseTimelineStart(start))
   if (!timelineStart) {
     return []
   }
