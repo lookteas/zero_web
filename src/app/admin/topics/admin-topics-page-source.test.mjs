@@ -33,6 +33,9 @@ test('admin topics page renders awareness cycle settings from admin cycle info',
   assert.match(source, /action=\{updateAwarenessCycleAction\}/)
   assert.match(source, /name="startDate"[\s\S]*type="date"[\s\S]*defaultValue=\{cycleInfo\.startDate\}/)
   assert.match(source, /name="restDays"[\s\S]*type="number"[\s\S]*defaultValue=\{cycleInfo\.restDays\}/)
+  assert.match(source, /import \{ PauseDatePicker \} from "\.\/pause-date-picker"/)
+  assert.match(source, /<PauseDatePicker initialDates=\{cycleInfo\.pausedDates \|\| \[\]\}/)
+  assert.doesNotMatch(source, /name="pausedDates"[\s\S]*<textarea/)
   assert.match(source, /name="returnWeekStart"[\s\S]*value=\{timelineStart\}/)
 })
 

@@ -6,6 +6,7 @@ import { getAdminAwarenessCycle, listAdminTopics } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
 import { createTopicAction, updateAwarenessCycleAction, updateTopicAction } from "./actions";
+import { PauseDatePicker } from "./pause-date-picker";
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart, shiftTimelineStart } from "../topic-timeline.mjs";
 
 type AdminTopicsPageProps = {
@@ -85,15 +86,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
                 <span>休息天数</span>
                 <input name="restDays" type="number" min="1" max="30" defaultValue={cycleInfo.restDays} className="rounded-2xl border border-slate-200 px-4 py-3" required />
               </label>
-              <label className="grid gap-2 md:col-span-2">
-                <span>暂停日期</span>
-                <textarea
-                  name="pausedDates"
-                  defaultValue={(cycleInfo.pausedDates || []).join("\n")}
-                  className="min-h-24 rounded-2xl border border-slate-200 px-4 py-3"
-                  placeholder={"2026-05-01\n2026-05-02"}
-                />
-              </label>
+              <PauseDatePicker initialDates={cycleInfo.pausedDates || []} />
               <input type="hidden" name="returnWeekStart" value={timelineStart} />
               <div className="flex items-end">
                 <button type="submit" className="w-full rounded-full bg-slate-900 px-5 py-3 text-white md:w-auto">保存启动日期</button>
