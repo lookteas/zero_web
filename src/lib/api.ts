@@ -22,6 +22,7 @@ export type Topic = {
   referenceMin?: string;
   referenceMax?: string;
   isRestDay?: boolean;
+  isPausedDay?: boolean;
 };
 
 export type AdminUser = {
@@ -71,6 +72,7 @@ export type DailyTask = {
   referenceMax?: string;
   betterDirection?: string;
   isRestDay?: boolean;
+  isPausedDay?: boolean;
   restTitle?: string;
   restDescription?: string;
   weakness?: string;
@@ -157,17 +159,23 @@ export type AwarenessCycleDay = {
   title: string;
   summary?: string;
   isRestDay: boolean;
+  isPausedDay?: boolean;
   awarenessId?: number;
   orderNo?: number;
+  progressNo?: number;
 };
 
 export type AwarenessCycleAdminInfo = {
   startDate: string;
   restDays: number;
+  pausedDates?: string[];
   eligibleAwarenessCount: number;
   weekStart: string;
   normalDayCount: number;
   restDayCount: number;
+  pausedDayCount: number;
+  currentProgressNo?: number;
+  currentProgressTitle?: string;
   weekDays: AwarenessCycleDay[];
 };
 
@@ -430,7 +438,7 @@ export async function getAdminAwarenessCycle() {
   return requestAdmin<AwarenessCycleAdminInfo>("/admin/awareness-cycle");
 }
 
-export async function updateAdminAwarenessCycle(payload: { startDate: string; restDays?: number }) {
+export async function updateAdminAwarenessCycle(payload: { startDate: string; restDays?: number; pausedDates?: string[] }) {
   return requestAdmin<{ code?: number }>("/admin/awareness-cycle", {
     method: "PATCH",
     body: JSON.stringify(payload),

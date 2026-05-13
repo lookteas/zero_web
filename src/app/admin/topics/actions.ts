@@ -23,6 +23,13 @@ function topicPayload(formData: FormData) {
   }
 }
 
+function pausedDatesPayload(formData: FormData) {
+  return String(formData.get('pausedDates') ?? '')
+    .split(/\r?\n|,/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 export async function createTopicAction(formData: FormData) {
   await requireAdmin()
   const returnWeekQuery = returnWeekStartQuery(formData)
@@ -63,9 +70,10 @@ export async function updateAwarenessCycleAction(formData: FormData) {
   const returnWeekQuery = returnWeekStartQuery(formData)
   const startDate = String(formData.get('startDate') ?? '').trim()
   const restDays = Number(formData.get('restDays') ?? 7)
+  const pausedDates = pausedDatesPayload(formData)
 
   try {
-    await updateAdminAwarenessCycle({ startDate, restDays })
+    await updateAdminAwarenessCycle({ startDate, restDays, pausedDates })
   } catch (error) {
     redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
   }

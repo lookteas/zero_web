@@ -14,7 +14,7 @@ test('api exposes admin awareness cycle settings helpers', () => {
   assert.match(source, /export type AwarenessCycleAdminInfo = \{/)
   assert.match(source, /export async function getAdminAwarenessCycle\(\)/)
   assert.match(source, /requestAdmin<AwarenessCycleAdminInfo>\("\/admin\/awareness-cycle"\)/)
-  assert.match(source, /export async function updateAdminAwarenessCycle\(payload: \{ startDate: string; restDays\?: number \}\)/)
+  assert.match(source, /export async function updateAdminAwarenessCycle\(payload: \{ startDate: string; restDays\?: number; pausedDates\?: string\[\] \}\)/)
   assert.match(source, /requestAdmin<\{ code\?: number \}>\("\/admin\/awareness-cycle", \{/)
   assert.match(source, /method: "PATCH"/)
   assert.match(source, /body: JSON\.stringify\(payload\)/)

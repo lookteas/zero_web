@@ -65,7 +65,14 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <p className="text-xs text-slate-500">本周状态</p>
-                <p className="mt-2 text-lg font-semibold text-slate-950">{cycleInfo.normalDayCount} 练 / {cycleInfo.restDayCount} 休</p>
+                <p className="mt-2 text-lg font-semibold text-slate-950">{cycleInfo.normalDayCount} 练 / {cycleInfo.restDayCount} 休 / {cycleInfo.pausedDayCount} 暂停</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 xl:col-span-4">
+                <p className="text-xs text-slate-500">当前进度</p>
+                <p className="mt-2 text-lg font-semibold text-slate-950">
+                  {cycleInfo.currentProgressNo ? `第 ${cycleInfo.currentProgressNo} 个意识强度点` : "今日不消耗意识点进度"}
+                </p>
+                {cycleInfo.currentProgressTitle ? <p className="mt-1 text-sm text-slate-600">{cycleInfo.currentProgressTitle}</p> : null}
               </div>
             </div>
 
@@ -77,6 +84,15 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
               <label className="grid gap-2">
                 <span>休息天数</span>
                 <input name="restDays" type="number" min="1" max="30" defaultValue={cycleInfo.restDays} className="rounded-2xl border border-slate-200 px-4 py-3" required />
+              </label>
+              <label className="grid gap-2 md:col-span-2">
+                <span>暂停日期</span>
+                <textarea
+                  name="pausedDates"
+                  defaultValue={(cycleInfo.pausedDates || []).join("\n")}
+                  className="min-h-24 rounded-2xl border border-slate-200 px-4 py-3"
+                  placeholder={"2026-05-01\n2026-05-02"}
+                />
               </label>
               <input type="hidden" name="returnWeekStart" value={timelineStart} />
               <div className="flex items-end">
@@ -92,14 +108,15 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
             </div>
             <div className="space-y-2">
               {cycleInfo.weekDays.map((day) => (
-                <div key={day.date} className={`rounded-xl border p-3 text-sm ${day.isRestDay ? "border-sky-200 bg-sky-50 text-sky-800" : "border-white bg-white text-slate-700"}`}>
+                <div key={day.date} className={`rounded-xl border p-3 text-sm ${day.isPausedDay ? "border-amber-200 bg-amber-50 text-amber-800" : day.isRestDay ? "border-sky-200 bg-sky-50 text-sky-800" : "border-white bg-white text-slate-700"}`}>
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-medium text-slate-950">{day.title}</p>
-                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${day.isRestDay ? "bg-sky-100 text-sky-700" : "bg-emerald-100 text-emerald-700"}`}>
-                      {day.isRestDay ? "休息" : "练习"}
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${day.isPausedDay ? "bg-amber-100 text-amber-700" : day.isRestDay ? "bg-sky-100 text-sky-700" : "bg-emerald-100 text-emerald-700"}`}>
+                      {day.isPausedDay ? "暂停" : day.isRestDay ? "休息" : "练习"}
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-slate-500">{day.date}</p>
+                  {day.progressNo ? <p className="mt-1 text-xs text-slate-500">第 {day.progressNo} 个意识强度点</p> : null}
                   {day.summary ? <p className="mt-2 text-xs leading-5 text-slate-600">{day.summary}</p> : null}
                 </div>
               ))}
