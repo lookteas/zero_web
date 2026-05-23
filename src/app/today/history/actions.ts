@@ -3,21 +3,10 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { updateDailyTask } from '@/lib/api'
-
-import { buildHistoryQueryString } from './history-filters.mjs'
-
-function historyFiltersFromFormData(formData: FormData) {
-  return {
-    startDate: String(formData.get('startDate') ?? ''),
-    endDate: String(formData.get('endDate') ?? ''),
-    keyword: String(formData.get('keyword') ?? ''),
-  }
-}
+import { updateDailyTask, submitDailyTask } from '@/lib/api'
 
 export async function saveHistoryTaskAction(formData: FormData) {
   const taskId = Number(formData.get('taskId'))
-  const filters = historyFiltersFromFormData(formData)
 
   await updateDailyTask(taskId, {
     weakness: String(formData.get('weakness') ?? ''),
@@ -28,12 +17,32 @@ export async function saveHistoryTaskAction(formData: FormData) {
   revalidatePath('/today')
   revalidatePath('/today/history')
   revalidatePath('/')
-  redirect(`/today/history${buildHistoryQueryString(filters, { saved: '1', openTask: String(taskId) })}#task-${taskId}`)
+  redirect(`/today/history?saved=1&openTask=${taskId}#task-${taskId}`)
+}
+
+export async function submitHistoryTaskAction(formData: FormData) {
+  const taskId = Number(formData.get('taskId'))
+
+  try {
+    await updateDailyTask(taskId, {
+      weakness: String(formData.get('weakness') ?? ''),
+      improvementPlan: String(formData.get('improvementPlan') ?? ''),
+      verificationPath: String(formData.get('verificationPath') ?? ''),
+    })
+    await submitDailyTask(taskId)
+  } catch {
+    redirect(`/today/history?error=1&openTask=${taskId}#task-${taskId}`)
+  }
+
+  revalidatePath('/today')
+  revalidatePath('/today/history')
+  revalidatePath('/')
+  revalidatePath('/reviews')
+  redirect(`/today/history?submitted=1&openTask=${taskId}#task-${taskId}`)
 }
 
 export async function saveHistoryReflectionAction(formData: FormData) {
   const taskId = Number(formData.get('taskId'))
-  const filters = historyFiltersFromFormData(formData)
 
   await updateDailyTask(taskId, {
     reflectionNote: String(formData.get('reflectionNote') ?? ''),
@@ -41,5 +50,5 @@ export async function saveHistoryReflectionAction(formData: FormData) {
 
   revalidatePath('/today/history')
   revalidatePath('/')
-  redirect(`/today/history${buildHistoryQueryString(filters, { reflected: '1', openTask: String(taskId) })}#task-${taskId}`)
+  redirect(`/today/history?reflected=1&openTask=${taskId}#task-${taskId}`)
 }

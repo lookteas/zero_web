@@ -7,13 +7,13 @@ import { listDailyTasks } from '@/lib/api'
 import { requireLogin } from '@/lib/auth'
 import { taskStatusLabelMap } from '@/lib/labels'
 
-import { saveHistoryReflectionAction, saveHistoryTaskAction } from './actions'
+import { saveHistoryReflectionAction, saveHistoryTaskAction, submitHistoryTaskAction } from './actions'
 import { getHistoryCardSummary } from './history-card.mjs'
 import { buildHistoryQueryString, resolveHistoryFilters } from './history-filters.mjs'
 import { TodaySharePanel } from '../today-share-panel'
 
 type HistoryPageProps = {
-  searchParams: Promise<{ startDate?: string; endDate?: string; keyword?: string; saved?: string; reflected?: string; openTask?: string }>
+  searchParams: Promise<{ startDate?: string; endDate?: string; keyword?: string; saved?: string; reflected?: string; submitted?: string; error?: string; openTask?: string }>
 }
 
 export default async function TodayHistoryPage({ searchParams }: HistoryPageProps) {
@@ -52,6 +52,8 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
     <AppShell title="历史打卡" description="默认先看最近 7 天，也可以按日期筛选或搜索过去做过的任务。">
       {query.saved ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">这条历史打卡已更新。</section> : null}
       {query.reflected ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">这条后记 / 反思已保存。</section> : null}
+      {query.submitted ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">这条历史打卡已提交。</section> : null}
+      {query.error ? <section className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">提交失败，请稍后重试。</section> : null}
 
       <SectionCard title="筛选历史记录" description="先看最近 7 天，需要时再按日期范围和关键词往前找。">
         <div className="grid gap-3 text-sm sm:flex sm:flex-wrap">
@@ -95,7 +97,7 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
 
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span className={`rounded-full px-3 py-1.5 text-xs ${task.canEditContent ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
-                      {task.canEditContent ? '48 小时内，可直接编辑' : '原文已锁定，只能追加后记'}
+                      {task.canEditContent ? '三天内，可直接编辑' : '原文已锁定，只能追加后记'}
                     </span>
                     <span className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
                       <span className="group-open:hidden">展开查看</span>
@@ -115,7 +117,7 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
                     <input type="hidden" name="keyword" value={filters.keyword} />
 
                     <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                      这条记录还在 48 小时编辑窗口内，可以直接改原始打卡内容。
+                      这条记录还在三天编辑窗口内，可以直接改原始打卡内容。
                     </div>
 
                     <div className="space-y-3">
@@ -133,7 +135,12 @@ export default async function TodayHistoryPage({ searchParams }: HistoryPageProp
                       </label>
                     </div>
 
-                    <button type="submit" className="w-full rounded-full bg-slate-900 px-5 py-3 text-white sm:w-auto">保存这条历史打卡</button>
+                    <div className="flex flex-wrap gap-3">
+                      <button type="submit" className="w-full rounded-full bg-slate-900 px-5 py-3 text-white sm:w-auto">保存这条历史打卡</button>
+                      {task.status !== "submitted" ? (
+                        <button type="submit" formAction={submitHistoryTaskAction} className="w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-slate-700 sm:w-auto">提交这条历史打卡</button>
+                      ) : null}
+                    </div>
                   </form>
                 ) : (
                   <div className="space-y-4">
