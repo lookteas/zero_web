@@ -14,11 +14,13 @@ test('admin topics page requests schedule topics with computed weekStart', () =>
   )
 })
 
-test('admin topics page keeps legacy topic forms backed by legacy topic rows', () => {
-  assert.match(source, /const legacyTopics = await listAdminTopics\(\)\s*;/)
+test('admin topics page uses awareness schedule without legacy topic maintenance', () => {
   assert.match(source, /buildTopicTimeline\(scheduleTopics, timelineStart\)/)
-  assert.match(source, /legacyTopics\.map\(\(item\) =>/)
-  assert.doesNotMatch(source, /scheduleTopics\.map\(\(item\) =>[\s\S]*updateTopicAction/)
+  assert.doesNotMatch(source, /const legacyTopics = await listAdminTopics\(\)\s*;/)
+  assert.doesNotMatch(source, /createTopicAction/)
+  assert.doesNotMatch(source, /updateTopicAction/)
+  assert.doesNotMatch(source, /旧主题维护/)
+  assert.doesNotMatch(source, /已有旧主题/)
 })
 
 test('admin topics page renders awareness cycle settings from admin cycle info', () => {
@@ -47,18 +49,12 @@ test('admin topics page shows this week awareness topics from cycle info', () =>
   assert.match(source, /day\.summary/)
 })
 
-test('admin topics page paginates legacy topics and keeps edit forms collapsed by default', () => {
-  assert.match(source, /legacyPage\?: string/)
-  assert.match(source, /const legacyPageSize = 10/)
-  assert.match(source, /const legacyPage = Math\.max\(1, Number\(query\.legacyPage \|\| 1\)\)/)
-  assert.match(source, /const pagedLegacyTopics = legacyTopics\.slice/)
-  assert.match(source, /pagedLegacyTopics\.map\(\(item\) =>/)
-  assert.match(source, /<details[\s\S]*<summary/)
-  assert.match(source, /item\.title[\s\S]*排序 \{item\.orderNo\}/)
-  assert.doesNotMatch(source, /<details[^>]*open/)
-  assert.match(source, /legacyPageCount/)
-  assert.match(source, /legacyPage=\$\{legacyPage - 1\}/)
-  assert.match(source, /legacyPage=\$\{legacyPage \+ 1\}/)
+test('admin topics page removes legacy topic pagination and forms', () => {
+  assert.doesNotMatch(source, /legacyPage\?: string/)
+  assert.doesNotMatch(source, /legacyPageSize/)
+  assert.doesNotMatch(source, /pagedLegacyTopics/)
+  assert.doesNotMatch(source, /<details[\s\S]*展开编辑/)
+  assert.doesNotMatch(source, /legacyPage=\$\{legacyPage/)
 })
 
 test('admin topics page uses dense setup and weekly planning surfaces', () => {
