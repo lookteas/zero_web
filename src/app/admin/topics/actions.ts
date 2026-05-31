@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { actionErrorCopy, resolveActionErrorMessage } from '@/app/action-copy.mjs'
-import { createAdminTopic, updateAdminAwarenessCycle, updateAdminTopic } from '@/lib/api'
+import { createAdminTopic, excludeAdminAwareness, updateAdminAwareness, updateAdminAwarenessCycle, updateAdminTopic } from '@/lib/api'
 import { requireAdmin } from '@/lib/admin-auth'
 
 function returnWeekStartQuery(formData: FormData) {
@@ -82,4 +82,45 @@ export async function updateAwarenessCycleAction(formData: FormData) {
   revalidatePath('/admin/topics')
   revalidatePath('/today')
   redirect(`/admin/topics?cycleUpdated=1${returnWeekQuery}`)
+}
+
+export async function updateAwarenessAction(formData: FormData) {
+  await requireAdmin()
+  const awarenessId = Number(formData.get('awarenessId') ?? 0)
+  const returnWeekQuery = returnWeekStartQuery(formData)
+  const payload = {
+    title: String(formData.get('title') ?? '').trim(),
+    summary: String(formData.get('summary') ?? '').trim(),
+    description: String(formData.get('description') ?? '').trim(),
+    effectiveDate: String(formData.get('effectiveDate') ?? '').trim(),
+  }
+
+  try {
+    await updateAdminAwareness(awarenessId, payload)
+  } catch (error) {
+    redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/topics')
+  revalidatePath('/today')
+  redirect(`/admin/topics?updated=1${returnWeekQuery}`)
+}
+
+export async function excludeAwarenessAction(formData: FormData) {
+  await requireAdmin()
+  const awarenessId = Number(formData.get('awarenessId') ?? 0)
+  const returnWeekQuery = returnWeekStartQuery(formData)
+  const effectiveDate = String(formData.get('effectiveDate') ?? '').trim()
+
+  try {
+    await excludeAdminAwareness(awarenessId, { effectiveDate })
+  } catch (error) {
+    redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/topics')
+  revalidatePath('/today')
+  redirect(`/admin/topics?updated=1${returnWeekQuery}`)
 }

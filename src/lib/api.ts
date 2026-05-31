@@ -445,6 +445,25 @@ export async function updateAdminAwarenessCycle(payload: { startDate: string; re
   });
 }
 
+export async function updateAdminAwareness(awarenessId: number, payload: {
+  title: string;
+  summary?: string;
+  description?: string;
+  effectiveDate?: string;
+}) {
+  return requestAdmin<{ code?: number }>(`/admin/awareness/${awarenessId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function excludeAdminAwareness(awarenessId: number, payload: { effectiveDate?: string }) {
+  return requestAdmin<{ code?: number }>(`/admin/awareness/${awarenessId}/exclude`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function createAdminTopic(payload: {
   title: string;
   summary: string;

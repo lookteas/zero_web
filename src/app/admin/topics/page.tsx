@@ -5,7 +5,8 @@ import { SectionCard } from "@/components/section-card";
 import { getAdminAwarenessCycle, listAdminTopics } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
-import { createTopicAction, updateAwarenessCycleAction, updateTopicAction } from "./actions";
+import { createTopicAction, excludeAwarenessAction, updateAwarenessAction, updateAwarenessCycleAction, updateTopicAction } from "./actions";
+import { AwarenessScheduleEditor } from "./awareness-schedule-editor";
 import { PauseDatePicker } from "./pause-date-picker";
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart, shiftTimelineStart } from "../topic-timeline.mjs";
 
@@ -50,6 +51,30 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
       {query.updated ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">主题已更新。</section> : null}
       {query.cycleUpdated ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">活动设置已保存。</section> : null}
       {query.error ? <section className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">{query.error}</section> : null}
+
+      <SectionCard
+        title="本周排期"
+        description="正常日展示自动匹配的意识点，休息日展示整合状态。点击意识点可修正文案或从后续周期剔除。"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-cyan-900/10 bg-white p-4 text-sm text-slate-700 shadow-[0_10px_24px_rgba(8,91,110,0.04)]">
+          <div className="space-y-1">
+            <p className="font-medium text-slate-900">当前查看从 {timelineStart} 开始的一周</p>
+            <p>已匹配 {timelineSummary.scheduled} 天，缺口 {timelineSummary.missing} 天；缺口通常需要检查意识点题库数据</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/admin/topics?weekStart=${previousWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">上一周</Link>
+            <Link href={`/admin/topics?weekStart=${defaultWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">回到本周</Link>
+            <Link href={`/admin/topics?weekStart=${nextWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">下一周</Link>
+          </div>
+        </div>
+
+        <AwarenessScheduleEditor
+          slots={timelineSlots}
+          timelineStart={timelineStart}
+          updateAction={updateAwarenessAction}
+          excludeAction={excludeAwarenessAction}
+        />
+      </SectionCard>
 
       <SectionCard
         title="意识点活动设置"
@@ -111,53 +136,6 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
               ))}
             </div>
           </div>
-        </div>
-      </SectionCard>
-
-      <SectionCard
-        title="本周排期"
-        description="正常日展示自动匹配的意识点，休息日展示整合状态。"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-cyan-900/10 bg-white p-4 text-sm text-slate-700 shadow-[0_10px_24px_rgba(8,91,110,0.04)]">
-          <div className="space-y-1">
-            <p className="font-medium text-slate-900">当前查看从 {timelineStart} 开始的一周</p>
-            <p>已匹配 {timelineSummary.scheduled} 天，缺口 {timelineSummary.missing} 天；缺口通常需要检查意识点题库数据</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href={`/admin/topics?weekStart=${previousWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">上一周</Link>
-            <Link href={`/admin/topics?weekStart=${defaultWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">回到本周</Link>
-            <Link href={`/admin/topics?weekStart=${nextWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">下一周</Link>
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {timelineSlots.map((slot) => (
-            <article key={slot.date} className={`rounded-[14px] border p-4 shadow-[0_10px_24px_rgba(8,91,110,0.035)] ${slot.missing ? 'border-rose-200 bg-rose-50' : slot.rest ? 'border-sky-200 bg-sky-50' : 'border-cyan-900/10 bg-white'}`}>
-              <p className="text-xs text-slate-500">{slot.weekdayLabel}</p>
-              <p className="mt-1 text-base font-semibold text-slate-900">{slot.date}</p>
-              {slot.topic ? (
-                <>
-                  <p className="mt-3 font-medium text-slate-900">{slot.topic.title}</p>
-                  <p className="mt-1 text-sm text-slate-600">{slot.topic.summary}</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded-[8px] bg-slate-100 px-3 py-1 text-slate-700">排序 {slot.topic.orderNo}</span>
-                    {slot.rest ? (
-                      <span className="rounded-[8px] bg-sky-100 px-3 py-1 text-sky-700">休息整合中</span>
-                    ) : (
-                      <span className={`rounded-[8px] px-3 py-1 ${slot.topic.status === 1 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {slot.topic.status === 1 ? '启用' : '停用'}
-                      </span>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="mt-3 font-medium text-rose-700">这一天没有可用意识点</p>
-                  <p className="mt-1 text-sm text-rose-600">请检查意识点题库是否已导入，且存在 status=1、is_meta=0 的记录。</p>
-                </>
-              )}
-            </article>
-          ))}
         </div>
       </SectionCard>
 

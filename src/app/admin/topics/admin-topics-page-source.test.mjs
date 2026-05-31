@@ -63,8 +63,24 @@ test('admin topics page paginates legacy topics and keeps edit forms collapsed b
 
 test('admin topics page uses dense setup and weekly planning surfaces', () => {
   assert.match(source, /activityMetrics/)
-  assert.match(source, /grid gap-3 md:grid-cols-2 xl:grid-cols-4/)
+  assert.match(source, /grid gap-3 text-sm text-slate-700 sm:grid-cols-2 xl:grid-cols-4/)
   assert.match(source, /rounded-\[14px\] border border-cyan-900\/10 bg-white/)
   assert.match(source, /本周排期/)
   assert.doesNotMatch(source, /rounded-3xl/)
+})
+
+test('admin topics page places weekly schedule before cycle settings', () => {
+  assert.ok(
+    source.indexOf('title="本周排期"') <
+      source.indexOf('title="意识点活动设置"'),
+  )
+})
+
+test('admin topics page lets schedule cards open awareness maintenance dialog', () => {
+  assert.match(source, /import \{ AwarenessScheduleEditor \} from "\.\/awareness-schedule-editor"/)
+  assert.match(source, /updateAwarenessAction/)
+  assert.match(source, /excludeAwarenessAction/)
+  assert.match(source, /<AwarenessScheduleEditor[\s\S]*slots=\{timelineSlots\}/)
+  assert.match(source, /updateAction=\{updateAwarenessAction\}/)
+  assert.match(source, /excludeAction=\{excludeAwarenessAction\}/)
 })
