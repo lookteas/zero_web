@@ -80,9 +80,10 @@ test('today page removes old section-card wrapper around detail and form blocks'
   assert.equal(hasTokens(todayPage, ['border-b', 'border-[var(--border-soft)]', 'bg-[var(--surface-muted)]']), true)
 })
 
-test('today page keeps submitted tasks editable within 48 hours', () => {
+test('today page keeps submitted tasks editable within 72 hours', () => {
   assert.equal(todayPage.includes('task.status === "submitted" && !task.canEditContent ? ('), true)
-  assert.equal(todayPage.includes('48 \\u5c0f\\u65f6\\u5185\\u53ef\\u7ee7\\u7eed\\u4fee\\u6539'), true)
+  assert.equal(todayPage.includes('72 \\u5c0f\\u65f6\\u5185\\u53ef\\u7ee7\\u7eed\\u4fee\\u6539'), true)
+  assert.equal(todayPage.includes('48 \\u5c0f\\u65f6\\u5185\\u53ef\\u7ee7\\u7eed\\u4fee\\u6539'), false)
   assert.equal(todayPage.includes('24 \\u5c0f\\u65f6\\u5185\\u53ef\\u7ee7\\u7eed\\u4fee\\u6539'), false)
   assert.equal(todayPage.includes('TodaySubmittedSummaryCard'), true)
   assert.equal(todayPage.includes('task.canEditContent'), true)

@@ -26,9 +26,10 @@ type AwarenessScheduleEditorProps = {
   timelineStart: string;
   updateAction: (formData: FormData) => void | Promise<void>;
   excludeAction: (formData: FormData) => void | Promise<void>;
+  insertAction: (formData: FormData) => void | Promise<void>;
 };
 
-export function AwarenessScheduleEditor({ slots, timelineStart, updateAction, excludeAction }: AwarenessScheduleEditorProps) {
+export function AwarenessScheduleEditor({ slots, timelineStart, updateAction, excludeAction, insertAction }: AwarenessScheduleEditorProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [selectedSlot, setSelectedSlot] = useState<TimelineSlot | null>(null);
   const selectedTopic = selectedSlot?.topic;
@@ -117,6 +118,38 @@ export function AwarenessScheduleEditor({ slots, timelineStart, updateAction, ex
               <div className="flex flex-wrap justify-end gap-2">
                 <button type="button" onClick={closeDialog} className="cursor-pointer rounded-[10px] border border-slate-300 px-4 py-2.5 text-slate-700 transition hover:border-slate-500">取消</button>
                 <button type="submit" className="cursor-pointer rounded-[10px] bg-cyan-800 px-4 py-2.5 font-medium text-white transition hover:bg-cyan-900">保存修改</button>
+              </div>
+            </form>
+
+            <form action={insertAction} className="border-t border-slate-100 px-5 py-4 text-sm text-slate-700">
+              <input type="hidden" name="effectiveDate" value={selectedSlot?.date || ""} />
+              <input type="hidden" name="returnWeekStart" value={timelineStart} />
+              <div className="grid gap-3">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="font-medium text-slate-950">插入意识点到这一天</p>
+                  <p className="text-xs text-slate-500">填写已有 ID 时优先生效，否则按标题新建。</p>
+                </div>
+                <label className="grid gap-2">
+                  <span>已有意识点 ID</span>
+                  <input name="existingAwarenessId" type="number" min="1" className="rounded-[10px] border border-slate-300 px-3 py-2.5" placeholder="如果题库里已有，填写 ID" />
+                </label>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <label className="grid gap-2">
+                    <span>新意识点标题</span>
+                    <input name="title" className="rounded-[10px] border border-slate-300 px-3 py-2.5" placeholder="例如：练习平常心" />
+                  </label>
+                  <label className="grid gap-2">
+                    <span>摘要</span>
+                    <input name="summary" className="rounded-[10px] border border-slate-300 px-3 py-2.5" placeholder="新建时填写" />
+                  </label>
+                </div>
+                <label className="grid gap-2">
+                  <span>详细描述</span>
+                  <textarea name="description" className="min-h-20 rounded-[10px] border border-slate-300 px-3 py-2.5" placeholder="新建时填写" />
+                </label>
+                <div className="flex justify-end">
+                  <button type="submit" className="cursor-pointer rounded-[10px] border border-cyan-700 px-4 py-2.5 font-medium text-cyan-800 transition hover:bg-cyan-50">插入并顺延</button>
+                </div>
               </div>
             </form>
 

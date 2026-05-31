@@ -5,7 +5,7 @@ import { SectionCard } from "@/components/section-card";
 import { getAdminAwarenessCycle, listAdminTopics } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
-import { excludeAwarenessAction, updateAwarenessAction, updateAwarenessCycleAction } from "./actions";
+import { excludeAwarenessAction, insertAwarenessAction, updateAwarenessAction, updateAwarenessCycleAction } from "./actions";
 import { AwarenessScheduleEditor } from "./awareness-schedule-editor";
 import { PauseDatePicker } from "./pause-date-picker";
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart, shiftTimelineStart } from "../topic-timeline.mjs";
@@ -63,6 +63,7 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
           timelineStart={timelineStart}
           updateAction={updateAwarenessAction}
           excludeAction={excludeAwarenessAction}
+          insertAction={insertAwarenessAction}
         />
       </SectionCard>
 

@@ -464,6 +464,19 @@ export async function excludeAdminAwareness(awarenessId: number, payload: { effe
   });
 }
 
+export async function insertAdminAwareness(payload: {
+  existingAwarenessId?: number;
+  title?: string;
+  summary?: string;
+  description?: string;
+  effectiveDate: string;
+}) {
+  return requestAdmin<{ code?: number }>("/admin/awareness/insert", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function createAdminTopic(payload: {
   title: string;
   summary: string;

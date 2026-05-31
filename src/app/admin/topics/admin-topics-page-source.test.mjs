@@ -80,3 +80,8 @@ test('admin topics page lets schedule cards open awareness maintenance dialog', 
   assert.match(source, /updateAction=\{updateAwarenessAction\}/)
   assert.match(source, /excludeAction=\{excludeAwarenessAction\}/)
 })
+
+test('admin topics page wires awareness insert action into schedule editor', () => {
+  assert.match(source, /insertAwarenessAction/)
+  assert.match(source, /insertAction=\{insertAwarenessAction\}/)
+})

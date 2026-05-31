@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { actionErrorCopy, resolveActionErrorMessage } from '@/app/action-copy.mjs'
-import { createAdminTopic, excludeAdminAwareness, updateAdminAwareness, updateAdminAwarenessCycle, updateAdminTopic } from '@/lib/api'
+import { createAdminTopic, excludeAdminAwareness, insertAdminAwareness, updateAdminAwareness, updateAdminAwarenessCycle, updateAdminTopic } from '@/lib/api'
 import { requireAdmin } from '@/lib/admin-auth'
 
 function returnWeekStartQuery(formData: FormData) {
@@ -115,6 +115,30 @@ export async function excludeAwarenessAction(formData: FormData) {
 
   try {
     await excludeAdminAwareness(awarenessId, { effectiveDate })
+  } catch (error) {
+    redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/topics')
+  revalidatePath('/today')
+  redirect(`/admin/topics?updated=1${returnWeekQuery}`)
+}
+
+export async function insertAwarenessAction(formData: FormData) {
+  await requireAdmin()
+  const returnWeekQuery = returnWeekStartQuery(formData)
+  const existingAwarenessId = Number(formData.get('existingAwarenessId') ?? 0)
+  const payload = {
+    existingAwarenessId: existingAwarenessId > 0 ? existingAwarenessId : undefined,
+    title: String(formData.get('title') ?? '').trim(),
+    summary: String(formData.get('summary') ?? '').trim(),
+    description: String(formData.get('description') ?? '').trim(),
+    effectiveDate: String(formData.get('effectiveDate') ?? '').trim(),
+  }
+
+  try {
+    await insertAdminAwareness(payload)
   } catch (error) {
     redirect(`/admin/topics?error=${encodeURIComponent(resolveActionErrorMessage(error, actionErrorCopy.topicSaveFailed))}${returnWeekQuery}`)
   }
