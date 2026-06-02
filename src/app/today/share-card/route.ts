@@ -1,4 +1,4 @@
-import { buildTodayShareCardSvg } from '../today-share-card.mjs'
+import { buildTodayShareCardSvgWithLoginQr } from '../today-share-card-server.mjs'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,9 +20,20 @@ function read(searchParams: URLSearchParams, key: string, fallback: string) {
   return value || decodeEscaped(fallback)
 }
 
+function loginUrlFrom(request: Request, searchParams: URLSearchParams) {
+  const explicitUrl = String(searchParams.get('loginUrl') || '').trim()
+
+  if (explicitUrl) {
+    return explicitUrl
+  }
+
+  const requestUrl = new URL(request.url)
+  return new URL('/login', requestUrl.origin).toString()
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const svg = buildTodayShareCardSvg({
+  const svg = buildTodayShareCardSvgWithLoginQr({
     taskDate: read(searchParams, 'taskDate', ''),
     dateLabel: read(searchParams, 'dateLabel', FALLBACK.dateLabel),
     topicTitle: read(searchParams, 'topicTitle', FALLBACK.topicTitle),
@@ -30,6 +41,7 @@ export async function GET(request: Request) {
     weakness: read(searchParams, 'weakness', FALLBACK.weakness),
     improvementPlan: read(searchParams, 'improvementPlan', FALLBACK.improvementPlan),
     verificationPath: read(searchParams, 'verificationPath', FALLBACK.verificationPath),
+    loginUrl: loginUrlFrom(request, searchParams),
   })
 
   return new Response(svg, {

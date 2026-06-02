@@ -161,7 +161,7 @@ function section(label, value, y, theme) {
   `
 }
 
-export function buildTodayShareCardSvg(payload) {
+export function buildTodayShareCardSvg(payload, options = {}) {
   const topicLabel = decodeEscaped(COPY.topicLabel)
   const weaknessLabel = decodeEscaped(COPY.weaknessLabel)
   const planLabel = decodeEscaped(COPY.planLabel)
@@ -169,6 +169,7 @@ export function buildTodayShareCardSvg(payload) {
   const theme = pickDaily(THEMES, payload.taskDate)
   const footer = decodeEscaped(pickDaily(FOOTERS, payload.taskDate))
   const titleSize = fitFontSize(payload.topicTitle, { maxUnits: 18, maxSize: 46, minSize: 36 })
+  const footerSlot = typeof options.footerSlot === 'function' ? options.footerSlot(theme) : options.footerSlot || ''
 
   return `
     <svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -209,7 +210,8 @@ export function buildTodayShareCardSvg(payload) {
       ${section(weaknessLabel, payload.weakness, 590, theme)}
       ${section(planLabel, payload.improvementPlan, 812, theme)}
       ${section(verificationLabel, payload.verificationPath, 1034, theme)}
-      <text x="104" y="1244" fill="${theme.footer}" font-size="26" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
+      ${footerSlot}
+      <text x="104" y="1290" fill="${theme.footer}" font-size="22" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
     </svg>
   `.trim()
 }
@@ -223,5 +225,8 @@ export function buildTodayShareCardQuery(payload) {
   searchParams.set('weakness', payload.weakness)
   searchParams.set('improvementPlan', payload.improvementPlan)
   searchParams.set('verificationPath', payload.verificationPath)
+  if (payload.loginUrl) {
+    searchParams.set('loginUrl', payload.loginUrl)
+  }
   return searchParams.toString()
 }

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
-import { buildTodayShareCardSvg } from '../today-share-card.mjs'
+import { buildTodayShareCardSvgWithLoginQr as buildTodayShareCardSvg } from '../today-share-card-server.mjs'
 
 const decodeEscaped = (value) => JSON.parse(`"${value}"`)
 const textValue = (...codes) => decodeEscaped(codes.map((code) => String.fromCharCode(92) + code).join(''))
@@ -34,7 +34,7 @@ test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   assert.equal(svg.includes('font-size="28" font-weight="500"'), true)
   assert.equal(svg.includes('font-size="34" font-weight="600"'), false)
   assert.equal(/<rect x="40" y="40"[^>]*fill="#[A-F0-9]+"/.test(svg), true)
-  assert.equal(svg.includes('<rect x="104" y="232" width="132" height="4" rx="2" fill="url(#accent)"/>'), true)
+  assert.equal(svg.includes('<rect x="104" y="232" width="139" height="4" rx="2" fill="url(#accent)"/>'), true)
   assert.equal(svg.includes('fill="url(#summaryFade)"'), true)
   assert.equal(/<stop stop-color="#[A-F0-9]+"/.test(svg), true)
   assert.equal(svg.includes('<line x1="104"'), true)
@@ -58,7 +58,7 @@ test('buildTodayShareCardSvg uses stable daily visual variants', () => {
   assert.notEqual(first.match(/<stop stop-color="#[A-F0-9]+"/)?.[0], nextDay.match(/<stop stop-color="#[A-F0-9]+"/)?.[0])
   assert.equal(/font-size="(3[6-9]|4[0-9])" font-weight="700"[^>]*>一个很长/.test(first), true)
   assert.equal(/font-size="27" font-weight="600"[^>]*><tspan x="166" dy="0">先把这条摘要/.test(first), true)
-  assert.equal(/y="1244"[^>]*font-size="26"/.test(first), true)
+  assert.equal(/y="1290"[^>]*font-size="22"/.test(first), true)
 })
 
 test('buildTodayShareCardSvg wraps long topic summary inside the summary block', () => {
@@ -75,7 +75,7 @@ test('buildTodayShareCardSvg wraps long topic summary inside the summary block',
   assert.equal(/<text x="166" y="392"[^>]*><tspan x="166" dy="0">/.test(svg), true)
   assert.equal(svg.includes('<tspan x="166" dy="40">'), true)
   assert.equal(svg.includes('id="summaryFade"'), true)
-  assert.equal(/<path d="M104 342H816C842 342 864 364 864 390V470H104Z"/.test(svg), true)
+  assert.equal(/<path d="M104 342H816C842 342 922 364 922 390V470H104Z"/.test(svg), true)
   assert.equal(svg.includes('fill="url(#summaryFade)"'), true)
   assert.equal(svg.includes('stroke="${theme.softBorder}"'), false)
   assert.equal(/<text x="166"[^>]*>与人沟通中能否真实直接表达自己的想法。比如：既能由衷赞美别人/.test(svg), false)
@@ -96,6 +96,26 @@ test('buildTodayShareCardSvg uses a refined top-right ornament', () => {
   assert.equal(svg.includes('stroke-dasharray="6 16"'), true)
   assert.equal(svg.includes('<path d="M838 112C888 88 948 96 990 136"'), true)
   assert.equal(svg.includes('<circle cx="928" cy="142" r="64"'), true)
+})
+
+test('buildTodayShareCardSvg includes a scannable login qr invitation', () => {
+  const loginUrl = 'https://zero.example.com/login'
+  const svg = buildTodayShareCardSvg({
+    taskDate: '2026-05-07',
+    dateLabel: textValue('u0035', 'u6708', 'u0037', 'u65e5'),
+    topicTitle: textValue('u771f', 'u5b9e', 'u8868', 'u8fbe', 'u7684', 'u80fd', 'u529b'),
+    topicSummary: textValue('u4e3b', 'u9898', 'u6458', 'u8981'),
+    weakness: textValue('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: textValue('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+    loginUrl,
+  })
+
+  assert.equal(svg.includes('data-qr-login-url="https://zero.example.com/login"'), true)
+  assert.equal(svg.includes(textValue('u626b', 'u7801', 'u767b', 'u5f55')), true)
+  assert.equal((svg.match(/data-qr-module="1"/g) || []).length > 120, true)
+  assert.equal(svg.includes('<rect x="816" y="1162" width="128" height="128"'), true)
+  assert.equal(svg.includes(loginUrl), true)
 })
 
 test('route file keeps readable chinese fallbacks', () => {
