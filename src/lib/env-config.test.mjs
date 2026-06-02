@@ -15,4 +15,7 @@ test('env loader reads required api base url from environment files', () => {
   assert.equal(envDevelopment.includes('NEXT_PUBLIC_API_BASE_URL='), true)
   assert.equal(envProduction.includes('NEXT_PUBLIC_API_BASE_URL='), true)
   assert.equal(envExample.includes('NEXT_PUBLIC_API_BASE_URL='), true)
+  assert.equal(envDevelopment.includes('NEXT_PUBLIC_SITE_URL='), true)
+  assert.equal(envProduction.includes('NEXT_PUBLIC_SITE_URL='), true)
+  assert.equal(envExample.includes('NEXT_PUBLIC_SITE_URL='), true)
 })

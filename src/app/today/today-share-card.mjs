@@ -53,7 +53,7 @@ function wrapText(value, maxUnits = 25, maxLines = 3) {
   if (text && lines.length === maxLines) {
     const visibleText = lines.join('')
     if (visibleText.length < text.length) {
-      lines[maxLines - 1] = `${lines[maxLines - 1].replace(/[，。；、,.!?！？\s]+$/, '')}…`
+      lines[maxLines - 1] = `${lines[maxLines - 1].replace(/[，。；、,.!?！？\s]+$/, '')}...`
     }
   }
 
@@ -123,6 +123,48 @@ function textLines(value, options = {}) {
   return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" font-family="${FONT_STACK}">${tspans}</text>`
 }
 
+function textBlock(value, options = {}) {
+  const { lineGap = 43, maxUnits = 31, maxLines = 3 } = options
+  const lines = wrapText(value, maxUnits, maxLines)
+
+  return {
+    lines,
+    height: (lines.length - 1) * lineGap + 34,
+    svg: textLines(value, options),
+  }
+}
+
+function numberedItems(value) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim()
+  const matches = Array.from(text.matchAll(/(?:^|[\s，。；、,.!?！？])([1-9]\d*)[、.．]\s*/g))
+
+  if (matches.length < 2) {
+    return []
+  }
+
+  return matches.map((match, index) => {
+    const next = matches[index + 1]
+    const raw = text.slice(match.index + match[0].length, next ? next.index : text.length).trim()
+    return {
+      index: match[1],
+      text: raw.replace(/^[，。；、,.!?！？\s]+|[，。；、,.!?！？\s]+$/g, ''),
+    }
+  }).filter((item) => item.text)
+}
+
+function truncateChars(value, maxChars = 80) {
+  const chars = Array.from(String(value || '').trim())
+
+  if (chars.length <= maxChars) {
+    return { text: chars.join(''), truncated: false }
+  }
+
+  return {
+    text: `${chars.slice(0, maxChars).join('').replace(/[，。；、,.!?！？\s]+$/, '')}...`,
+    truncated: true,
+  }
+}
+
 function summaryText(value, theme) {
   return textLines(value, {
     x: 166,
@@ -153,12 +195,70 @@ function ornament(theme) {
 }
 
 function section(label, value, y, theme) {
+  const body = textBlock(value, { y: y + 50 })
+  const bottom = y + 50 + body.height + 52
+
   return `
     <circle cx="106" cy="${y - 8}" r="5" fill="${theme.accent}"/>
     <text x="126" y="${y}" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(label)}</text>
-    ${textLines(value, { y: y + 50 })}
-    <line x1="104" y1="${y + 154}" x2="976" y2="${y + 154}" stroke="${theme.rule}" stroke-width="2"/>
+    ${body.svg}
+    <line x1="104" y1="${bottom}" x2="976" y2="${bottom}" stroke="${theme.rule}" stroke-width="2"/>
   `
+}
+
+function sectionBlock(label, value, y, theme, options = {}) {
+  const body = textBlock(value, { y: y + 50, maxLines: options.maxLines || 4 })
+  const bottom = y + 50 + body.height + 52
+
+  return {
+    bottom,
+    svg: section(label, value, y, theme),
+  }
+}
+
+function listSectionBlock(label, value, y, theme) {
+  const items = numberedItems(value)
+
+  if (items.length === 0) {
+    return sectionBlock(label, value, y, theme, { maxLines: 4 })
+  }
+
+  let cursor = y + 50
+  const rows = items.slice(0, 4).map((item) => {
+    const clipped = truncateChars(item.text, 80)
+    const body = textBlock(clipped.text, {
+      x: 168,
+      y: cursor,
+      fill: theme.text,
+      size: 27,
+      weight: 500,
+      lineGap: 39,
+      maxUnits: 28,
+      maxLines: 3,
+    })
+    const row = `
+      <g data-list-index="${escapeXml(item.index)}"${clipped.truncated ? ' data-truncated-list-item="1"' : ''}>
+        <circle cx="138" cy="${cursor - 9}" r="14" fill="${theme.soft}" stroke="${theme.softBorder}" stroke-width="2"/>
+        <text x="138" y="${cursor - 2}" text-anchor="middle" fill="${theme.accent2}" font-size="18" font-weight="700" font-family="${FONT_STACK}">${escapeXml(item.index)}</text>
+        ${body.svg}
+      </g>
+    `
+    cursor += body.height + 26
+    return row
+  }).join('')
+  const bottom = cursor + 20
+
+  return {
+    bottom,
+    svg: `
+      <g data-list-section="improvementPlan">
+        <circle cx="106" cy="${y - 8}" r="5" fill="${theme.accent}"/>
+        <text x="126" y="${y}" fill="${theme.label}" font-size="21" font-weight="500" font-family="${FONT_STACK}">${escapeXml(label)}</text>
+        ${rows}
+        <line x1="104" y1="${bottom}" x2="976" y2="${bottom}" stroke="${theme.rule}" stroke-width="2"/>
+      </g>
+    `,
+  }
 }
 
 export function buildTodayShareCardSvg(payload, options = {}) {
@@ -169,12 +269,28 @@ export function buildTodayShareCardSvg(payload, options = {}) {
   const theme = pickDaily(THEMES, payload.taskDate)
   const footer = decodeEscaped(pickDaily(FOOTERS, payload.taskDate))
   const titleSize = fitFontSize(payload.topicTitle, { maxUnits: 18, maxSize: 46, minSize: 36 })
-  const footerSlot = typeof options.footerSlot === 'function' ? options.footerSlot(theme) : options.footerSlot || ''
+  const blocks = []
+  let cursor = 590
+  const weakness = sectionBlock(weaknessLabel, payload.weakness, cursor, theme)
+  blocks.push(weakness.svg)
+  cursor = weakness.bottom + 68
+  const plan = listSectionBlock(planLabel, payload.improvementPlan, cursor, theme)
+  blocks.push(plan.svg)
+  cursor = plan.bottom + 68
+  const verification = sectionBlock(verificationLabel, payload.verificationPath, cursor, theme)
+  blocks.push(verification.svg)
+  cursor = verification.bottom + 68
+  const footerSlot = typeof options.footerSlot === 'function' ? options.footerSlot(theme, { y: cursor }) : options.footerSlot || ''
+  const footerSlotHeight = typeof options.footerSlotHeight === 'number' ? options.footerSlotHeight : footerSlot ? 220 : 0
+  cursor += footerSlotHeight
+  const footerY = cursor + 38
+  const cardHeight = Math.max(1350, footerY + 60)
+  const innerHeight = cardHeight - 80
 
   return `
-    <svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1080" height="${cardHeight}" viewBox="0 0 1080 ${cardHeight}" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1080" y2="1350" gradientUnits="userSpaceOnUse">
+        <linearGradient id="bg" x1="0" y1="0" x2="1080" y2="${cardHeight}" gradientUnits="userSpaceOnUse">
           <stop stop-color="${theme.bgA}"/>
           <stop offset="1" stop-color="${theme.bgB}"/>
         </linearGradient>
@@ -194,8 +310,8 @@ export function buildTodayShareCardSvg(payload, options = {}) {
           <stop offset="1" stop-color="${theme.soft}" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      <rect width="1080" height="1350" rx="40" fill="url(#bg)"/>
-      <rect x="40" y="40" width="1000" height="1270" rx="34" fill="${theme.paper}" fill-opacity="0.96" stroke="${theme.border}"/>
+      <rect width="1080" height="${cardHeight}" rx="40" fill="url(#bg)"/>
+      <rect x="40" y="40" width="1000" height="${innerHeight}" rx="34" fill="${theme.paper}" fill-opacity="0.96" stroke="${theme.border}"/>
       ${ornament(theme)}
       <text x="104" y="126" fill="${theme.label}" font-size="23" font-weight="500" font-family="${FONT_STACK}">${escapeXml(payload.dateLabel)}</text>
       <text x="104" y="194" fill="${theme.text}" font-size="${titleSize}" font-weight="700" font-family="${FONT_STACK}">${escapeXml(payload.topicTitle)}</text>
@@ -207,11 +323,9 @@ export function buildTodayShareCardSvg(payload, options = {}) {
       <circle cx="144" cy="386" r="8" fill="${theme.accent2}"/>
       ${summaryText(payload.topicSummary, theme)}
       <line x1="104" y1="520" x2="976" y2="520" stroke="${theme.rule}" stroke-width="2"/>
-      ${section(weaknessLabel, payload.weakness, 590, theme)}
-      ${section(planLabel, payload.improvementPlan, 812, theme)}
-      ${section(verificationLabel, payload.verificationPath, 1034, theme)}
+      ${blocks.join('')}
       ${footerSlot}
-      <text x="104" y="1290" fill="${theme.footer}" font-size="22" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
+      <text data-card-footer="daily-quote" x="104" y="${footerY}" fill="${theme.footer}" font-size="22" font-weight="600" font-family="${FONT_STACK}">${escapeXml(footer)}</text>
     </svg>
   `.trim()
 }

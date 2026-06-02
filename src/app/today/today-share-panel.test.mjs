@@ -32,6 +32,14 @@ test('today share panel keeps share actions and preview in one compact block', (
   assert.equal(sharePanel.includes('mt-4 rounded-[18px] border border-[rgba(41,122,106,0.12)] bg-[rgba(243,249,246,0.92)] px-4 py-3 text-[13px] leading-6 text-[var(--foreground-soft)]'), false)
 })
 
+test('today share panel exports png using the svg dynamic dimensions', () => {
+  assert.equal(sharePanel.includes('svgText.match(/<svg[^>]*\\swidth="(\\d+)"/)'), true)
+  assert.equal(sharePanel.includes('svgText.match(/<svg[^>]*\\sheight="(\\d+)"/)'), true)
+  assert.equal(sharePanel.includes('canvas.width = width'), true)
+  assert.equal(sharePanel.includes('canvas.height = height'), true)
+  assert.equal(sharePanel.includes('canvas.height = 1350'), false)
+})
+
 
 
 

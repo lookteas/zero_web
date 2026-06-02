@@ -27,6 +27,12 @@ function loginUrlFrom(request: Request, searchParams: URLSearchParams) {
     return explicitUrl
   }
 
+  const publicSiteUrl = String(process.env.NEXT_PUBLIC_SITE_URL || '').trim()
+
+  if (publicSiteUrl) {
+    return new URL('/login', publicSiteUrl).toString()
+  }
+
   const requestUrl = new URL(request.url)
   return new URL('/login', requestUrl.origin).toString()
 }

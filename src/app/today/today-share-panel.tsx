@@ -73,12 +73,14 @@ function renderSvgToPng(svgText: string) {
   return new Promise<Blob>((resolve, reject) => {
     const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
     const svgUrl = URL.createObjectURL(svgBlob);
+    const width = Number(svgText.match(/<svg[^>]*\swidth="(\d+)"/)?.[1] || 1080);
+    const height = Number(svgText.match(/<svg[^>]*\sheight="(\d+)"/)?.[1] || 1350);
 
     loadImage(svgUrl)
       .then((image) => {
         const canvas = document.createElement("canvas");
-        canvas.width = 1080;
-        canvas.height = 1350;
+        canvas.width = width;
+        canvas.height = height;
         const context = canvas.getContext("2d");
 
         if (!context) {

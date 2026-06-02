@@ -8,6 +8,7 @@ const decodeEscaped = (value) => JSON.parse(`"${value}"`)
 const textValue = (...codes) => decodeEscaped(codes.map((code) => String.fromCharCode(92) + code).join(''))
 const routeSource = readFileSync(new URL('./route.ts', import.meta.url), 'utf8')
 const hasCopy = (source, escaped) => source.includes(escaped) || source.includes(decodeEscaped(escaped))
+const svgHeight = (svg) => Number(svg.match(/<svg width="1080" height="(\d+)"/)?.[1] || 0)
 
 test('buildTodayShareCardSvg returns a privacy-safe svg card', () => {
   const svg = buildTodayShareCardSvg({
@@ -58,7 +59,7 @@ test('buildTodayShareCardSvg uses stable daily visual variants', () => {
   assert.notEqual(first.match(/<stop stop-color="#[A-F0-9]+"/)?.[0], nextDay.match(/<stop stop-color="#[A-F0-9]+"/)?.[0])
   assert.equal(/font-size="(3[6-9]|4[0-9])" font-weight="700"[^>]*>一个很长/.test(first), true)
   assert.equal(/font-size="27" font-weight="600"[^>]*><tspan x="166" dy="0">先把这条摘要/.test(first), true)
-  assert.equal(/y="1290"[^>]*font-size="22"/.test(first), true)
+  assert.equal(/data-card-footer="daily-quote"[^>]*font-size="22"/.test(first), true)
 })
 
 test('buildTodayShareCardSvg wraps long topic summary inside the summary block', () => {
@@ -98,7 +99,7 @@ test('buildTodayShareCardSvg uses a refined top-right ornament', () => {
   assert.equal(svg.includes('<circle cx="928" cy="142" r="64"'), true)
 })
 
-test('buildTodayShareCardSvg includes a scannable login qr invitation', () => {
+test('buildTodayShareCardSvg includes a spacious scannable login qr invitation', () => {
   const loginUrl = 'https://zero.example.com/login'
   const svg = buildTodayShareCardSvg({
     taskDate: '2026-05-07',
@@ -114,8 +115,48 @@ test('buildTodayShareCardSvg includes a scannable login qr invitation', () => {
   assert.equal(svg.includes('data-qr-login-url="https://zero.example.com/login"'), true)
   assert.equal(svg.includes(textValue('u626b', 'u7801', 'u767b', 'u5f55')), true)
   assert.equal((svg.match(/data-qr-module="1"/g) || []).length > 120, true)
-  assert.equal(svg.includes('<rect x="816" y="1162" width="128" height="128"'), true)
+  assert.equal(svg.includes('data-section="login-qr"'), true)
+  assert.equal(svg.includes('data-footer-login-panel="section"'), true)
+  assert.equal(svg.includes('data-fixed-footer-login-panel'), false)
   assert.equal(svg.includes(loginUrl), true)
+})
+
+test('buildTodayShareCardSvg lays out long content with dynamic card height', () => {
+  const shortSvg = buildTodayShareCardSvg({
+    taskDate: '2026-05-07',
+    dateLabel: textValue('u0035', 'u6708', 'u0037', 'u65e5'),
+    topicTitle: textValue('u7406', 'u89e3', 'u4ed6', 'u4eba', 'u7684', 'u80fd', 'u529b'),
+    topicSummary: textValue('u4e3b', 'u9898', 'u6458', 'u8981'),
+    weakness: textValue('u5f53', 'u524d', 'u5361', 'u70b9'),
+    improvementPlan: textValue('u6539', 'u8fdb', 'u884c', 'u52a8'),
+    verificationPath: textValue('u9a8c', 'u8bc1', 'u65b9', 'u5f0f'),
+    loginUrl: 'https://zero.example.com/login',
+  })
+  const longSvg = buildTodayShareCardSvg({
+    taskDate: '2026-05-07',
+    dateLabel: textValue('u0035', 'u6708', 'u0037', 'u65e5'),
+    topicTitle: textValue('u7406', 'u89e3', 'u4ed6', 'u4eba', 'u7684', 'u80fd', 'u529b'),
+    topicSummary: textValue('u901a', 'u8fc7', 'u89c2', 'u5bdf', 'u3001', 'u503e', 'u542c', 'u548c', 'u76f4', 'u89c9', 'uff0c', 'u80fd', 'u591f', 'u7406', 'u89e3', 'u4ed6', 'u4eba', 'u7684', 'u5fc3', 'u6001', 'u548c', 'u5904', 'u5883', 'u3002'),
+    weakness: textValue('u73b0', 'u5728', 'u8ddf', 'u4eba', 'u4ea4', 'u6d41', 'u6709', 'u65f6', 'u5019', 'u4f1a', 'u4e0d', 'u8010', 'u70e6', 'uff0c', 'u6f5c', 'u610f', 'u8bc6', 'u91cc', 'u89c9', 'u5f97', 'u95ee', 'u9898', 'u5f88', 'u7b80', 'u5355', 'u5bf9', 'u65b9', 'u600e', 'u4e48', 'u56de', 'u7b54', 'u4e0d', 'u51fa', 'u6765', 'uff0c', 'u6216', 'u8005', 'u5bf9', 'u65b9', 'u7684', 'u7b54', 'u590d', 'u6211', 'u4e0d', 'u6ee1', 'u610f', 'u5f88', 'u591a', 'u65f6', 'u5019', 'u4f1a', 'u6709', 'u6025', 'u8e81', 'u60c5', 'u7eea'),
+    improvementPlan: '1、深度挖掘自己的卡点，如不耐烦和急躁，背后的深层原因的是什么，是否自我设了一个标准，此外还有无其他隐藏的点未被发现，并且把今天最容易触发急躁的真实场景写下来，再补一句观察触发前后的身体反应。2、培养倾听他人的习惯，并尊重他人的观点和感受。通过倾听他人的心声，看见对方真实的处境。3、交流前先停三秒，确认自己是在理解对方，而不是急着评价或纠正对方。',
+    verificationPath: textValue('u5728', 'u4e0e', 'u670b', 'u53cb', 'u548c', 'u540c', 'u4e8b', 'u4ea4', 'u5f80', 'u4e2d', 'u89c2', 'u5bdf', 'u4e00', 'u6bb5', 'u65f6', 'u95f4', 'uff0c', 'u770b', 'u770b', 'u81ea', 'u5df1', 'u7684', 'u4eba', 'u9645', 'u5173', 'u7cfb', 'u662f', 'u5426', 'u6709', 'u660e', 'u663e', 'u63d0', 'u5347', 'uff0c', 'u81ea', 'u5df1', 'u5728', 'u4e0e', 'u4ed6', 'u4eba', 'u5bf9', 'u8bdd', 'u4ea4', 'u6d41', 'u8fc7', 'u7a0b', 'u4e2d', 'u662f', 'u5426', 'u8fd8', 'u6709', 'u660e', 'u663e', 'u7684', 'u60c5', 'u7eea', 'u6ce2', 'u52a8'),
+    loginUrl: 'https://zero.example.com/login',
+  })
+
+  assert.equal(svgHeight(shortSvg) >= 1350, true)
+  assert.equal(svgHeight(longSvg) > svgHeight(shortSvg), true)
+  assert.equal(longSvg.includes('data-list-section="improvementPlan"'), true)
+  assert.equal(longSvg.includes('data-list-index="1"'), true)
+  assert.equal(longSvg.includes('data-list-index="2"'), true)
+  assert.equal(longSvg.includes('data-list-index="3"'), true)
+  assert.equal(longSvg.includes('未被发现。2、培养'), false)
+  assert.equal(longSvg.includes('data-truncated-list-item="1"'), true)
+  assert.equal(longSvg.includes('...'), true)
+})
+
+test('route uses configured public site url for default login qr target', () => {
+  assert.equal(routeSource.includes('NEXT_PUBLIC_SITE_URL'), true)
+  assert.equal(routeSource.includes("new URL('/login', publicSiteUrl)"), true)
 })
 
 test('route file keeps readable chinese fallbacks', () => {
