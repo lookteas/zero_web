@@ -15,17 +15,18 @@ test('getAuthHeroContent returns the approved growth-app auth structure', () => 
   assert.deepEqual(hero.actions, ['登录', '注册'])
 })
 
-test('login page keeps the approved auth shell and floating form card', () => {
-  assert.equal(hasTokens(loginPage, ['rounded-[34px]', 'border-[var(--border-soft)]/90', 'bg-white/85']), true)
-  assert.equal(hasTokens(loginPage, ['app-auth-hero', 'pb-28', 'md:pb-32']), true)
-  assert.equal(hasTokens(loginPage, ['-mt-20 rounded-[30px]', 'border-white/80', 'bg-[rgba(255,255,255,0.94)]']), true)
+test('login page uses the latest split-panel auth composition', () => {
+  assert.equal(hasTokens(loginPage, ['LoginExperience', 'loginAction={loginAction}', 'registerAction={registerAction}']), true)
+  assert.equal(hasTokens(loginPage, ['searchParams', 'loginError', 'registerError']), true)
 })
 
-test('login page fills the desktop hero with a premium abstract visual', () => {
-  assert.equal(hasTokens(loginPage, ['app-auth-stage', 'auth-premium-visual', 'auth-premium-orb', 'auth-premium-glass', 'auth-premium-ribbon']), true)
-  assert.equal(hasTokens(loginPage, ['top-0', 'bottom-0', 'right-0', 'z-0', 'md:w-[54%]']), true)
-  assert.equal(loginPage.includes('bottom-8 right-8 top-8'), false)
-  assert.equal(loginPage.includes('ZERO PRACTICE'), false)
-  assert.equal(loginPage.includes('auth-growth-path'), false)
-  assert.equal(loginPage.includes('复盘提醒'), false)
+test('login experience keeps the new desktop/mobile visual details and real auth actions', () => {
+  const loginExperience = readFileSync(new URL('./login-experience.tsx', import.meta.url), 'utf8')
+
+  assert.equal(hasTokens(loginExperience, ['useState', 'showPassword', 'isLogin']), true)
+  assert.equal(hasTokens(loginExperience, ['/login-illustration.png', '每日打卡', '习惯养成', '心境记录']), true)
+  assert.equal(hasTokens(loginExperience, ['formAction={loginAction}', 'formAction={registerAction}']), true)
+  assert.equal(hasTokens(loginExperience, ['login-error-alert', 'register-error-alert']), true)
+  assert.equal(loginExperience.includes('framer-motion'), false)
+  assert.equal(loginExperience.includes('lucide-react'), false)
 })

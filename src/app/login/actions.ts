@@ -42,9 +42,14 @@ export async function loginAction(formData: FormData) {
 export async function registerAction(formData: FormData) {
   const account = String(formData.get('account') ?? '').trim()
   const password = String(formData.get('password') ?? '').trim()
+  const confirmPassword = String(formData.get('confirmPassword') ?? '').trim()
   const nickname = String(formData.get('nickname') ?? '').trim()
 
   if (password.length < 6) {
+    redirect('/login?registerError=1')
+  }
+
+  if (confirmPassword && confirmPassword !== password) {
     redirect('/login?registerError=1')
   }
 
