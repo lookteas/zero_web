@@ -37,6 +37,11 @@ const COPY = {
   taskSummaryLabel: "\u610f\u8bc6\u70b9\u6458\u8981",
   taskDetailLabel: "\u8be6\u7ec6\u8bf4\u660e",
   taskDetailFallback: "\u4eca\u5929\u7684\u4efb\u52a1\u8be6\u60c5\u8fd8\u6ca1\u6709\u8865\u5145\uff0c\u5148\u56f4\u7ed5\u6458\u8981\u628a\u4eca\u5929\u6700\u5173\u952e\u7684\u7ec3\u4e60\u5199\u6e05\u695a\u3002",
+  detailLeadLabel: "\u5148\u6293\u4eca\u5929\u7684\u6838\u5fc3",
+  detailListLabel: "\u5206\u6bb5\u7406\u89e3",
+  detailMoreLabel: "\u5ef6\u4f38\u8bf4\u660e",
+  detailExpandLabel: "\u5c55\u5f00\u5b8c\u6574\u8bf4\u660e",
+  detailCollapseLabel: "\u6536\u8d77\u5b8c\u6574\u8bf4\u660e",
   dateLabel: "\u6253\u5361\u65e5\u671f\uff1a",
   statusFallback: "\u4eca\u5929\u8fd8\u5728\u6574\u7406\u4e2d",
   formPanelBadge: "\u4eca\u5929\u7684\u7ec3\u4e60",
@@ -224,6 +229,167 @@ function TodayFieldModule({
   );
 }
 
+type AwarenessDetailSections = {
+  lead: string[];
+  groups: Array<{ title: string; body: string[] }>;
+  more: string[];
+};
+
+function splitDenseDetailText(text: string) {
+  const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+  const lines = normalized
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length > 1 || normalized.length <= 180) {
+    return lines;
+  }
+
+  const sentences = normalized.match(/[^。！？；]+[。！？；]?/g) || [normalized];
+  const paragraphs: string[] = [];
+  let current = "";
+
+  for (const sentence of sentences.map((item) => item.trim()).filter(Boolean)) {
+    if (current && current.length + sentence.length > 120) {
+      paragraphs.push(current);
+      current = sentence;
+    } else {
+      current = current ? `${current}${sentence}` : sentence;
+    }
+  }
+
+  if (current) {
+    paragraphs.push(current);
+  }
+
+  return paragraphs;
+}
+
+function getDetailGroupTitle(line: string) {
+  const numbered = line.match(/^((?:\d+|[一二三四五六七八九十]+)\s*[-、.．]\s*)(.+)$/);
+  const bullet = line.match(/^[·•\-]\s*(.+)$/);
+  const rawTitle = numbered?.[2] || bullet?.[1] || "";
+  const title = rawTitle.trim();
+
+  if (!title) {
+    return "";
+  }
+
+  if (title.length <= 36 && /[:：]$/.test(title)) {
+    return title.replace(/[:：]$/, "");
+  }
+
+  if (numbered && title.length <= 24) {
+    return title;
+  }
+
+  return "";
+}
+
+function buildAwarenessDetailSections(details: string): AwarenessDetailSections {
+  const lines = splitDenseDetailText(details);
+  const lead: string[] = [];
+  const groups: AwarenessDetailSections["groups"] = [];
+  const more: string[] = [];
+  let currentGroup: AwarenessDetailSections["groups"][number] | null = null;
+
+  for (const line of lines) {
+    const groupTitle = getDetailGroupTitle(line);
+
+    if (groupTitle) {
+      currentGroup = { title: groupTitle, body: [] };
+      groups.push(currentGroup);
+      continue;
+    }
+
+    if (currentGroup) {
+      currentGroup.body.push(line.replace(/^[·•\-]\s*/, ""));
+      continue;
+    }
+
+    if (lead.length < 2) {
+      lead.push(line);
+    } else {
+      more.push(line);
+    }
+  }
+
+  if (groups.length === 0 && more.length > 0) {
+    const promoted = more.splice(0, 3);
+    groups.push({ title: COPY.detailListLabel, body: promoted });
+  }
+
+  return { lead: lead.length > 0 ? lead : lines.slice(0, 1), groups, more };
+}
+
+function AwarenessDetailReader({ details }: { details: string }) {
+  const sections = buildAwarenessDetailSections(details);
+  const hasMore = sections.more.length > 0;
+
+  return (
+    <div className="space-y-4">
+      <section className="rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)] px-4 py-4">
+        <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.detailLeadLabel}</p>
+        <div className="mt-3 space-y-2.5 border-l-2 border-[rgba(19,111,99,0.18)] pl-3">
+          {sections.lead.map((paragraph, index) => (
+            <p key={`lead-${index}-${paragraph}`} className="text-[14px] leading-7 text-[var(--foreground)] md:text-[15px] md:leading-8">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      {sections.groups.length > 0 ? (
+        <section>
+          <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.detailListLabel}</p>
+          <div className="mt-3 grid gap-3">
+            {sections.groups.map((group, index) => (
+              <article
+                key={`${group.title}-${index}`}
+                className="rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/90 px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.03)]"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(19,111,99,0.14)] bg-[var(--surface-soft)] text-[12px] font-semibold text-[var(--primary)]">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-[14px] font-semibold leading-6 text-[var(--foreground)]">{group.title}</h3>
+                    {group.body.length > 0 ? (
+                      <div className="mt-2 space-y-2 text-[13px] leading-7 text-[var(--foreground-soft)] md:text-sm md:leading-7">
+                        {group.body.map((paragraph, bodyIndex) => (
+                          <p key={`group-${index}-${bodyIndex}-${paragraph}`}>{paragraph}</p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {hasMore ? (
+        <details className="group rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/82 px-4 py-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[13px] font-medium text-[var(--foreground)] marker:hidden">
+            <span>{COPY.detailMoreLabel}</span>
+            <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white/90 px-3 text-[12px] text-[var(--foreground-soft)] transition group-open:border-[var(--border-strong)] group-open:text-[var(--foreground)]">
+              <span className="group-open:hidden">{COPY.detailExpandLabel}</span>
+              <span className="hidden group-open:inline">{COPY.detailCollapseLabel}</span>
+            </span>
+          </summary>
+          <div className="mt-3 space-y-2.5 text-[13px] leading-7 text-[var(--foreground-soft)] md:text-sm md:leading-7">
+            {sections.more.map((paragraph, index) => (
+              <p key={`more-${index}-${paragraph}`}>{paragraph}</p>
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </div>
+  );
+}
+
 function TodayTaskDetailCard({ task }: { task: DailyTask }) {
   const title = task.awarenessTitle || task.topicTitle;
   const summary = task.awarenessSummary || task.topicSummary || COPY.topicFallback;
@@ -250,7 +416,9 @@ function TodayTaskDetailCard({ task }: { task: DailyTask }) {
 
             <div>
               <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskDetailLabel}</p>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-[var(--foreground-soft)]">{details}</p>
+              <div className="mt-3">
+                <AwarenessDetailReader details={details} />
+              </div>
             </div>
           </div>
         </div>

@@ -45,6 +45,18 @@ test('today page exposes title summary and detail guidance before the form', () 
   assert.equal(todayPage.includes('text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]'), true)
 })
 
+test('today awareness detail uses structured reading blocks for long content', () => {
+  assert.equal(todayPage.includes('function buildAwarenessDetailSections('), true)
+  assert.equal(todayPage.includes('function AwarenessDetailReader('), true)
+  assert.equal(todayPage.includes('COPY.detailLeadLabel'), true)
+  assert.equal(todayPage.includes('COPY.detailListLabel'), true)
+  assert.equal(todayPage.includes('COPY.detailMoreLabel'), true)
+  assert.equal(todayPage.includes('COPY.detailExpandLabel'), true)
+  assert.equal(todayPage.includes('COPY.detailCollapseLabel'), true)
+  assert.equal(todayPage.includes('border-l-2 border-[rgba(19,111,99,0.18)]'), true)
+  assert.equal(todayPage.includes('whitespace-pre-wrap text-sm leading-7'), false)
+})
+
 test('today page uses more compact mobile spacing between task detail and form blocks', () => {
   assert.equal(todayPage.includes('flex flex-col gap-2.5 md:flex-row md:items-center md:justify-between'), true)
   assert.equal(todayPage.includes('mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5'), true)
