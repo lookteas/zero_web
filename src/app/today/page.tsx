@@ -35,9 +35,7 @@ const COPY = {
   topicFallback: "\u4eca\u5929\u7684\u4e3b\u9898\u8bf4\u660e\u8fd8\u6ca1\u6709\u8865\u5145\u3002",
   taskDetailDescription: "\u5148\u770b\u6e05\u4eca\u5929\u56f4\u7ed5\u4ec0\u4e48\u7ec3\uff0c\u518d\u5f00\u59cb\u586b\u5199\u3002",
   taskSummaryLabel: "\u610f\u8bc6\u70b9\u6458\u8981",
-  taskDetailLabel: "\u8be6\u7ec6\u8bf4\u660e",
   taskDetailFallback: "\u4eca\u5929\u7684\u4efb\u52a1\u8be6\u60c5\u8fd8\u6ca1\u6709\u8865\u5145\uff0c\u5148\u56f4\u7ed5\u6458\u8981\u628a\u4eca\u5929\u6700\u5173\u952e\u7684\u7ec3\u4e60\u5199\u6e05\u695a\u3002",
-  detailLeadLabel: "\u5148\u6293\u4eca\u5929\u7684\u6838\u5fc3",
   detailListLabel: "\u5206\u6bb5\u7406\u89e3",
   detailMoreLabel: "\u5ef6\u4f38\u8bf4\u660e",
   detailExpandLabel: "\u5c55\u5f00\u5b8c\u6574\u8bf4\u660e",
@@ -323,15 +321,18 @@ function buildAwarenessDetailSections(details: string): AwarenessDetailSections 
   return { lead: lead.length > 0 ? lead : lines.slice(0, 1), groups, more };
 }
 
-function AwarenessDetailReader({ details }: { details: string }) {
+function AwarenessDetailReader({ summary, details }: { summary: string; details: string }) {
   const sections = buildAwarenessDetailSections(details);
   const hasMore = sections.more.length > 0;
 
   return (
     <div className="space-y-4">
       <section className="rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)] px-4 py-4">
-        <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.detailLeadLabel}</p>
+        <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskSummaryLabel}</p>
         <div className="mt-3 space-y-2.5 border-l-2 border-[rgba(19,111,99,0.18)] pl-3">
+          <p className="text-[14px] leading-7 text-[var(--foreground)] md:text-[15px] md:leading-8">
+            {summary}
+          </p>
           {sections.lead.map((paragraph, index) => (
             <p key={`lead-${index}-${paragraph}`} className="text-[14px] leading-7 text-[var(--foreground)] md:text-[15px] md:leading-8">
               {paragraph}
@@ -408,19 +409,7 @@ function TodayTaskDetailCard({ task }: { task: DailyTask }) {
         </div>
 
         <div className="mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5">
-          <div className="space-y-3">
-            <div>
-              <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskSummaryLabel}</p>
-              <p className="mt-2 text-sm leading-7 text-[var(--foreground-soft)]">{summary}</p>
-            </div>
-
-            <div>
-              <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskDetailLabel}</p>
-              <div className="mt-3">
-                <AwarenessDetailReader details={details} />
-              </div>
-            </div>
-          </div>
+          <AwarenessDetailReader summary={summary} details={details} />
         </div>
       </div>
     </WorkbenchShell>

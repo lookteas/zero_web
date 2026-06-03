@@ -38,9 +38,10 @@ test('today page uses condensed 3-layer structure', () => {
   assert.equal(todayPage.includes('\\u628a\\u4eca\\u5929\\u6700\\u60f3\\u7ec3\\u7684\\u4e00\\u70b9\\u5199\\u6e05\\u695a'), false)
 })
 
-test('today page exposes title summary and detail guidance before the form', () => {
+test('today page exposes one merged awareness summary before the form', () => {
   assert.equal(todayPage.includes('\\u610f\\u8bc6\\u70b9\\u6458\\u8981'), true)
-  assert.equal(todayPage.includes('\\u8be6\\u7ec6\\u8bf4\\u660e'), true)
+  assert.equal(todayPage.includes('\\u8be6\\u7ec6\\u8bf4\\u660e'), false)
+  assert.equal(todayPage.includes('\\u5148\\u6293\\u4eca\\u5929\\u7684\\u6838\\u5fc3'), false)
   assert.equal(todayPage.includes('\\u5148\\u770b\\u6e05\\u4eca\\u5929\\u56f4\\u7ed5\\u4ec0\\u4e48\\u7ec3\\uff0c\\u518d\\u5f00\\u59cb\\u586b\\u5199'), true)
   assert.equal(todayPage.includes('text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]'), true)
 })
@@ -48,7 +49,8 @@ test('today page exposes title summary and detail guidance before the form', () 
 test('today awareness detail uses structured reading blocks for long content', () => {
   assert.equal(todayPage.includes('function buildAwarenessDetailSections('), true)
   assert.equal(todayPage.includes('function AwarenessDetailReader('), true)
-  assert.equal(todayPage.includes('COPY.detailLeadLabel'), true)
+  assert.equal(todayPage.includes('COPY.taskSummaryLabel'), true)
+  assert.equal(todayPage.includes('COPY.detailLeadLabel'), false)
   assert.equal(todayPage.includes('COPY.detailListLabel'), true)
   assert.equal(todayPage.includes('COPY.detailMoreLabel'), true)
   assert.equal(todayPage.includes('COPY.detailExpandLabel'), true)
@@ -60,7 +62,7 @@ test('today awareness detail uses structured reading blocks for long content', (
 test('today page uses more compact mobile spacing between task detail and form blocks', () => {
   assert.equal(todayPage.includes('flex flex-col gap-2.5 md:flex-row md:items-center md:justify-between'), true)
   assert.equal(todayPage.includes('mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5'), true)
-  assert.equal(todayPage.includes('className="space-y-3"'), true)
+  assert.equal(todayPage.includes('<AwarenessDetailReader summary={summary} details={details} />'), true)
   assert.equal(todayPage.includes('className="space-y-3.5 md:space-y-5"'), true)
   assert.equal(todayPage.includes('grid gap-3 pt-0.5 md:grid-cols-2'), true)
 })
