@@ -197,7 +197,7 @@ function TodayFieldModule({
   return (
     <section
       className={[
-        "rounded-[18px] border px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.035)] md:px-4 md:py-4",
+        "rounded-[16px] border-0 px-0 py-0 shadow-none md:rounded-[18px] md:border md:px-4 md:py-4 md:shadow-[0_8px_18px_rgba(15,48,60,0.035)]",
         chrome.panelClassName,
       ].join(" ")}
     >
@@ -236,8 +236,8 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
     <div className="space-y-4">
       <section className="space-y-3">
         <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskSummaryLabel}</p>
-        <div className="rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)] px-4 py-4">
-          <div className="space-y-3 border-l-2 border-[rgba(19,111,99,0.18)] pl-3">
+        <div className="rounded-[18px] bg-[rgba(238,248,247,0.72)] px-4 py-4 md:rounded-[20px] md:border md:border-[rgba(19,111,99,0.12)]">
+          <div className="space-y-3 md:border-l-2 md:border-[rgba(19,111,99,0.18)] md:pl-3">
             <p className="summary-highlight text-[16px] font-semibold leading-8 text-[var(--foreground)] md:text-[17px] md:leading-8">
               {summary}
             </p>
@@ -257,7 +257,7 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
             {sections.groups.map((group, index) => (
               <article
                 key={`${group.title}-${index}`}
-                className="rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/90 px-4 py-4 shadow-[0_8px_18px_rgba(15,48,60,0.03)]"
+                className="border-t border-[rgba(210,221,215,0.72)] pt-4 first:border-t-0 first:pt-0 md:rounded-[20px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/90 md:px-4 md:py-4 md:shadow-[0_8px_18px_rgba(15,48,60,0.03)]"
               >
                 <div className="flex items-start gap-3">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(19,111,99,0.14)] bg-[var(--surface-soft)] text-[12px] font-semibold text-[var(--primary)]">
@@ -281,7 +281,7 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
       ) : null}
 
       {hasMore ? (
-        <details className="group rounded-[20px] border border-[rgba(210,221,215,0.86)] bg-white/82 px-4 py-3">
+        <details className="group border-t border-[rgba(210,221,215,0.72)] pt-4 md:rounded-[20px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/82 md:px-4 md:py-3">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[13px] font-medium text-[var(--foreground)] marker:hidden">
             <span>{COPY.detailMoreLabel}</span>
             <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white/90 px-3 text-[12px] text-[var(--foreground-soft)] transition group-open:border-[var(--border-strong)] group-open:text-[var(--foreground)]">
@@ -317,7 +317,7 @@ function TodayTaskDetailCard({ task }: { task: DailyTask }) {
           ) : null}
         </div>
 
-        <div className="mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5">
+        <div className="mt-4 md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
           <AwarenessDetailReader summary={summary} details={details} />
         </div>
       </div>
@@ -425,9 +425,9 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
           {task.status === "submitted" && !task.canEditContent ? (
             <TodaySubmittedSummaryCard task={task} />
           ) : canEditSubmittedContent ? (
-            <details className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] md:p-5 group">
+            <details className="group bg-transparent px-0 py-0 shadow-none md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
               <summary className="cursor-pointer list-none marker:hidden">
-                <div className="flex items-center justify-between gap-3 rounded-[18px] border border-[rgba(41,122,106,0.1)] bg-[rgba(248,252,250,0.88)] px-3.5 py-2.5 text-[12px] leading-5 text-[var(--foreground-faint)]">
+                <div className="flex items-center justify-between gap-3 rounded-[16px] bg-[rgba(248,252,250,0.88)] px-3.5 py-2.5 text-[12px] leading-5 text-[var(--foreground-faint)] md:rounded-[18px] md:border md:border-[rgba(41,122,106,0.1)]">
                   <span>{COPY.submittedEditableCollapsedHint}</span>
                   <span className="text-[14px] leading-none text-[var(--foreground-faint)] transition-transform group-open:rotate-180">⌄</span>
                 </div>
@@ -463,7 +463,7 @@ export default async function TodayPage({ searchParams }: TodayPageProps) {
               </form>
             </details>
           ) : (
-            <section className="rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] md:p-5">
+            <section className="bg-transparent px-0 py-0 shadow-none md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
               <form action={saveTodayTaskAction} className="space-y-3.5 md:space-y-5">
                 <input type="hidden" name="taskId" value={task.id} />
 

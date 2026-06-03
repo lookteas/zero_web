@@ -53,19 +53,19 @@ test('today awareness detail uses structured reading blocks for long content', (
   assert.equal(todayPage.includes('COPY.taskSummaryLabel'), true)
   assert.equal(todayPage.includes('summary-highlight'), true)
   assert.equal(todayPage.includes('summary-supporting'), true)
-  assert.equal(todayPage.includes('rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)]'), true)
+  assert.equal(todayPage.includes('rounded-[18px] bg-[rgba(238,248,247,0.72)] px-4 py-4 md:rounded-[20px] md:border md:border-[rgba(19,111,99,0.12)]'), true)
   assert.equal(todayPage.includes('COPY.detailLeadLabel'), false)
   assert.equal(todayPage.includes('COPY.detailListLabel'), true)
   assert.equal(todayPage.includes('COPY.detailMoreLabel'), true)
   assert.equal(todayPage.includes('COPY.detailExpandLabel'), true)
   assert.equal(todayPage.includes('COPY.detailCollapseLabel'), true)
-  assert.equal(todayPage.includes('border-l-2 border-[rgba(19,111,99,0.18)]'), true)
+  assert.equal(todayPage.includes('md:border-l-2 md:border-[rgba(19,111,99,0.18)] md:pl-3'), true)
   assert.equal(todayPage.includes('whitespace-pre-wrap text-sm leading-7'), false)
 })
 
 test('today page uses more compact mobile spacing between task detail and form blocks', () => {
   assert.equal(todayPage.includes('flex flex-col gap-2.5 md:flex-row md:items-center md:justify-between'), true)
-  assert.equal(todayPage.includes('mt-4 rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] md:p-5'), true)
+  assert.equal(todayPage.includes('mt-4 md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5'), true)
   assert.equal(todayPage.includes('<AwarenessDetailReader summary={summary} details={details} />'), true)
   assert.equal(todayPage.includes('className="space-y-3.5 md:space-y-5"'), true)
   assert.equal(todayPage.includes('grid gap-3 pt-0.5 md:grid-cols-2'), true)
@@ -73,8 +73,8 @@ test('today page uses more compact mobile spacing between task detail and form b
 
 test('today page uses share-panel surfaces for detail and form sections', () => {
   assert.equal(hasTokens(todayPage, ['rounded-[30px]', 'border-[rgba(204,219,212,0.92)]', 'bg-[var(--surface)]']), true)
-  assert.equal(hasTokens(todayPage, ['rounded-[24px]', 'border-[rgba(210,221,215,0.86)]', 'bg-white/92']), true)
-  assert.equal(hasTokens(todayPage, ['rounded-[24px]', 'border-[rgba(210,221,215,0.86)]', 'bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)]']), true)
+  assert.equal(hasTokens(todayPage, ['md:rounded-[24px]', 'md:border-[rgba(210,221,215,0.86)]', 'md:bg-white/92']), true)
+  assert.equal(hasTokens(todayPage, ['md:rounded-[24px]', 'md:border-[rgba(210,221,215,0.86)]', 'md:bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)]']), true)
 })
 
 test('today writing workflow uses the clear workbench shell family', () => {
@@ -86,11 +86,19 @@ test('today writing workflow uses the clear workbench shell family', () => {
 })
 
 test('today writing modules stay distinct without heavy card depth', () => {
-  assert.equal(hasTokens(todayPage, ['rounded-[18px]', 'shadow-[0_8px_18px_rgba(15,48,60,0.035)]', 'TodayFieldModule']), true)
+  assert.equal(hasTokens(todayPage, ['md:rounded-[18px]', 'md:shadow-[0_8px_18px_rgba(15,48,60,0.035)]', 'TodayFieldModule']), true)
   assert.equal(hasTokens(todayPage, ['min-h-[104px]', 'bg-white/95', 'focus:shadow-[0_0_0_4px_rgba(19,111,99,0.08)]']), true)
   assert.equal(todayPage.includes('shadow-[0_12px_26px_rgba(15,23,42,0.04)]'), false)
   assert.equal(todayPage.includes('action={saveTodayTaskAction}'), true)
   assert.equal(todayPage.includes('formAction={submitTodayTaskAction}'), true)
+})
+
+test('today mobile reading and form surfaces avoid nested border steps', () => {
+  assert.equal(todayPage.includes('md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5'), true)
+  assert.equal(todayPage.includes('rounded-[18px] bg-[rgba(238,248,247,0.72)] px-4 py-4 md:rounded-[20px] md:border md:border-[rgba(19,111,99,0.12)]'), true)
+  assert.equal(todayPage.includes('border-t border-[rgba(210,221,215,0.72)] pt-4 first:border-t-0 first:pt-0 md:rounded-[20px] md:border'), true)
+  assert.equal(todayPage.includes('bg-transparent px-0 py-0 shadow-none md:rounded-[24px] md:border'), true)
+  assert.equal(todayPage.includes('rounded-[16px] border-0 px-0 py-0 shadow-none md:rounded-[18px] md:border md:px-4 md:py-4'), true)
 })
 test('today page removes old section-card wrapper around detail and form blocks', () => {
   assert.equal(todayPage.includes('SectionCard title={COPY.topicCardTitle}'), false)
@@ -108,9 +116,9 @@ test('today page keeps submitted tasks editable within 72 hours', () => {
   assert.equal(todayPage.includes('submittedEditableCollapsedHint'), true)
   assert.equal(todayPage.includes('submittedEditableNotice'), false)
   assert.equal(todayPage.includes('submittedEditableToggle'), false)
-  assert.equal(todayPage.includes('rounded-[24px] border border-[rgba(210,221,215,0.86)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,250,248,0.94)_100%)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] md:p-5 group'), true)
+  assert.equal(todayPage.includes('group bg-transparent px-0 py-0 shadow-none md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)]'), true)
   assert.equal(todayPage.includes('<details open'), false)
-  assert.equal(todayPage.includes('flex items-center justify-between gap-3 rounded-[18px] border border-[rgba(41,122,106,0.1)] bg-[rgba(248,252,250,0.88)] px-3.5 py-2.5 text-[12px]'), true)
+  assert.equal(todayPage.includes('flex items-center justify-between gap-3 rounded-[16px] bg-[rgba(248,252,250,0.88)] px-3.5 py-2.5 text-[12px]'), true)
   assert.equal(todayPage.includes('action={saveTodayTaskAction}'), true)
 })
 
