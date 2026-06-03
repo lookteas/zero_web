@@ -15,6 +15,7 @@ import { createTodayTask, getTodayTask, listDailyTaskLogs, type DailyTask } from
 import { taskStatusLabelMap } from "@/lib/labels";
 
 import { saveTodayTaskAction, submitTodayTaskAction } from "./actions";
+import { buildAwarenessDetailSections } from "./today-detail-reader.mjs";
 import { getTodayFieldChrome } from "./today-form-chrome.mjs";
 import { TodaySharePanel } from "./today-share-panel";
 
@@ -227,102 +228,8 @@ function TodayFieldModule({
   );
 }
 
-type AwarenessDetailSections = {
-  lead: string[];
-  groups: Array<{ title: string; body: string[] }>;
-  more: string[];
-};
-
-function splitDenseDetailText(text: string) {
-  const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
-  const lines = normalized
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lines.length > 1 || normalized.length <= 180) {
-    return lines;
-  }
-
-  const sentences = normalized.match(/[^。！？；]+[。！？；]?/g) || [normalized];
-  const paragraphs: string[] = [];
-  let current = "";
-
-  for (const sentence of sentences.map((item) => item.trim()).filter(Boolean)) {
-    if (current && current.length + sentence.length > 120) {
-      paragraphs.push(current);
-      current = sentence;
-    } else {
-      current = current ? `${current}${sentence}` : sentence;
-    }
-  }
-
-  if (current) {
-    paragraphs.push(current);
-  }
-
-  return paragraphs;
-}
-
-function getDetailGroupTitle(line: string) {
-  const numbered = line.match(/^((?:\d+|[一二三四五六七八九十]+)\s*[-、.．]\s*)(.+)$/);
-  const bullet = line.match(/^[·•\-]\s*(.+)$/);
-  const rawTitle = numbered?.[2] || bullet?.[1] || "";
-  const title = rawTitle.trim();
-
-  if (!title) {
-    return "";
-  }
-
-  if (title.length <= 36 && /[:：]$/.test(title)) {
-    return title.replace(/[:：]$/, "");
-  }
-
-  if (numbered && title.length <= 24) {
-    return title;
-  }
-
-  return "";
-}
-
-function buildAwarenessDetailSections(details: string): AwarenessDetailSections {
-  const lines = splitDenseDetailText(details);
-  const lead: string[] = [];
-  const groups: AwarenessDetailSections["groups"] = [];
-  const more: string[] = [];
-  let currentGroup: AwarenessDetailSections["groups"][number] | null = null;
-
-  for (const line of lines) {
-    const groupTitle = getDetailGroupTitle(line);
-
-    if (groupTitle) {
-      currentGroup = { title: groupTitle, body: [] };
-      groups.push(currentGroup);
-      continue;
-    }
-
-    if (currentGroup) {
-      currentGroup.body.push(line.replace(/^[·•\-]\s*/, ""));
-      continue;
-    }
-
-    if (lead.length < 2) {
-      lead.push(line);
-    } else {
-      more.push(line);
-    }
-  }
-
-  if (groups.length === 0 && more.length > 0) {
-    const promoted = more.splice(0, 3);
-    groups.push({ title: COPY.detailListLabel, body: promoted });
-  }
-
-  return { lead: lead.length > 0 ? lead : lines.slice(0, 1), groups, more };
-}
-
 function AwarenessDetailReader({ summary, details }: { summary: string; details: string }) {
-  const sections = buildAwarenessDetailSections(details);
+  const sections = buildAwarenessDetailSections({ summary, details });
   const hasMore = sections.more.length > 0;
 
   return (

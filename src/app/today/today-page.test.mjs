@@ -47,8 +47,9 @@ test('today page exposes one merged awareness summary before the form', () => {
 })
 
 test('today awareness detail uses structured reading blocks for long content', () => {
-  assert.equal(todayPage.includes('function buildAwarenessDetailSections('), true)
+  assert.equal(todayPage.includes('import { buildAwarenessDetailSections } from "./today-detail-reader.mjs";'), true)
   assert.equal(todayPage.includes('function AwarenessDetailReader('), true)
+  assert.equal(todayPage.includes('buildAwarenessDetailSections({ summary, details })'), true)
   assert.equal(todayPage.includes('COPY.taskSummaryLabel'), true)
   assert.equal(todayPage.includes('COPY.detailLeadLabel'), false)
   assert.equal(todayPage.includes('COPY.detailListLabel'), true)
