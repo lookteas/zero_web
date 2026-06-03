@@ -234,17 +234,19 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
 
   return (
     <div className="space-y-4">
-      <section className="rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)] px-4 py-4">
+      <section className="space-y-3">
         <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">{COPY.taskSummaryLabel}</p>
-        <div className="mt-3 space-y-2.5 border-l-2 border-[rgba(19,111,99,0.18)] pl-3">
-          <p className="text-[14px] leading-7 text-[var(--foreground)] md:text-[15px] md:leading-8">
-            {summary}
-          </p>
-          {sections.lead.map((paragraph, index) => (
-            <p key={`lead-${index}-${paragraph}`} className="text-[14px] leading-7 text-[var(--foreground)] md:text-[15px] md:leading-8">
-              {paragraph}
+        <div className="rounded-[20px] border border-[rgba(19,111,99,0.12)] bg-[rgba(238,248,247,0.74)] px-4 py-4">
+          <div className="space-y-3 border-l-2 border-[rgba(19,111,99,0.18)] pl-3">
+            <p className="summary-highlight text-[16px] font-semibold leading-8 text-[var(--foreground)] md:text-[17px] md:leading-8">
+              {summary}
             </p>
-          ))}
+            {sections.lead.map((paragraph, index) => (
+              <p key={`lead-${index}-${paragraph}`} className="summary-supporting text-[14px] leading-7 text-[var(--foreground-soft)] md:text-[15px] md:leading-8">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
 

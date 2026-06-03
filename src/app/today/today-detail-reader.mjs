@@ -12,6 +12,10 @@ function isRepeatedSummaryLine(line, summary) {
   return normalizedLine !== '' && normalizedLine === normalizedSummary
 }
 
+function cleanDisplayLine(line) {
+  return String(line || '').replace(/^[·•\-]\s*/, '').trim()
+}
+
 function splitDenseDetailText(text) {
   const normalized = String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim()
   const lines = normalized
@@ -80,15 +84,17 @@ export function buildAwarenessDetailSections({ summary, details }) {
       continue
     }
 
+    const displayLine = cleanDisplayLine(line)
+
     if (currentGroup) {
-      currentGroup.body.push(line.replace(/^[·•\-]\s*/, ''))
+      currentGroup.body.push(displayLine)
       continue
     }
 
     if (lead.length < 2) {
-      lead.push(line)
+      lead.push(displayLine)
     } else {
-      more.push(line)
+      more.push(displayLine)
     }
   }
 
