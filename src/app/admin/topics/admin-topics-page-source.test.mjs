@@ -85,3 +85,13 @@ test('admin topics page wires awareness insert action into schedule editor', () 
   assert.match(source, /insertAwarenessAction/)
   assert.match(source, /insertAction=\{insertAwarenessAction\}/)
 })
+
+test('admin topics page exposes weekly awareness review sharing', () => {
+  assert.match(source, /import \{ AdminWeeklySharePanel \} from "\.\/admin-weekly-share-panel"/)
+  assert.match(source, /<AdminWeeklySharePanel[\s\S]*weekStart=\{timelineStart\}/)
+  assert.match(source, /weekDays=\{timelineSlots\}/)
+  assert.ok(
+    source.indexOf('<AdminWeeklySharePanel') <
+      source.indexOf('<AwarenessScheduleEditor'),
+  )
+})

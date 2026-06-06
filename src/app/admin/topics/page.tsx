@@ -6,6 +6,7 @@ import { getAdminAwarenessCycle, listAdminTopics } from "@/lib/api";
 import { requireAdmin } from "@/lib/admin-auth";
 
 import { excludeAwarenessAction, insertAwarenessAction, updateAwarenessAction, updateAwarenessCycleAction } from "./actions";
+import { AdminWeeklySharePanel } from "./admin-weekly-share-panel";
 import { AwarenessScheduleEditor } from "./awareness-schedule-editor";
 import { PauseDatePicker } from "./pause-date-picker";
 import { buildTopicTimeline, getDefaultTimelineStart, getTimelineSummary, parseTimelineStart, shiftTimelineStart } from "../topic-timeline.mjs";
@@ -57,6 +58,11 @@ export default async function AdminTopicsPage({ searchParams }: AdminTopicsPageP
             <Link href={`/admin/topics?weekStart=${nextWeekStart}`} className="rounded-[10px] border border-slate-300 px-3 py-2 text-slate-700 transition hover:border-cyan-600 hover:text-cyan-800">下一周</Link>
           </div>
         </div>
+
+        <AdminWeeklySharePanel
+          weekStart={timelineStart}
+          weekDays={timelineSlots}
+        />
 
         <AwarenessScheduleEditor
           slots={timelineSlots}
