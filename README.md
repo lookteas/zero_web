@@ -1,12 +1,12 @@
 # Zero Web
 
-`apps/web` 是 Zero 项目的前端应用，基于 `Next.js 16`、`React 19`、`TypeScript` 与 `Tailwind CSS 4`，负责登录、首页、今日打卡、觉察记录、复盘、每周投票、每周讨论和后台管理页面。
+`apps/web` 是 Zero 项目的前端应用，基于 `Next.js 16`、`React 19`、`TypeScript` 与 `Tailwind CSS 4`，负责登录、首页、今日打卡、自由模式、觉察记录、复盘、每周投票、每周讨论和后台管理页面。
 
 ## 项目定位
 
 这个前端当前承担三类职责：
 
-- 用户侧主链路：登录 / 注册、今日打卡、觉察记录、复盘提醒、首页聚合。
+- 用户侧主链路：登录 / 注册、今日打卡、自由模式、觉察记录、复盘提醒、首页聚合。
 - 周期性功能：每周投票、每周讨论、历史回看。
 - 管理侧页面：管理员登录、主题排期、讨论配置、后台概览。
 
@@ -131,6 +131,7 @@
 - 今日任务摘要
 - 连续节奏 / 待复盘数量等状态卡
 - 最近需要继续推进的主入口
+- 自由模式入口，和今日打卡主按钮保持独立
 - 首页情绪氛围 Hero 与视觉引导
 
 相关文件重点：
@@ -176,7 +177,24 @@
 - `src/app/today/today-share-panel.tsx`
 - `src/app/today/history/page.tsx`
 
-### 4. 觉察记录 `/logs`
+### 4. 自由模式 `/freemode`
+
+当前负责：
+
+- 按章节选择任意意识点进行练习
+- 支持一天练多个点，不受“每天一个点”的日常顺序限制
+- 提交独立练习记录，不计入今日打卡、不写入日常打卡任务
+- 展示最近自由练习记录
+- 移动端使用紧凑布局：章节横向滚动、意识点列表限高滚动、长说明折叠查看
+
+相关文件重点：
+
+- `src/app/freemode/page.tsx`
+- `src/app/freemode/actions.ts`
+- `src/app/freemode/freemode-workbench.tsx`
+- `src/app/freemode/freemode-page.test.mjs`
+
+### 5. 觉察记录 `/logs`
 
 当前负责：
 
@@ -192,7 +210,7 @@
 - `src/app/logs/log-entry-card.mjs`
 - `src/app/logs/logs-form-chrome.mjs`
 
-### 5. 复盘 `/reviews`
+### 6. 复盘 `/reviews`
 
 当前负责：
 
@@ -209,7 +227,7 @@
 - `src/app/reviews/review-surface.mjs`
 - `src/app/reviews/history/page.tsx`
 
-### 6. 每周投票 `/vote`
+### 7. 每周投票 `/vote`
 
 当前负责：
 
@@ -224,7 +242,7 @@
 - `src/app/vote/actions.ts`
 - `src/app/vote/vote-dialogs.tsx`
 
-### 7. 每周讨论 `/discussion`
+### 8. 每周讨论 `/discussion`
 
 当前负责：
 
@@ -238,7 +256,7 @@
 - `src/app/discussion/discussion-share.mjs`
 - `src/app/discussion/share-card/route.ts`
 
-### 8. 管理后台 `/admin/*`
+### 9. 管理后台 `/admin/*`
 
 当前已包含：
 
@@ -408,6 +426,8 @@ npm run start
 
 - `src/app/page.tsx`
 - `src/app/today/page.tsx`
+- `src/app/freemode/page.tsx`
+- `src/app/freemode/freemode-workbench.tsx`
 - `src/app/logs/page.tsx`
 - `src/app/reviews/page.tsx`
 - `src/app/vote/page.tsx`
@@ -426,6 +446,7 @@ npm run start
 
 - 这是个人项目，小而完整优先，不要过度工程化。
 - 页面结构和文案优先围绕主链路：登录 / 今日打卡 / 觉察记录 / 复盘提醒。
+- 自由模式必须保持独立：不计入今日打卡、不复用今日任务提交链路、不改写日常打卡内容。
 - 新增接口提示文案时，优先考虑是否应该放进 `api-copy.mjs`。
 - 新增提交失败、登录失败、保存失败文案时，优先考虑是否应该放进 `action-copy.mjs`。
 - 改接口地址时，不要在页面里写死地址，统一改环境变量。
