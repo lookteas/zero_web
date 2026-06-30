@@ -26,3 +26,11 @@ test('free mode workbench groups awareness points by chapter and allows point se
   assert.equal(freeModeWorkbench.includes('chapter.points.length'), true)
   assert.equal(freeModeWorkbench.includes('开始这次练习'), true)
 })
+
+test('free mode workbench keeps the mobile learning flow compact', () => {
+  assert.equal(freeModeWorkbench.includes('overflow-x-auto'), true)
+  assert.equal(freeModeWorkbench.includes('snap-x'), true)
+  assert.equal(freeModeWorkbench.includes('max-h-[320px]'), true)
+  assert.equal(freeModeWorkbench.includes('查看完整说明'), true)
+  assert.equal(freeModeWorkbench.includes('max-h-[280px]'), true)
+})

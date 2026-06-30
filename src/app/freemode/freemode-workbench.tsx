@@ -22,7 +22,7 @@ function ChapterChip({ active, children, onClick }: { active: boolean; children:
       type="button"
       onClick={onClick}
       className={[
-        "flex w-full flex-col rounded-[20px] border px-4 py-4 text-left transition",
+        "flex min-h-[112px] w-[146px] shrink-0 cursor-pointer snap-start flex-col rounded-[18px] border px-3.5 py-3 text-left transition md:min-h-[154px] md:w-full md:rounded-[20px] md:px-4 md:py-4",
         active
           ? "border-[rgba(19,111,99,0.28)] bg-[linear-gradient(180deg,rgba(245,250,247,0.98)_0%,rgba(236,247,244,0.98)_100%)] shadow-[0_10px_22px_rgba(15,23,42,0.05)]"
           : chrome.className,
@@ -68,15 +68,15 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
 
   return (
     <div className="space-y-4">
-      <section className="rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6">
-        <div className="mb-4 space-y-2">
+      <section className="rounded-[22px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-3.5 py-4 shadow-[var(--shadow-card)] md:rounded-[24px] md:px-6 md:py-6">
+        <div className="mb-3 space-y-1.5 md:mb-4 md:space-y-2">
           <h2 className="text-[18px] font-semibold text-[var(--foreground)] md:text-[20px]">先选章节，再选意识点</h2>
           <p className="text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
             自由模式完全独立，不会计入每天一个点的打卡。你可以按章节挑，也可以一天练多个点。
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-4">
+        <div className="-mx-1 flex snap-x gap-2 overflow-x-auto px-1 pb-1 md:mx-0 md:grid md:snap-none md:grid-cols-3 md:gap-3 md:overflow-visible md:px-0 xl:grid-cols-4">
           {chapters.map((chapter) => {
             const isActive = chapter.chapterId === selectedChapterId;
 
@@ -90,17 +90,17 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                 }}
               >
                 <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">第 {chapter.chapterNo} 章</p>
-                <h3 className="mt-2 text-[15px] font-semibold text-[var(--foreground)]">{chapter.chapterTitle}</h3>
-                <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">{chapter.chapterFullTitle}</p>
-                <p className="mt-3 text-[12px] text-[var(--foreground-faint)]">{chapter.points.length} 个意识点</p>
+                <h3 className="mt-1.5 text-[14px] font-semibold leading-5 text-[var(--foreground)] md:mt-2 md:text-[15px]">{chapter.chapterTitle}</h3>
+                <p className="mt-1 hidden text-[13px] leading-6 text-[var(--foreground-soft)] md:block">{chapter.chapterFullTitle}</p>
+                <p className="mt-auto pt-3 text-[12px] text-[var(--foreground-faint)]">{chapter.points.length} 个意识点</p>
               </ChapterChip>
             );
           })}
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6">
-        <div className="mb-4 space-y-2">
+      <section className="rounded-[22px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-3.5 py-4 shadow-[var(--shadow-card)] md:rounded-[24px] md:px-6 md:py-6">
+        <div className="mb-3 space-y-1.5 md:mb-4 md:space-y-2">
           <h2 className="text-[18px] font-semibold text-[var(--foreground)] md:text-[20px]">选一个意识点开始练</h2>
           <p className="text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
             先选这一章里你最想练的点，练完就直接留一条独立记录。
@@ -109,7 +109,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
 
         <div className="grid gap-3 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
           <div>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid max-h-[320px] gap-2 overflow-y-auto pr-1 md:max-h-none md:grid-cols-2 md:gap-3 md:overflow-visible md:pr-0">
               {(selectedChapter?.points ?? []).map((point) => {
                 const active = point.awarenessId === selectedAwarenessId;
 
@@ -119,22 +119,24 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                     type="button"
                     onClick={() => setSelectedAwarenessId(point.awarenessId)}
                     className={[
-                      "rounded-[18px] border px-4 py-4 text-left transition",
+                      "cursor-pointer rounded-[16px] border px-3.5 py-3 text-left transition md:rounded-[18px] md:px-4 md:py-4",
                       active
                         ? "border-[rgba(19,111,99,0.26)] bg-[linear-gradient(180deg,rgba(245,250,247,0.98)_0%,rgba(236,247,244,0.98)_100%)] shadow-[0_10px_20px_rgba(15,23,42,0.05)]"
                         : "border-[var(--border-soft)] bg-white/96 shadow-[0_8px_18px_rgba(15,23,42,0.035)] hover:border-[rgba(19,111,99,0.16)]",
                     ].join(" ")}
                   >
                     <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">点 {point.orderNo}</p>
-                    <h3 className="mt-2 text-[14px] font-semibold text-[var(--foreground)]">{point.title}</h3>
-                    <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">{point.summary || point.details || "这个点暂时没有补充说明。"}</p>
+                    <h3 className="mt-1.5 text-[14px] font-semibold leading-6 text-[var(--foreground)] md:mt-2">{point.title}</h3>
+                    <p className="mt-1 max-h-[48px] overflow-hidden text-[12px] leading-6 text-[var(--foreground-soft)] md:max-h-none md:text-[13px]">
+                      {point.summary || point.details || "这个点暂时没有补充说明。"}
+                    </p>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="rounded-[22px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:p-5">
+          <div className="rounded-[20px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] p-3.5 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:rounded-[22px] md:p-5">
             {currentPoint ? (
               <>
                 <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">
@@ -143,7 +145,16 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                 <h3 className="mt-2 text-[16px] font-semibold text-[var(--foreground)]">{currentPoint.title}</h3>
                 <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)]">{currentPoint.summary || "这条意识点暂无摘要。"}</p>
                 {currentPoint.details ? (
-                  <p className="mt-3 text-[13px] leading-6 text-[var(--foreground-soft)]">{currentPoint.details}</p>
+                  <details className="group mt-3 rounded-[16px] border border-[var(--border-soft)] bg-white/86 px-3.5 py-3">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[13px] font-medium text-[var(--foreground)] marker:hidden">
+                      <span>查看完整说明</span>
+                      <span className="text-[12px] text-[var(--foreground-faint)] group-open:hidden">展开</span>
+                      <span className="hidden text-[12px] text-[var(--foreground-faint)] group-open:inline">收起</span>
+                    </summary>
+                    <p className="mt-3 max-h-[280px] overflow-y-auto whitespace-pre-wrap text-[13px] leading-7 text-[var(--foreground-soft)] md:max-h-[420px]">
+                      {currentPoint.details}
+                    </p>
+                  </details>
                 ) : null}
                 <p className="mt-3 text-[12px] text-[var(--foreground-faint)]">
                   {currentPoint.theme ? `${currentPoint.theme} · ` : ""}
