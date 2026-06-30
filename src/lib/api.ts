@@ -25,6 +25,44 @@ export type Topic = {
   isPausedDay?: boolean;
 };
 
+export type FreeModeAwareness = {
+  awarenessId: number;
+  chapterId: number;
+  sectionId: number;
+  title: string;
+  summary?: string;
+  details?: string;
+  orderNo: number;
+  theme?: string;
+  referenceMin?: string;
+  referenceMax?: string;
+};
+
+export type FreeModeChapter = {
+  chapterId: number;
+  chapterNo: number;
+  chapterTitle: string;
+  chapterFullTitle: string;
+  points: FreeModeAwareness[];
+};
+
+export type FreeModePractice = {
+  practiceId: number;
+  practiceDate: string;
+  chapterId: number;
+  chapterNo: number;
+  chapterTitle: string;
+  chapterFullTitle: string;
+  awarenessId: number;
+  sectionId: number;
+  awarenessTitle: string;
+  awarenessSummary?: string;
+  awarenessDetails?: string;
+  practiceNote?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AdminUser = {
   id: number;
   account: string;
@@ -297,6 +335,28 @@ export async function getHome() {
 export async function listTopics() {
   const data = await request<{ list: Topic[] }>("/topics");
   return data.list;
+}
+
+export async function listFreemodeChapters() {
+  const data = await request<{ list: FreeModeChapter[] }>("/free-mode/chapters");
+  return data.list;
+}
+
+export async function listFreemodePractices() {
+  const data = await request<{ list: FreeModePractice[] }>("/free-mode/practices");
+  return data.list;
+}
+
+export async function createFreemodePractice(payload: {
+  chapterId: number;
+  awarenessId: number;
+  practiceNote?: string;
+  practiceDate?: string;
+}) {
+  return request<FreeModePractice>("/free-mode/practices", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function getCurrentWeeklyVote() {

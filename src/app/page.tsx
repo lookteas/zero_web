@@ -164,8 +164,16 @@ export default async function Home() {
                   </div>
 
                   <div className="mt-4 flex flex-col gap-2 md:flex-row md:gap-3">
-                    <PrimaryLinkButton href="/today" className="md:w-auto">
+                  <PrimaryLinkButton href="/today" className="md:w-auto">
                       {getPrimaryActionText(Boolean(home.todayTask))}
+                    </PrimaryLinkButton>
+
+                    <PrimaryLinkButton
+                      href="/freemode"
+                      variant="secondary"
+                      className={[secondaryButtonChrome.className, "md:w-auto"].join(" ")}
+                    >
+                      自由模式
                     </PrimaryLinkButton>
 
                     <PrimaryLinkButton
