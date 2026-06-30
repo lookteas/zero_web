@@ -19,7 +19,7 @@ const metrics = [
   { value: "3", label: "今日已完成" },
   { value: "2", label: "待处理复盘" },
   { value: "71%", label: "本周稳定度" },
-  { value: "12", label: "累计文档" },
+  { value: "12", label: "累计互催" },
 ];
 
 const tasks = [

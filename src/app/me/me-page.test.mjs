@@ -38,5 +38,5 @@ test('me page keeps desktop and mobile personal center affordances in one route'
   assert.equal(source.includes('今日进度'), true)
   assert.equal(source.includes('连续打卡'), true)
   assert.equal(source.includes('复盘队列'), true)
-  assert.equal(source.includes('累计文档'), true)
+  assert.equal(source.includes('累计互催'), true)
 })
