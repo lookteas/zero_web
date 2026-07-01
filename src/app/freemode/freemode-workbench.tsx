@@ -41,6 +41,10 @@ function PracticeCard({ practice }: { practice: FreeModePractice }) {
       <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">
         第 {practice.chapterNo} 章 · {practice.chapterTitle}
       </p>
+      <div className="mt-3 rounded-[14px] border border-[var(--border-soft)] bg-[rgba(247,251,249,0.76)] px-3 py-2.5">
+        <p className="text-[11px] font-semibold tracking-[0.08em] text-[var(--primary)]/70">练习方向</p>
+        <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.awarenessSummary || "这条意识点暂无摘要。"}</p>
+      </div>
       <p className="mt-3 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.practiceNote || "这次没有额外备注。"}</p>
     </article>
   );

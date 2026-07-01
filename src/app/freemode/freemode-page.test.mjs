@@ -34,3 +34,9 @@ test('free mode workbench keeps the mobile learning flow compact', () => {
   assert.equal(freeModeWorkbench.includes('查看完整说明'), true)
   assert.equal(freeModeWorkbench.includes('max-h-[280px]'), true)
 })
+
+test('free mode recent practice cards surface the awareness summary', () => {
+  assert.equal(freeModeWorkbench.includes('练习方向'), true)
+  assert.equal(freeModeWorkbench.includes('practice.awarenessSummary'), true)
+  assert.equal(freeModeWorkbench.includes('这条意识点暂无摘要。'), true)
+})
