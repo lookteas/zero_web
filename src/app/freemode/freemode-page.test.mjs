@@ -20,19 +20,22 @@ test('free mode page keeps the independent route and fallback surface', () => {
 })
 
 test('free mode workbench groups awareness points by chapter and allows point selection', () => {
-  assert.equal(freeModeWorkbench.includes('先选章节，再选意识点'), true)
+  assert.equal(freeModeWorkbench.includes('选择今天要练的章节和点位'), true)
   assert.equal(freeModeWorkbench.includes('selectedChapterId'), true)
   assert.equal(freeModeWorkbench.includes('selectedAwarenessId'), true)
   assert.equal(freeModeWorkbench.includes('chapter.points.length'), true)
-  assert.equal(freeModeWorkbench.includes('开始这次练习'), true)
+  assert.equal(freeModeWorkbench.includes('进入练习'), true)
+  assert.equal(freeModeWorkbench.includes('返回选择'), true)
+  assert.equal(freeModeWorkbench.includes('aria-pressed'), true)
 })
 
-test('free mode workbench keeps the mobile learning flow compact', () => {
-  assert.equal(freeModeWorkbench.includes('overflow-x-auto'), true)
-  assert.equal(freeModeWorkbench.includes('snap-x'), true)
-  assert.equal(freeModeWorkbench.includes('max-h-[320px]'), true)
-  assert.equal(freeModeWorkbench.includes('查看完整说明'), true)
-  assert.equal(freeModeWorkbench.includes('max-h-[280px]'), true)
+test('free mode workbench separates selection from focused practice', () => {
+  assert.equal(freeModeWorkbench.includes('selectionMode'), true)
+  assert.equal(freeModeWorkbench.includes('hasSelectedPoint'), true)
+  assert.equal(freeModeWorkbench.includes('detail-panel'), true)
+  assert.equal(freeModeWorkbench.includes('保存本次觉察练习'), true)
+  assert.equal(freeModeWorkbench.includes('disabled={practiceNote.trim().length < 8}'), true)
+  assert.equal(freeModeWorkbench.includes('保存前至少写下一句具体觉察。'), true)
 })
 
 test('free mode recent practice cards surface the awareness summary', () => {
