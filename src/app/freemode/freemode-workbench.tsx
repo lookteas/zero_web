@@ -6,6 +6,7 @@ import { PrimaryButton } from "@/components/primary-button";
 import type { FreeModeChapter, FreeModePractice } from "@/lib/api";
 
 import { createFreemodePracticeAction } from "./actions";
+import { buildAwarenessDetailSections } from "../today/today-detail-reader.mjs";
 
 type FreemodeWorkbenchProps = {
   chapters: FreeModeChapter[];
@@ -40,6 +41,78 @@ function PracticeCard({ practice }: { practice: FreeModePractice }) {
       </div>
       <p className="mt-3 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.practiceNote || "这次没有额外备注。"}</p>
     </article>
+  );
+}
+
+function AwarenessDetailReader({ summary, details }: { summary: string; details: string }) {
+  const sections = buildAwarenessDetailSections({ summary, details });
+  const hasMore = sections.more.length > 0;
+
+  return (
+    <div className="space-y-4">
+      <section className="space-y-3">
+        <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">意识点摘要</p>
+        <div className="rounded-[18px] bg-[rgba(238,248,247,0.72)] px-4 py-4 md:rounded-[20px] md:border md:border-[rgba(19,111,99,0.12)]">
+          <div className="space-y-3 md:border-l-2 md:border-[rgba(19,111,99,0.18)] md:pl-3">
+            <p className="summary-highlight text-[16px] font-semibold leading-8 text-[var(--foreground)] md:text-[17px] md:leading-8">
+              {summary}
+            </p>
+            {sections.lead.map((paragraph, index) => (
+              <p key={`lead-${index}-${paragraph}`} className="summary-supporting text-[14px] leading-7 text-[var(--foreground-soft)] md:text-[15px] md:leading-8">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {sections.groups.length > 0 ? (
+        <section>
+          <p className="text-[13px] font-semibold text-[var(--primary)]/80 md:text-[14px]">分段理解</p>
+          <div className="mt-3 grid gap-3">
+            {sections.groups.map((group, index) => (
+              <article
+                key={`${group.title}-${index}`}
+                className="border-t border-[rgba(210,221,215,0.72)] pt-4 first:border-t-0 first:pt-0 md:rounded-[20px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/90 md:px-4 md:py-4 md:shadow-[0_8px_18px_rgba(15,48,60,0.03)]"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(19,111,99,0.14)] bg-[var(--surface-soft)] text-[12px] font-semibold text-[var(--primary)]">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-[14px] font-semibold leading-6 text-[var(--foreground)]">{group.title}</h3>
+                    {group.body.length > 0 ? (
+                      <div className="mt-2 space-y-2 text-[13px] leading-7 text-[var(--foreground-soft)] md:text-sm md:leading-7">
+                        {group.body.map((paragraph, bodyIndex) => (
+                          <p key={`group-${index}-${bodyIndex}-${paragraph}`}>{paragraph}</p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {hasMore ? (
+        <details className="group border-t border-[rgba(210,221,215,0.72)] pt-4 md:rounded-[20px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/82 md:px-4 md:py-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[13px] font-medium text-[var(--foreground)] marker:hidden">
+            <span>延伸说明</span>
+            <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white/90 px-3 text-[12px] text-[var(--foreground-soft)] transition group-open:border-[var(--border-strong)] group-open:text-[var(--foreground)]">
+              <span className="group-open:hidden">展开完整说明</span>
+              <span className="hidden group-open:inline">收起完整说明</span>
+            </span>
+          </summary>
+          <div className="mt-3 space-y-2.5 text-[13px] leading-7 text-[var(--foreground-soft)] md:text-sm md:leading-7">
+            {sections.more.map((paragraph, index) => (
+              <p key={`more-${index}-${paragraph}`}>{paragraph}</p>
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </div>
   );
 }
 
@@ -236,30 +309,9 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                 </h2>
               </section>
 
-              <section className="mt-5">
-                <h2 className="text-[20px] font-semibold text-[var(--primary)]">意识点摘要</h2>
-                <div className="mt-3 rounded-[22px] border border-[rgba(19,111,99,0.18)] bg-[rgba(232,247,243,0.56)] px-4 py-4 md:px-5 md:py-5">
-                  <h3 className="text-[22px] font-semibold leading-8 text-[var(--foreground)] md:text-[28px]">{currentPoint.title}</h3>
-                  <blockquote className="mt-3 border-l-4 border-[rgba(19,111,99,0.22)] pl-4 text-[18px] font-semibold leading-8 text-[var(--foreground)]">
-                    {currentPoint.summary || "这条意识点暂无摘要。"}
-                  </blockquote>
-                  <p className="mt-3 text-[14px] leading-7 text-[var(--foreground-soft)]">
-                    先读摘要，再用自己的经历对应一次具体场景。这里不追求写得完整，只需要把你观察到的变化写下来。
-                  </p>
-                </div>
+              <section className="mt-5 md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                <AwarenessDetailReader summary={currentPoint.summary || "这条意识点暂无摘要。"} details={currentPoint.details || ""} />
               </section>
-
-              {currentPoint.details ? (
-                <section className="mt-5">
-                  <h2 className="text-[20px] font-semibold text-[var(--primary)]">分段理解</h2>
-                  <details className="mt-3 rounded-[20px] border border-[var(--border-soft)] bg-white/86 px-4 py-3">
-                    <summary className="cursor-pointer text-[14px] font-medium text-[var(--foreground)]">查看完整说明</summary>
-                    <p className="mt-3 max-h-[280px] overflow-y-auto whitespace-pre-wrap text-[13px] leading-7 text-[var(--foreground-soft)] md:max-h-[420px]">
-                      {currentPoint.details}
-                    </p>
-                  </details>
-                </section>
-              ) : null}
 
               <section className="mt-5">
                 <h2 className="text-[20px] font-semibold text-[var(--primary)]">写下你的觉察</h2>

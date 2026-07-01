@@ -38,6 +38,17 @@ test('free mode workbench separates selection from focused practice', () => {
   assert.equal(freeModeWorkbench.includes('保存前至少写下一句具体觉察。'), true)
 })
 
+test('free mode focused practice reuses the today detail reader style', () => {
+  assert.equal(freeModeWorkbench.includes('buildAwarenessDetailSections'), true)
+  assert.equal(freeModeWorkbench.includes('function AwarenessDetailReader('), true)
+  assert.equal(freeModeWorkbench.includes('summary-highlight'), true)
+  assert.equal(freeModeWorkbench.includes('summary-supporting'), true)
+  assert.equal(freeModeWorkbench.includes('rounded-[18px] bg-[rgba(238,248,247,0.72)] px-4 py-4 md:rounded-[20px] md:border md:border-[rgba(19,111,99,0.12)]'), true)
+  assert.equal(freeModeWorkbench.includes('border-t border-[rgba(210,221,215,0.72)] pt-4 first:border-t-0 first:pt-0 md:rounded-[20px] md:border'), true)
+  assert.equal(freeModeWorkbench.includes('延伸说明'), true)
+  assert.equal(freeModeWorkbench.includes('whitespace-pre-wrap text-[13px] leading-7'), false)
+})
+
 test('free mode recent practice cards surface the awareness summary', () => {
   assert.equal(freeModeWorkbench.includes('练习方向'), true)
   assert.equal(freeModeWorkbench.includes('practice.awarenessSummary'), true)
