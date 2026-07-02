@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode, type Ref } from "react";
 
 import { PrimaryButton } from "@/components/primary-button";
 import type { FreeModeChapter, FreeModePractice } from "@/lib/api";
@@ -13,10 +13,23 @@ type FreemodeWorkbenchProps = {
   recentPractices: FreeModePractice[];
 };
 
-function Panel({ children, className = "", id }: { children: ReactNode; className?: string; id?: string }) {
+const chapterGuides: Record<number, string> = {
+  1: "识别自动反应",
+  2: "拆解今日行动",
+  3: "稳定内在连接",
+  4: "换一个观察角度",
+  5: "处理旧情绪回路",
+  6: "记录身体反馈",
+  7: "表达与回应",
+  8: "整理内在结构",
+  9: "观察关系镜像",
+};
+
+function Panel({ children, className = "", id, panelRef }: { children: ReactNode; className?: string; id?: string; panelRef?: Ref<HTMLElement> }) {
   return (
     <section
       id={id}
+      ref={panelRef}
       className={[
         "rounded-[26px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] shadow-[var(--shadow-card)]",
         className,
@@ -121,6 +134,9 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
   const [selectedAwarenessId, setSelectedAwarenessId] = useState<number | null>(null);
   const [selectionMode, setSelectionMode] = useState(true);
   const [practiceNote, setPracticeNote] = useState("");
+  const detailPanelRef = useRef<HTMLElement | null>(null);
+  const actionPanelRef = useRef<HTMLDivElement | null>(null);
+  const practicePanelRef = useRef<HTMLElement | null>(null);
 
   const selectedChapter = useMemo(
     () => chapters.find((chapter) => chapter.chapterId === selectedChapterId),
@@ -129,6 +145,29 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
   const currentPoint = selectedChapter?.points.find((point) => point.awarenessId === selectedAwarenessId);
   const hasSelectedPoint = Boolean(selectedChapter && currentPoint);
   const canSavePractice = practiceNote.trim().length >= 8;
+
+  useEffect(() => {
+    if (!selectedChapter || !selectionMode || !detailPanelRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.requestAnimationFrame(() => {
+      detailPanelRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+  }, [selectedChapter, selectionMode]);
+
+  useEffect(() => {
+    if (selectionMode || !hasSelectedPoint || !practicePanelRef.current) return;
+
+    window.requestAnimationFrame(() => {
+      practicePanelRef.current?.scrollIntoView({
+        behavior: "auto",
+        block: "start",
+      });
+    });
+  }, [hasSelectedPoint, selectionMode]);
 
   if (!chapters.length) {
     return (
@@ -145,10 +184,23 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
     setPracticeNote("");
   }
 
+  function scrollActionPanelIntoView() {
+    window.setTimeout(() => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.requestAnimationFrame(() => {
+        actionPanelRef.current?.scrollIntoView({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "center",
+        });
+      });
+    }, 0);
+  }
+
   function handleSelectPoint(awarenessId: number) {
     setSelectedAwarenessId(awarenessId);
     setSelectionMode(true);
     setPracticeNote("");
+    scrollActionPanelIntoView();
   }
 
   return (
@@ -158,9 +210,9 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
           <div className="flex flex-col gap-3 px-1 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)]/75">自由模式</p>
-              <h1 className="mt-2 text-[28px] font-semibold leading-tight text-[var(--foreground)] md:text-[40px]">选择今天要练的章节和点位</h1>
+              <h1 className="mt-2 text-[28px] font-semibold leading-tight text-[var(--foreground)] md:text-[40px]">选择今天的练习区域</h1>
               <p className="mt-2 max-w-2xl text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
-                自由模式完全独立，不会计入每天的打卡。可以按章节挑选，一天练习多个点。
+                自由模式完全独立，不会计入每天的打卡。先选一个区域，再进入具体点位。
               </p>
             </div>
             <span className="inline-flex w-fit items-center rounded-full border border-[var(--border-soft)] bg-white/86 px-3 py-1.5 text-[12px] font-medium text-[var(--foreground-soft)]">
@@ -175,15 +227,15 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
           <Panel>
             <div className="flex items-end justify-between gap-3 border-b border-[var(--border-soft)] px-4 py-4 md:px-6">
               <div>
-                <h2 className="text-[22px] font-semibold text-[var(--foreground)] md:text-[28px]">九个章节</h2>
-                <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">从 9 个区域中先选择一个章节</p>
+                <h2 className="text-[20px] font-semibold text-[var(--foreground)] md:text-[28px]">练习区域</h2>
+                <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">点一下今天想靠近的方向</p>
               </div>
               <span className="shrink-0 rounded-full border border-[var(--border-soft)] bg-white/86 px-3 py-1.5 text-[12px] text-[var(--foreground-soft)]">
-                {chapters.length} 区域
+                {chapters.length} 区
               </span>
             </div>
 
-            <div className="grid gap-2 p-3 md:grid-cols-3 md:gap-3 md:p-5">
+            <div className="grid grid-cols-3 gap-2 p-2 md:gap-3 md:p-5">
               {chapters.map((chapter) => {
                 const isActive = chapter.chapterId === selectedChapterId;
 
@@ -194,7 +246,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                     aria-pressed={isActive}
                     onClick={() => handleSelectChapter(chapter.chapterId)}
                     className={[
-                      "relative min-h-[96px] cursor-pointer rounded-[18px] border px-4 py-3 text-left transition md:min-h-[116px]",
+                      "relative aspect-[1.02] min-h-[96px] cursor-pointer rounded-[16px] border px-2.5 py-3 text-left transition md:min-h-[116px] md:rounded-[18px] md:px-4",
                       isActive
                         ? "border-[rgba(19,111,99,0.34)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(232,247,243,0.88)_100%)] shadow-[inset_0_0_0_1px_rgba(19,111,99,0.08)]"
                         : "border-[var(--border-soft)] bg-white/94 hover:border-[rgba(19,111,99,0.18)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]",
@@ -208,9 +260,9 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                     <span className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">
                       {String(chapter.chapterNo).padStart(2, "0")}
                     </span>
-                    <strong className="mt-2 block text-[15px] leading-5 text-[var(--foreground)] md:text-[16px]">{chapter.chapterTitle}</strong>
-                    <small className="mt-2 block text-[12px] leading-5 text-[var(--foreground-soft)]">
-                      {chapter.chapterFullTitle || `${chapter.points.length} 个意识点`}
+                    <strong className="mt-2 block text-[14px] leading-5 text-[var(--foreground)] md:text-[16px]">{chapter.chapterTitle}</strong>
+                    <small className="mt-1.5 block text-[11px] leading-4 text-[var(--foreground-soft)] md:mt-2 md:text-[12px] md:leading-5">
+                      {chapterGuides[chapter.chapterNo] || `${chapter.points.length} 个意识点`}
                     </small>
                   </button>
                 );
@@ -219,7 +271,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
           </Panel>
 
           {selectedChapter ? (
-            <Panel id="detail-panel">
+            <Panel id="detail-panel" panelRef={detailPanelRef}>
               <div className="flex items-end justify-between gap-3 border-b border-[var(--border-soft)] px-4 py-4 md:px-6">
                 <div>
                   <h2 className="text-[22px] font-semibold text-[var(--foreground)] md:text-[28px]">
@@ -234,7 +286,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                 </span>
               </div>
 
-              <div className="grid max-h-[360px] gap-2 overflow-y-auto p-3 md:grid-cols-2 md:gap-3 md:p-5">
+              <div className="grid grid-cols-2 max-h-[360px] gap-2 overflow-y-auto p-3 md:gap-3 md:p-5">
                 {selectedChapter.points.map((point) => {
                   const active = point.awarenessId === selectedAwarenessId;
 
@@ -245,15 +297,15 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                       aria-pressed={active}
                       onClick={() => handleSelectPoint(point.awarenessId)}
                       className={[
-                        "cursor-pointer rounded-[16px] border px-4 py-3 text-left transition",
+                        "cursor-pointer rounded-[16px] border px-3 py-3 text-left transition md:px-4",
                         active
                           ? "border-[rgba(69,139,183,0.32)] bg-[rgba(229,244,250,0.86)]"
                           : "border-[var(--border-soft)] bg-white/94 hover:border-[rgba(69,139,183,0.18)]",
                       ].join(" ")}
                     >
                       <span className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">点 {point.orderNo}</span>
-                      <strong className="mt-1.5 block text-[14px] leading-6 text-[var(--foreground)]">{point.title}</strong>
-                      <p className="mt-1 text-[12px] leading-5 text-[var(--foreground-soft)]">
+                      <strong className="mt-1.5 block text-[14px] leading-6 text-[var(--foreground)] md:text-[15px]">{point.title}</strong>
+                      <p className="mt-1 line-clamp-2 text-[12px] leading-5 text-[var(--foreground-soft)]">
                         {point.summary || point.details || "这个点暂时没有补充说明。"}
                       </p>
                     </button>
@@ -262,7 +314,10 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
               </div>
 
               {hasSelectedPoint ? (
-                <div className="mx-3 mb-3 grid gap-3 rounded-[18px] border border-[rgba(19,111,99,0.20)] bg-[rgba(232,247,243,0.72)] px-4 py-4 md:mx-5 md:mb-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                <div
+                  ref={actionPanelRef}
+                  className="mx-3 mb-3 grid gap-3 rounded-[18px] border border-[rgba(19,111,99,0.20)] bg-[rgba(232,247,243,0.72)] px-4 py-4 md:mx-5 md:mb-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                >
                   <div>
                     <strong className="block text-[15px] leading-6 text-[var(--foreground)]">
                       已选择 {currentPoint?.orderNo} 点 · {currentPoint?.title}
@@ -284,7 +339,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
           ) : null}
         </div>
       ) : (
-        <Panel className="mx-auto max-w-[880px] px-4 py-5 md:px-7 md:py-7">
+        <Panel className="mx-auto max-w-[880px] px-4 py-5 md:px-7 md:py-7" panelRef={practicePanelRef}>
           {selectedChapter && currentPoint ? (
             <>
               <p className="text-[14px] font-semibold text-[var(--primary)]">
@@ -303,9 +358,9 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
               </div>
 
               <section className="mt-5 rounded-[22px] border border-[var(--border-soft)] bg-white/84 px-4 py-4">
-                <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">今日问题</p>
+                <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">本次练习点</p>
                 <h2 className="mt-2 text-[22px] font-semibold leading-8 text-[var(--foreground)] md:text-[28px]">
-                  结合这个点，记录一个今天能看见的具体场景。
+                  {currentPoint.title}
                 </h2>
               </section>
 
@@ -351,7 +406,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
         </Panel>
       )}
 
-      <section className="rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6">
+      <section className={[selectionMode ? "hidden md:block" : "block", "rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6"].join(" ")}>
         <div className="mb-4 space-y-2">
           <h2 className="text-[18px] font-semibold text-[var(--foreground)] md:text-[20px]">最近独立练习</h2>
           <p className="text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
