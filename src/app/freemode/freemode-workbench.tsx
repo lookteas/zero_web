@@ -145,7 +145,33 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
   );
 }
 
-function PracticeReviewPanel({ practice, panelRef }: { practice: FreeModePractice; panelRef: Ref<HTMLElement> }) {
+function PracticeReference({ practice }: { practice: FreeModePractice }) {
+  return (
+    <details className="group rounded-[18px] border border-[var(--border-soft)] bg-[rgba(247,251,249,0.78)] px-4 py-3">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold text-[var(--foreground)] marker:hidden">
+        <span>练习点参考</span>
+        <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white px-3 text-[12px] font-medium text-[var(--foreground-soft)]">
+          <span className="group-open:hidden">查看</span>
+          <span className="hidden group-open:inline">收起</span>
+        </span>
+      </summary>
+      <div className="mt-4 space-y-3">
+        <div>
+          <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">意识强度点</p>
+          <h4 className="mt-2 text-[18px] font-semibold leading-7 text-[var(--foreground)]">{practice.awarenessTitle}</h4>
+          <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.awarenessSummary || "这条意识点暂无摘要。"}</p>
+        </div>
+        {practice.awarenessDetails ? (
+          <div className="border-t border-[var(--border-soft)] pt-3">
+            <p className="text-[13px] leading-7 text-[var(--foreground-soft)] whitespace-pre-wrap">{practice.awarenessDetails}</p>
+          </div>
+        ) : null}
+      </div>
+    </details>
+  );
+}
+
+function PracticeReviewPanel({ practice, panelRef, onClose }: { practice: FreeModePractice; panelRef: Ref<HTMLElement>; onClose: () => void }) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftNote, setDraftNote] = useState(practice.practiceNote || "");
   const canSave = draftNote.trim().length >= 8;
@@ -215,24 +241,15 @@ function PracticeReviewPanel({ practice, panelRef }: { practice: FreeModePractic
           )}
         </section>
 
-        <section className="rounded-[18px] border border-[var(--border-soft)] bg-[rgba(247,251,249,0.78)] px-4 py-4">
-          <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">本次练习点</p>
-          <h4 className="mt-2 text-[18px] font-semibold leading-7 text-[var(--foreground)]">{practice.awarenessTitle}</h4>
-          <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.awarenessSummary || "这条意识点暂无摘要。"}</p>
-        </section>
+        <PracticeReference practice={practice} />
 
-        <details className="group rounded-[18px] border border-[var(--border-soft)] bg-white/88 px-4 py-3">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold text-[var(--foreground)] marker:hidden">
-            <span>意识点详情</span>
-            <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white px-3 text-[12px] font-medium text-[var(--foreground-soft)]">
-              <span className="group-open:hidden">展开</span>
-              <span className="hidden group-open:inline">收起</span>
-            </span>
-          </summary>
-          <div className="mt-4">
-            <AwarenessDetailReader summary={practice.awarenessSummary || "这条意识点暂无摘要。"} details={practice.awarenessDetails || ""} />
-          </div>
-        </details>
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex min-h-[42px] w-full items-center justify-center rounded-full border border-[var(--border-soft)] bg-white px-5 text-[14px] font-semibold text-[var(--foreground)]"
+        >
+          收起回看
+        </button>
       </div>
     </section>
   );
@@ -505,9 +522,26 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
                 <h2 className="mt-2 text-[22px] font-semibold leading-8 text-[var(--foreground)] md:text-[28px]">
                   {currentPoint.title}
                 </h2>
+                <p className="mt-3 text-[14px] leading-7 text-[var(--foreground-soft)] md:text-[15px]">
+                  {currentPoint.summary || "这条意识点暂无摘要。"}
+                </p>
               </section>
 
-              <section className="mt-5 md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+              {/* 移动端先收起详情，避免练习页被长说明淹没。 */}
+              <details className="group mt-5 rounded-[20px] border border-[var(--border-soft)] bg-white/88 px-4 py-3 md:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold text-[var(--foreground)] marker:hidden">
+                  <span>查看意识点详情</span>
+                  <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white px-3 text-[12px] font-medium text-[var(--foreground-soft)]">
+                    <span className="group-open:hidden">展开</span>
+                    <span className="hidden group-open:inline">收起</span>
+                  </span>
+                </summary>
+                <div className="mt-4">
+                  <AwarenessDetailReader summary={currentPoint.summary || "这条意识点暂无摘要。"} details={currentPoint.details || ""} />
+                </div>
+              </details>
+
+              <section className="mt-5 hidden md:block md:rounded-[24px] md:border md:border-[rgba(210,221,215,0.86)] md:bg-white/92 md:p-5 md:shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
                 <AwarenessDetailReader summary={currentPoint.summary || "这条意识点暂无摘要。"} details={currentPoint.details || ""} />
               </section>
 
@@ -573,7 +607,7 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
                 key={practice.practiceId}
                 practice={practice}
                 isSelected={practice.practiceId === selectedPracticeId}
-                onSelect={() => setSelectedPracticeId(practice.practiceId)}
+                onSelect={() => setSelectedPracticeId(practice.practiceId === selectedPracticeId ? null : practice.practiceId)}
               />
             ))}
           </div>
@@ -581,7 +615,14 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
           <p className="text-sm text-[var(--foreground-soft)]">你还没有保存过自由模式记录。</p>
         )}
 
-        {selectedPractice ? <PracticeReviewPanel key={selectedPractice.practiceId} practice={selectedPractice} panelRef={reviewPanelRef} /> : null}
+        {selectedPractice ? (
+          <PracticeReviewPanel
+            key={selectedPractice.practiceId}
+            practice={selectedPractice}
+            panelRef={reviewPanelRef}
+            onClose={() => setSelectedPracticeId(null)}
+          />
+        ) : null}
       </section>
     </div>
   );
