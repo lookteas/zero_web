@@ -40,10 +40,10 @@ export default async function FreemodePage({ searchParams }: FreemodePageProps) 
 
   return (
     <AppShell title="自由模式" mobileThemeTitle="自由模式" description="按章节挑选意识点，随时开始一段独立练习。" hideHero>
-      {query.created ? <FreemodeNotice>自由模式记录已保存，不会计入今天的打卡。</FreemodeNotice> : null}
+      {query.created ? <FreemodeNotice>自由模式记录已保存到下方「最近独立练习」，不会计入今天的打卡。</FreemodeNotice> : null}
       {query.error ? <FreemodeNotice>这次保存没有成功，稍后再试一次就好。</FreemodeNotice> : null}
 
-      <FreemodeWorkbench chapters={chapters} recentPractices={practices} />
+      <FreemodeWorkbench chapters={chapters} recentPractices={practices} showRecentOnMobile={Boolean(query.created)} />
     </AppShell>
   );
 }

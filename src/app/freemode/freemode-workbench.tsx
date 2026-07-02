@@ -11,6 +11,7 @@ import { buildAwarenessDetailSections } from "../today/today-detail-reader.mjs";
 type FreemodeWorkbenchProps = {
   chapters: FreeModeChapter[];
   recentPractices: FreeModePractice[];
+  showRecentOnMobile?: boolean;
 };
 
 const chapterGuides: Record<number, string> = {
@@ -129,7 +130,7 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
   );
 }
 
-export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkbenchProps) {
+export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobile = false }: FreemodeWorkbenchProps) {
   const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
   const [selectedAwarenessId, setSelectedAwarenessId] = useState<number | null>(null);
   const [selectionMode, setSelectionMode] = useState(true);
@@ -137,6 +138,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
   const detailPanelRef = useRef<HTMLElement | null>(null);
   const actionPanelRef = useRef<HTMLDivElement | null>(null);
   const practicePanelRef = useRef<HTMLElement | null>(null);
+  const recentPanelRef = useRef<HTMLElement | null>(null);
 
   const selectedChapter = useMemo(
     () => chapters.find((chapter) => chapter.chapterId === selectedChapterId),
@@ -145,6 +147,17 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
   const currentPoint = selectedChapter?.points.find((point) => point.awarenessId === selectedAwarenessId);
   const hasSelectedPoint = Boolean(selectedChapter && currentPoint);
   const canSavePractice = practiceNote.trim().length >= 8;
+
+  function scrollRecentPanelIntoView() {
+    window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        recentPanelRef.current?.scrollIntoView({
+          behavior: "auto",
+          block: "start",
+        });
+      });
+    }, 80);
+  }
 
   useEffect(() => {
     if (!selectedChapter || !selectionMode || !detailPanelRef.current) return;
@@ -168,6 +181,12 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
       });
     });
   }, [hasSelectedPoint, selectionMode]);
+
+  useEffect(() => {
+    if (!showRecentOnMobile) return;
+
+    scrollRecentPanelIntoView();
+  }, [showRecentOnMobile]);
 
   if (!chapters.length) {
     return (
@@ -246,7 +265,7 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
                     aria-pressed={isActive}
                     onClick={() => handleSelectChapter(chapter.chapterId)}
                     className={[
-                      "relative aspect-[1.02] min-h-[96px] cursor-pointer rounded-[16px] border px-2.5 py-3 text-left transition md:min-h-[116px] md:rounded-[18px] md:px-4",
+                      "relative aspect-[1.02] min-h-[96px] cursor-pointer rounded-[16px] border px-2.5 py-3 text-left transition md:aspect-auto md:min-h-[116px] md:rounded-[18px] md:px-4",
                       isActive
                         ? "border-[rgba(19,111,99,0.34)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(232,247,243,0.88)_100%)] shadow-[inset_0_0_0_1px_rgba(19,111,99,0.08)]"
                         : "border-[var(--border-soft)] bg-white/94 hover:border-[rgba(19,111,99,0.18)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]",
@@ -406,12 +425,21 @@ export function FreemodeWorkbench({ chapters, recentPractices }: FreemodeWorkben
         </Panel>
       )}
 
-      <section className={[selectionMode ? "hidden md:block" : "block", "rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] md:px-6 md:py-6"].join(" ")}>
+      <section
+        id="recent-practices"
+        ref={recentPanelRef}
+        className={[selectionMode && !showRecentOnMobile ? "hidden md:block" : "block", "rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,251,249,0.98)_100%)] px-4 py-4 shadow-[var(--shadow-card)] scroll-mt-4 md:px-6 md:py-6"].join(" ")}
+      >
         <div className="mb-4 space-y-2">
           <h2 className="text-[18px] font-semibold text-[var(--foreground)] md:text-[20px]">最近独立练习</h2>
           <p className="text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">
             这些记录只属于自由模式，不会进入每天的打卡节奏。
           </p>
+          {showRecentOnMobile ? (
+            <p className="rounded-[14px] border border-[rgba(19,111,99,0.14)] bg-[rgba(232,247,243,0.72)] px-3 py-2 text-[13px] leading-6 text-[var(--success-text)]">
+              刚刚保存成功，最新记录会显示在这里。
+            </p>
+          ) : null}
         </div>
 
         {recentPractices.length > 0 ? (

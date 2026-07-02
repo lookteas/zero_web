@@ -5,6 +5,7 @@ import test from 'node:test'
 const homePage = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 const freeModePage = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8')
 const freeModeWorkbench = readFileSync(new URL('./freemode-workbench.tsx', import.meta.url), 'utf8')
+const freeModeActions = readFileSync(new URL('./actions.ts', import.meta.url), 'utf8')
 const apiSource = readFileSync(new URL('../../lib/api.ts', import.meta.url), 'utf8')
 
 test('home page exposes free mode entry', () => {
@@ -15,7 +16,7 @@ test('home page exposes free mode entry', () => {
 test('free mode page keeps the independent route and fallback surface', () => {
   assert.equal(freeModePage.includes('listFreemodeChapters'), true)
   assert.equal(freeModePage.includes('listFreemodePractices'), true)
-  assert.equal(freeModePage.includes('自由模式记录已保存，不会计入今天的打卡。'), true)
+  assert.equal(freeModePage.includes('自由模式记录已保存到下方「最近独立练习」，不会计入今天的打卡。'), true)
   assert.equal(apiSource.includes('/free-mode/practices'), true)
 })
 
@@ -24,6 +25,8 @@ test('free mode workbench uses a compact selection board instead of a mobile lis
   assert.equal(freeModeWorkbench.includes('练习区域'), true)
   assert.equal(freeModeWorkbench.includes('grid grid-cols-3 gap-2'), true)
   assert.equal(freeModeWorkbench.includes('aspect-[1.02]'), true)
+  assert.equal(freeModeWorkbench.includes('md:aspect-auto'), true)
+  assert.equal(freeModeWorkbench.includes('md:min-h-[116px]'), true)
   assert.equal(freeModeWorkbench.includes('九个章节'), false)
   assert.equal(freeModeWorkbench.includes('从 9 个区域中先选择一个章节'), false)
 })
@@ -76,5 +79,16 @@ test('free mode recent practice cards surface the awareness summary', () => {
   assert.equal(freeModeWorkbench.includes('练习方向'), true)
   assert.equal(freeModeWorkbench.includes('practice.awarenessSummary'), true)
   assert.equal(freeModeWorkbench.includes('这条意识点暂无摘要。'), true)
-  assert.equal(freeModeWorkbench.includes('selectionMode ? "hidden md:block"'), true)
+  assert.equal(freeModeWorkbench.includes('selectionMode && !showRecentOnMobile ? "hidden md:block"'), true)
+})
+
+test('free mode save success points users to recent practices', () => {
+  assert.equal(freeModePage.includes('已保存到下方「最近独立练习」'), true)
+  assert.equal(freeModePage.includes('showRecentOnMobile={Boolean(query.created)}'), true)
+  assert.equal(freeModeWorkbench.includes('showRecentOnMobile'), true)
+  assert.equal(freeModeWorkbench.includes('recentPanelRef'), true)
+  assert.equal(freeModeWorkbench.includes('scrollRecentPanelIntoView'), true)
+  assert.equal(freeModeWorkbench.includes('刚刚保存成功，最新记录会显示在这里。'), true)
+  assert.equal(freeModeWorkbench.includes('id="recent-practices"'), true)
+  assert.equal(freeModeActions.includes('/freemode?created=1#recent-practices'), true)
 })

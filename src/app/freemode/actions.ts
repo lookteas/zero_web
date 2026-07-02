@@ -25,5 +25,5 @@ export async function createFreemodePracticeAction(formData: FormData) {
   }
 
   revalidatePath('/freemode')
-  redirect('/freemode?created=1')
+  redirect('/freemode?created=1#recent-practices')
 }
