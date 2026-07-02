@@ -27,7 +27,7 @@ export async function createFreemodePracticeAction(formData: FormData) {
   }
 
   revalidatePath('/freemode')
-  redirect(`/freemode?created=1&practiceId=${createdPracticeId}#recent-practices`)
+  redirect(`/freemode?created=1&practiceId=${createdPracticeId}`)
 }
 
 export async function updateFreemodePracticeAction(formData: FormData) {
@@ -47,5 +47,5 @@ export async function updateFreemodePracticeAction(formData: FormData) {
   }
 
   revalidatePath('/freemode')
-  redirect(`/freemode?updated=1&practiceId=${practiceId}#recent-practices`)
+  redirect(`/freemode?updated=1&practiceId=${practiceId}`)
 }
