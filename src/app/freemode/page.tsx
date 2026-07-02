@@ -7,7 +7,7 @@ import { listFreemodeChapters, listFreemodePractices } from "@/lib/api";
 import { FreemodeWorkbench } from "./freemode-workbench";
 
 type FreemodePageProps = {
-  searchParams: Promise<{ created?: string; error?: string }>;
+  searchParams: Promise<{ created?: string; updated?: string; error?: string; practiceId?: string }>;
 };
 
 function FreemodeNotice({ children }: { children: string }) {
@@ -41,9 +41,16 @@ export default async function FreemodePage({ searchParams }: FreemodePageProps) 
   return (
     <AppShell title="自由模式" mobileThemeTitle="自由模式" description="按章节挑选意识点，随时开始一段独立练习。" hideHero>
       {query.created ? <FreemodeNotice>自由模式记录已保存到下方「最近独立练习」，不会计入今天的打卡。</FreemodeNotice> : null}
+      {query.updated ? <FreemodeNotice>自由模式记录已更新，可以在下方继续对照练习点回看。</FreemodeNotice> : null}
       {query.error ? <FreemodeNotice>这次保存没有成功，稍后再试一次就好。</FreemodeNotice> : null}
 
-      <FreemodeWorkbench chapters={chapters} recentPractices={practices} showRecentOnMobile={Boolean(query.created)} />
+      <FreemodeWorkbench
+        chapters={chapters}
+        recentPractices={practices}
+        showRecentOnMobile={Boolean(query.created || query.updated)}
+        recentFeedback={query.updated ? "updated" : query.created ? "created" : undefined}
+        focusedPracticeId={Number(query.practiceId) || undefined}
+      />
     </AppShell>
   );
 }

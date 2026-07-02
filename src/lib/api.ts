@@ -359,6 +359,13 @@ export async function createFreemodePractice(payload: {
   });
 }
 
+export async function updateFreemodePractice(practiceId: number, payload: { practiceNote?: string }) {
+  return request<FreeModePractice>(`/free-mode/practices/${practiceId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getCurrentWeeklyVote() {
 	const data = await request<WeeklyVote>("/weekly-votes/current");
 	return normalizeWeeklyVote(data) as WeeklyVote;

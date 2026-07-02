@@ -5,13 +5,15 @@ import { useEffect, useMemo, useRef, useState, type ReactNode, type Ref } from "
 import { PrimaryButton } from "@/components/primary-button";
 import type { FreeModeChapter, FreeModePractice } from "@/lib/api";
 
-import { createFreemodePracticeAction } from "./actions";
+import { createFreemodePracticeAction, updateFreemodePracticeAction } from "./actions";
 import { buildAwarenessDetailSections } from "../today/today-detail-reader.mjs";
 
 type FreemodeWorkbenchProps = {
   chapters: FreeModeChapter[];
   recentPractices: FreeModePractice[];
   showRecentOnMobile?: boolean;
+  recentFeedback?: "created" | "updated";
+  focusedPracticeId?: number;
 };
 
 const chapterGuides: Record<number, string> = {
@@ -41,9 +43,19 @@ function Panel({ children, className = "", id, panelRef }: { children: ReactNode
   );
 }
 
-function PracticeCard({ practice }: { practice: FreeModePractice }) {
+function PracticeCard({ practice, isSelected, onSelect }: { practice: FreeModePractice; isSelected: boolean; onSelect: () => void }) {
   return (
-    <article className="rounded-[20px] border border-[var(--border-soft)] bg-white/95 px-4 py-4 shadow-[0_8px_18px_rgba(15,23,42,0.04)]">
+    <button
+      type="button"
+      aria-pressed={isSelected}
+      onClick={onSelect}
+      className={[
+        "cursor-pointer rounded-[20px] border px-4 py-4 text-left shadow-[0_8px_18px_rgba(15,23,42,0.04)] transition",
+        isSelected
+          ? "border-[rgba(19,111,99,0.34)] bg-[rgba(232,247,243,0.76)]"
+          : "border-[var(--border-soft)] bg-white/95 hover:border-[rgba(19,111,99,0.18)] hover:bg-white",
+      ].join(" ")}
+    >
       <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">{practice.practiceDate}</p>
       <h3 className="mt-2 text-[15px] font-semibold text-[var(--foreground)]">{practice.awarenessTitle}</h3>
       <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">
@@ -53,8 +65,11 @@ function PracticeCard({ practice }: { practice: FreeModePractice }) {
         <p className="text-[11px] font-semibold tracking-[0.08em] text-[var(--primary)]/70">练习方向</p>
         <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.awarenessSummary || "这条意识点暂无摘要。"}</p>
       </div>
-      <p className="mt-3 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.practiceNote || "这次没有额外备注。"}</p>
-    </article>
+      <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.practiceNote || "这次没有额外备注。"}</p>
+      <span className="mt-3 inline-flex text-[12px] font-semibold text-[var(--primary)]">
+        {isSelected ? "正在回看" : "查看与编辑"}
+      </span>
+    </button>
   );
 }
 
@@ -130,21 +145,119 @@ function AwarenessDetailReader({ summary, details }: { summary: string; details:
   );
 }
 
-export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobile = false }: FreemodeWorkbenchProps) {
+function PracticeReviewPanel({ practice, panelRef }: { practice: FreeModePractice; panelRef: Ref<HTMLElement> }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftNote, setDraftNote] = useState(practice.practiceNote || "");
+  const canSave = draftNote.trim().length >= 8;
+
+  return (
+    <section ref={panelRef} className="scroll-mt-4 rounded-[22px] border border-[rgba(19,111,99,0.16)] bg-[rgba(255,255,255,0.96)] px-4 py-4 shadow-[0_12px_28px_rgba(15,48,60,0.05)] md:px-5 md:py-5">
+      <div className="flex flex-col gap-2 border-b border-[var(--border-soft)] pb-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-[12px] font-semibold tracking-[0.12em] text-[var(--primary)]/75">练习回看</p>
+          <h3 className="mt-2 text-[20px] font-semibold leading-7 text-[var(--foreground)]">{practice.awarenessTitle}</h3>
+          <p className="mt-1 text-[13px] leading-6 text-[var(--foreground-soft)]">
+            {practice.practiceDate} · 第 {practice.chapterNo} 章 · {practice.chapterTitle}
+          </p>
+        </div>
+        <span className="w-fit rounded-full border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-1.5 text-[12px] text-[var(--foreground-soft)]">
+          自由模式记录
+        </span>
+      </div>
+
+      <div className="mt-4 space-y-4">
+        <section className="rounded-[18px] border border-[var(--border-soft)] bg-white/90 px-4 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="text-[16px] font-semibold text-[var(--foreground)]">我的觉察</h4>
+            {!isEditing ? (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white px-3 text-[12px] font-semibold text-[var(--foreground)]"
+              >
+                继续编辑
+              </button>
+            ) : null}
+          </div>
+
+          {isEditing ? (
+            <form action={updateFreemodePracticeAction} className="mt-3 space-y-3">
+              <input type="hidden" name="practiceId" value={practice.practiceId} />
+              <textarea
+                name="practiceNote"
+                className="app-input min-h-[150px] px-4 py-3 text-sm leading-7"
+                value={draftNote}
+                onChange={(event) => setDraftNote(event.target.value)}
+              />
+              <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                <PrimaryButton type="submit" disabled={!canSave}>
+                  保存修改
+                </PrimaryButton>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setDraftNote(practice.practiceNote || "");
+                  }}
+                  className="inline-flex min-h-[42px] items-center justify-center rounded-full border border-[var(--border-soft)] bg-white px-5 text-[14px] font-semibold text-[var(--foreground)]"
+                >
+                  取消
+                </button>
+              </div>
+              <p className={["text-[13px] leading-6", canSave ? "text-[var(--success-text)]" : "text-[var(--foreground-soft)]"].join(" ")}>
+                {canSave ? "可以保存修改了。" : "至少保留一句具体觉察，方便之后回看。"}
+              </p>
+            </form>
+          ) : (
+            <p className="mt-3 whitespace-pre-wrap text-[14px] leading-7 text-[var(--foreground-soft)]">
+              {practice.practiceNote || "这次没有额外备注。"}
+            </p>
+          )}
+        </section>
+
+        <section className="rounded-[18px] border border-[var(--border-soft)] bg-[rgba(247,251,249,0.78)] px-4 py-4">
+          <p className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">本次练习点</p>
+          <h4 className="mt-2 text-[18px] font-semibold leading-7 text-[var(--foreground)]">{practice.awarenessTitle}</h4>
+          <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)]">{practice.awarenessSummary || "这条意识点暂无摘要。"}</p>
+        </section>
+
+        <details className="group rounded-[18px] border border-[var(--border-soft)] bg-white/88 px-4 py-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold text-[var(--foreground)] marker:hidden">
+            <span>意识点详情</span>
+            <span className="inline-flex min-h-9 items-center rounded-full border border-[var(--border-soft)] bg-white px-3 text-[12px] font-medium text-[var(--foreground-soft)]">
+              <span className="group-open:hidden">展开</span>
+              <span className="hidden group-open:inline">收起</span>
+            </span>
+          </summary>
+          <div className="mt-4">
+            <AwarenessDetailReader summary={practice.awarenessSummary || "这条意识点暂无摘要。"} details={practice.awarenessDetails || ""} />
+          </div>
+        </details>
+      </div>
+    </section>
+  );
+}
+
+export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobile = false, recentFeedback, focusedPracticeId }: FreemodeWorkbenchProps) {
   const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
   const [selectedAwarenessId, setSelectedAwarenessId] = useState<number | null>(null);
   const [selectionMode, setSelectionMode] = useState(true);
   const [practiceNote, setPracticeNote] = useState("");
+  const [selectedPracticeId, setSelectedPracticeId] = useState<number | null>(
+    focusedPracticeId || (showRecentOnMobile ? recentPractices[0]?.practiceId ?? null : null),
+  );
   const detailPanelRef = useRef<HTMLElement | null>(null);
   const actionPanelRef = useRef<HTMLDivElement | null>(null);
   const practicePanelRef = useRef<HTMLElement | null>(null);
   const recentPanelRef = useRef<HTMLElement | null>(null);
+  const reviewPanelRef = useRef<HTMLElement | null>(null);
 
   const selectedChapter = useMemo(
     () => chapters.find((chapter) => chapter.chapterId === selectedChapterId),
     [chapters, selectedChapterId],
   );
   const currentPoint = selectedChapter?.points.find((point) => point.awarenessId === selectedAwarenessId);
+  const selectedPractice = recentPractices.find((practice) => practice.practiceId === selectedPracticeId);
   const hasSelectedPoint = Boolean(selectedChapter && currentPoint);
   const canSavePractice = practiceNote.trim().length >= 8;
 
@@ -187,6 +300,17 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
 
     scrollRecentPanelIntoView();
   }, [showRecentOnMobile]);
+
+  useEffect(() => {
+    if (!selectedPracticeId || !reviewPanelRef.current) return;
+
+    window.requestAnimationFrame(() => {
+      reviewPanelRef.current?.scrollIntoView({
+        behavior: "auto",
+        block: "nearest",
+      });
+    });
+  }, [selectedPracticeId]);
 
   if (!chapters.length) {
     return (
@@ -437,7 +561,7 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
           </p>
           {showRecentOnMobile ? (
             <p className="rounded-[14px] border border-[rgba(19,111,99,0.14)] bg-[rgba(232,247,243,0.72)] px-3 py-2 text-[13px] leading-6 text-[var(--success-text)]">
-              刚刚保存成功，最新记录会显示在这里。
+              {recentFeedback === "updated" ? "修改已保存，可以继续在这里回看这条记录。" : "刚刚保存成功，最新记录会显示在这里。"}
             </p>
           ) : null}
         </div>
@@ -445,12 +569,19 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
         {recentPractices.length > 0 ? (
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {recentPractices.map((practice) => (
-              <PracticeCard key={practice.practiceId} practice={practice} />
+              <PracticeCard
+                key={practice.practiceId}
+                practice={practice}
+                isSelected={practice.practiceId === selectedPracticeId}
+                onSelect={() => setSelectedPracticeId(practice.practiceId)}
+              />
             ))}
           </div>
         ) : (
           <p className="text-sm text-[var(--foreground-soft)]">你还没有保存过自由模式记录。</p>
         )}
+
+        {selectedPractice ? <PracticeReviewPanel key={selectedPractice.practiceId} practice={selectedPractice} panelRef={reviewPanelRef} /> : null}
       </section>
     </div>
   );
