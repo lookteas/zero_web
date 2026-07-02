@@ -117,3 +117,12 @@ test('free mode focused practice keeps long point details collapsed on mobile', 
   assert.equal(freeModeWorkbench.includes('md:hidden'), true)
   assert.equal(freeModeWorkbench.includes('hidden md:block'), true)
 })
+
+test('free mode recent practices render as a bounded preview with reveal controls', () => {
+  assert.equal(freeModeWorkbench.includes('INITIAL_RECENT_PRACTICE_COUNT'), true)
+  assert.equal(freeModeWorkbench.includes('visiblePracticeCount'), true)
+  assert.equal(freeModeWorkbench.includes('visibleRecentPractices'), true)
+  assert.equal(freeModeWorkbench.includes('查看更多记录'), true)
+  assert.equal(freeModeWorkbench.includes('收起更多记录'), true)
+  assert.equal(freeModeWorkbench.includes('recentPractices.map((practice)'), false)
+})

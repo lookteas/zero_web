@@ -28,6 +28,8 @@ const chapterGuides: Record<number, string> = {
   9: "观察关系镜像",
 };
 
+const INITIAL_RECENT_PRACTICE_COUNT = 6;
+
 function Panel({ children, className = "", id, panelRef }: { children: ReactNode; className?: string; id?: string; panelRef?: Ref<HTMLElement> }) {
   return (
     <section
@@ -263,6 +265,7 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
   const [selectedPracticeId, setSelectedPracticeId] = useState<number | null>(
     focusedPracticeId || (showRecentOnMobile ? recentPractices[0]?.practiceId ?? null : null),
   );
+  const [visiblePracticeCount, setVisiblePracticeCount] = useState(INITIAL_RECENT_PRACTICE_COUNT);
   const detailPanelRef = useRef<HTMLElement | null>(null);
   const actionPanelRef = useRef<HTMLDivElement | null>(null);
   const practicePanelRef = useRef<HTMLElement | null>(null);
@@ -275,6 +278,9 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
   );
   const currentPoint = selectedChapter?.points.find((point) => point.awarenessId === selectedAwarenessId);
   const selectedPractice = recentPractices.find((practice) => practice.practiceId === selectedPracticeId);
+  const visibleRecentPractices = recentPractices.slice(0, visiblePracticeCount);
+  const hasMoreRecentPractices = visiblePracticeCount < recentPractices.length;
+  const hasExpandedRecentPractices = visiblePracticeCount > INITIAL_RECENT_PRACTICE_COUNT;
   const hasSelectedPoint = Boolean(selectedChapter && currentPoint);
   const canSavePractice = practiceNote.trim().length >= 8;
 
@@ -601,16 +607,40 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
         </div>
 
         {recentPractices.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {recentPractices.map((practice) => (
-              <PracticeCard
-                key={practice.practiceId}
-                practice={practice}
-                isSelected={practice.practiceId === selectedPracticeId}
-                onSelect={() => setSelectedPracticeId(practice.practiceId === selectedPracticeId ? null : practice.practiceId)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {visibleRecentPractices.map((practice) => (
+                <PracticeCard
+                  key={practice.practiceId}
+                  practice={practice}
+                  isSelected={practice.practiceId === selectedPracticeId}
+                  onSelect={() => setSelectedPracticeId(practice.practiceId === selectedPracticeId ? null : practice.practiceId)}
+                />
+              ))}
+            </div>
+            {hasMoreRecentPractices || hasExpandedRecentPractices ? (
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (hasMoreRecentPractices) {
+                      setVisiblePracticeCount((count) => Math.min(count + INITIAL_RECENT_PRACTICE_COUNT, recentPractices.length));
+                    } else {
+                      setVisiblePracticeCount(INITIAL_RECENT_PRACTICE_COUNT);
+                      setSelectedPracticeId((practiceId) =>
+                        practiceId && recentPractices.slice(INITIAL_RECENT_PRACTICE_COUNT).some((practice) => practice.practiceId === practiceId)
+                          ? null
+                          : practiceId,
+                      );
+                    }
+                  }}
+                  className="inline-flex min-h-[42px] items-center justify-center rounded-full border border-[var(--border-soft)] bg-white px-5 text-[14px] font-semibold text-[var(--foreground)]"
+                >
+                  {hasMoreRecentPractices ? "查看更多记录" : "收起更多记录"}
+                </button>
+              </div>
+            ) : null}
+          </>
         ) : (
           <p className="text-sm text-[var(--foreground-soft)]">你还没有保存过自由模式记录。</p>
         )}
