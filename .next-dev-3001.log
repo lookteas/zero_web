@@ -342,3 +342,217 @@ Creating turbopack project { dir: 'D:\\code\\zero\\apps\\web', testMode: true }
  GET /logs 200 in 177ms (next.js: 87ms, application-code: 90ms)
  GET /reviews 200 in 241ms (next.js: 104ms, application-code: 137ms)
  GET /me 200 in 41ms (next.js: 3ms, application-code: 38ms)
+ GET /me 200 in 106ms (next.js: 4ms, application-code: 102ms)
+ GET /me/hypnosis-documents 200 in 45ms (next.js: 19ms, application-code: 26ms)
+✓ Compiled in 146ms
+✓ Compiled in 256ms
+✓ Compiled in 82ms
+ GET /me 307 in 319ms (next.js: 113ms, application-code: 206ms)
+ GET /login 200 in 83ms (next.js: 12ms, application-code: 71ms)
+ GET / 200 in 107ms (next.js: 26ms, application-code: 82ms)
+ POST /login 303 in 213ms (next.js: 4ms, application-code: 209ms)
+  └─ ƒ loginAction({}) in 83ms src/app/login/actions.ts
+ GET /freemode 200 in 525ms (next.js: 131ms, application-code: 394ms)
+ GET /me 200 in 42ms (next.js: 3ms, application-code: 39ms)
+ GET /me/awareness-check 200 in 203ms (next.js: 93ms, application-code: 110ms)
+ GET /me/awareness-check/chapters/4 200 in 231ms (next.js: 122ms, application-code: 109ms)
+ POST /me/awareness-check/chapters/4 200 in 268ms (next.js: 44ms, application-code: 225ms)
+  └─ ƒ saveAwarenessCheckPointAction(4, 60, 62) in 133ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/4 200 in 222ms (next.js: 46ms, application-code: 176ms)
+  └─ ƒ saveAwarenessCheckPointAction(4, 61, 76) in 90ms src/app/me/awareness-check/actions.ts
+ GET / 200 in 74ms (next.js: 3ms, application-code: 71ms)
+ GET / 200 in 14ms (next.js: 6ms, application-code: 8ms)
+ GET / 200 in 90ms (next.js: 4ms, application-code: 86ms)
+ GET / 200 in 16ms (next.js: 5ms, application-code: 11ms)
+ GET / 200 in 76ms (next.js: 3ms, application-code: 73ms)
+ GET /freemode 200 in 148ms (next.js: 4ms, application-code: 144ms)
+ GET /me 200 in 48ms (next.js: 3ms, application-code: 45ms)
+ GET /me/awareness-check 200 in 111ms (next.js: 4ms, application-code: 107ms)
+ GET /me/awareness-check/chapters/5 200 in 167ms (next.js: 56ms, application-code: 111ms)
+✓ Compiled in 84ms
+ GET /me/awareness-check/chapters/5 200 in 282ms (next.js: 194ms, application-code: 88ms)
+ POST /me/awareness-check/chapters/5 200 in 292ms (next.js: 43ms, application-code: 249ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 87, 71) in 135ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/5 200 in 487ms (next.js: 49ms, application-code: 438ms)
+ POST /me/awareness-check/chapters/5 200 in 278ms (next.js: 46ms, application-code: 232ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 88, 61) in 86ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 270ms (next.js: 47ms, application-code: 223ms)
+ POST /me/awareness-check/chapters/5 200 in 490ms (next.js: 49ms, application-code: 441ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 89, 64) in 106ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/1 200 in 166ms (next.js: 46ms, application-code: 120ms)
+ POST /me/awareness-check/chapters/1 200 in 249ms (next.js: 49ms, application-code: 200ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 1, 69) in 101ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 291ms (next.js: 49ms, application-code: 243ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 2, 67) in 127ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 229ms (next.js: 66ms, application-code: 164ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 3, 69) in 74ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 233ms (next.js: 47ms, application-code: 187ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 4, 67) in 78ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 242ms (next.js: 52ms, application-code: 190ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 5, 50) in 77ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 230ms (next.js: 48ms, application-code: 182ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 6, 50) in 70ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 239ms (next.js: 57ms, application-code: 182ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 7, 50) in 83ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 243ms (next.js: 65ms, application-code: 178ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 8, 50) in 71ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 249ms (next.js: 51ms, application-code: 198ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 9, 50) in 92ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 245ms (next.js: 50ms, application-code: 195ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 10, 50) in 97ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 229ms (next.js: 54ms, application-code: 176ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 11, 50) in 81ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 453ms (next.js: 52ms, application-code: 400ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 12, 50) in 87ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 272ms (next.js: 5ms, application-code: 267ms)
+ GET /me/awareness-check/chapters/1 200 in 147ms (next.js: 48ms, application-code: 99ms)
+ POST /me/awareness-check/chapters/1 200 in 268ms (next.js: 59ms, application-code: 208ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 13, 50) in 101ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/1 200 in 410ms (next.js: 5ms, application-code: 405ms)
+  └─ ƒ completeAwarenessCheckChapterAction(1) in 97ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/1?submitted=1 200 in 260ms (next.js: 4ms, application-code: 256ms)
+ GET /me/awareness-check 200 in 164ms (next.js: 6ms, application-code: 158ms)
+ POST /me/awareness-check/chapters/1?submitted=1 200 in 364ms (next.js: 51ms, application-code: 313ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 1, 50) in 88ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/1 200 in 167ms (next.js: 49ms, application-code: 118ms)
+ GET /me/awareness-check/chapters/1 200 in 226ms (next.js: 72ms, application-code: 154ms)
+ GET /me/awareness-check/chapters/1 200 in 174ms (next.js: 49ms, application-code: 125ms)
+ GET /me/awareness-check 200 in 157ms (next.js: 5ms, application-code: 153ms)
+ POST /me/awareness-check/chapters/1 200 in 417ms (next.js: 46ms, application-code: 371ms)
+  └─ ƒ saveAwarenessCheckPointAction(1, 2, 50) in 153ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/5 200 in 160ms (next.js: 45ms, application-code: 115ms)
+ GET /me/awareness-check/chapters 404 in 440ms (next.js: 400ms, application-code: 41ms)
+✓ Compiled in 96ms
+ GET /me/awareness-check/chapters 404 in 177ms (next.js: 107ms, application-code: 71ms)
+ GET /me/awareness-check/chapters 404 in 144ms (next.js: 17ms, application-code: 127ms)
+ GET /me/awareness-check/chapters/5 200 in 566ms (next.js: 169ms, application-code: 397ms)
+ GET /me/awareness-check/chapters/5 200 in 207ms (next.js: 53ms, application-code: 155ms)
+ GET /me/awareness-check/chapters/5 200 in 215ms (next.js: 50ms, application-code: 165ms)
+✓ Compiled in 60ms
+ GET /me/awareness-check/chapters/5 200 in 240ms (next.js: 162ms, application-code: 78ms)
+ POST /me/awareness-check/chapters/5 200 in 327ms (next.js: 46ms, application-code: 281ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 87, 50) in 163ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/5 200 in 275ms (next.js: 49ms, application-code: 226ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 87, 60) in 106ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/5 200 in 247ms (next.js: 51ms, application-code: 196ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 88, 69) in 74ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/5 200 in 260ms (next.js: 51ms, application-code: 209ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 88, 69) in 105ms src/app/me/awareness-check/actions.ts
+✓ Compiled in 231ms
+ GET /me/awareness-check/chapters/5 200 in 454ms (next.js: 292ms, application-code: 162ms)
+ GET /me/awareness-check/chapters/5 200 in 519ms (next.js: 6ms, application-code: 513ms)
+ POST /me/awareness-check/chapters/5 200 in 300ms (next.js: 50ms, application-code: 251ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 89, 82) in 129ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 251ms (next.js: 49ms, application-code: 202ms)
+ POST /me/awareness-check/chapters/5 200 in 479ms (next.js: 56ms, application-code: 422ms)
+  └─ ƒ saveAwarenessCheckPointAction(5, 90, 50) in 104ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/6 200 in 147ms (next.js: 42ms, application-code: 105ms)
+ POST /me/awareness-check/chapters/6 200 in 289ms (next.js: 52ms, application-code: 237ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 152, 50) in 113ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 275ms (next.js: 100ms, application-code: 176ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 153, 50) in 73ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 245ms (next.js: 6ms, application-code: 239ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 154, 50) in 112ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 314ms (next.js: 67ms, application-code: 246ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 155, 50) in 100ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 337ms (next.js: 96ms, application-code: 240ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 156, 50) in 107ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 211ms (next.js: 4ms, application-code: 207ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 157, 50) in 89ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 312ms (next.js: 73ms, application-code: 239ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 158, 50) in 108ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 233ms (next.js: 6ms, application-code: 227ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 159, 50) in 112ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 322ms (next.js: 71ms, application-code: 250ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 160, 50) in 72ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 251ms (next.js: 4ms, application-code: 247ms)
+ POST /me/awareness-check/chapters/6 200 in 313ms (next.js: 6ms, application-code: 307ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 160, 50) in 133ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/6 200 in 163ms (next.js: 56ms, application-code: 107ms)
+ POST /me/awareness-check/chapters/6 200 in 229ms (next.js: 52ms, application-code: 177ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 161, 50) in 82ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 237ms (next.js: 59ms, application-code: 179ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 164, 50) in 78ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 297ms (next.js: 100ms, application-code: 196ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 165, 50) in 81ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 258ms (next.js: 61ms, application-code: 197ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 166, 50) in 92ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 267ms (next.js: 60ms, application-code: 207ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 167, 50) in 96ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 242ms (next.js: 50ms, application-code: 192ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 170, 50) in 85ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 281ms (next.js: 54ms, application-code: 227ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 171, 50) in 76ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 286ms (next.js: 69ms, application-code: 217ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 172, 50) in 103ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 259ms (next.js: 53ms, application-code: 205ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 173, 50) in 80ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 263ms (next.js: 69ms, application-code: 194ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 174, 50) in 83ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 252ms (next.js: 65ms, application-code: 187ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 175, 50) in 79ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 294ms (next.js: 67ms, application-code: 227ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 176, 50) in 79ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 302ms (next.js: 60ms, application-code: 241ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 177, 50) in 108ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 264ms (next.js: 63ms, application-code: 201ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 178, 50) in 87ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 273ms (next.js: 63ms, application-code: 210ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 179, 50) in 86ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 372ms (next.js: 79ms, application-code: 294ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 180, 50) in 137ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 301ms (next.js: 63ms, application-code: 239ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 181, 50) in 114ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 237ms (next.js: 59ms, application-code: 178ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 182, 50) in 74ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 254ms (next.js: 71ms, application-code: 183ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 183, 50) in 83ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 282ms (next.js: 61ms, application-code: 221ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 184, 50) in 98ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 323ms (next.js: 86ms, application-code: 237ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 185, 50) in 98ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 317ms (next.js: 62ms, application-code: 256ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 188, 50) in 108ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 302ms (next.js: 74ms, application-code: 228ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 189, 50) in 78ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 268ms (next.js: 65ms, application-code: 203ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 190, 50) in 89ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 270ms (next.js: 61ms, application-code: 210ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 191, 50) in 90ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 280ms (next.js: 63ms, application-code: 217ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 192, 50) in 97ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 317ms (next.js: 60ms, application-code: 257ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 193, 50) in 110ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 285ms (next.js: 70ms, application-code: 215ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 194, 50) in 99ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 341ms (next.js: 71ms, application-code: 270ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 195, 50) in 92ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 225ms (next.js: 4ms, application-code: 220ms)
+ GET /me/awareness-check/chapters/6 200 in 148ms (next.js: 46ms, application-code: 102ms)
+ POST /me/awareness-check/chapters/6 200 in 227ms (next.js: 51ms, application-code: 177ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 196, 50) in 86ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 291ms (next.js: 61ms, application-code: 230ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 197, 50) in 116ms src/app/me/awareness-check/actions.ts
+ POST /me/awareness-check/chapters/6 200 in 535ms (next.js: 6ms, application-code: 528ms)
+  └─ ƒ completeAwarenessCheckChapterAction(6) in 110ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/6?submitted=1 200 in 343ms (next.js: 4ms, application-code: 338ms)
+ POST /me/awareness-check/chapters/6?submitted=1 200 in 266ms (next.js: 49ms, application-code: 217ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 152, 50) in 106ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check 200 in 180ms (next.js: 7ms, application-code: 174ms)
+ POST /me/awareness-check/chapters/6?submitted=1 200 in 394ms (next.js: 50ms, application-code: 344ms)
+  └─ ƒ saveAwarenessCheckPointAction(6, 153, 50) in 100ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/7 200 in 140ms (next.js: 46ms, application-code: 94ms)
+ POST /me/awareness-check/chapters/7 200 in 160ms (next.js: 48ms, application-code: 112ms)
+  └─ ƒ saveAwarenessCheckPointAction(7, 201, 50) in 71ms src/app/me/awareness-check/actions.ts
+ GET /me/awareness-check/chapters/7 200 in 201ms (next.js: 59ms, application-code: 143ms)
+ GET /me/awareness-check 200 in 110ms (next.js: 4ms, application-code: 106ms)
+ GET /reviews 200 in 131ms (next.js: 17ms, application-code: 114ms)
+ GET /logs 200 in 129ms (next.js: 38ms, application-code: 90ms)
+ GET /today 200 in 205ms (next.js: 31ms, application-code: 174ms)
+ GET / 200 in 119ms (next.js: 31ms, application-code: 88ms)
+ GET /reviews 200 in 228ms (next.js: 4ms, application-code: 224ms)
+ GET /me 200 in 172ms (next.js: 75ms, application-code: 96ms)
+ GET /reviews 200 in 114ms (next.js: 3ms, application-code: 111ms)
+ GET /logs 200 in 95ms (next.js: 6ms, application-code: 89ms)
+ GET /today 200 in 92ms (next.js: 5ms, application-code: 87ms)
+ GET / 200 in 76ms (next.js: 4ms, application-code: 72ms)

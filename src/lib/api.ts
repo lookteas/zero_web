@@ -109,6 +109,7 @@ export type AwarenessCheckPoint = {
   direction: string;
   directionText: string;
   selfScore: number;
+  isSaved: boolean;
   score: number;
   refScore: number;
   delta: number;

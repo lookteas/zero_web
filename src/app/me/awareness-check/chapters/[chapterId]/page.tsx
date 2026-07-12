@@ -4,13 +4,11 @@ import type { CSSProperties } from "react";
 
 import { getApiUnavailableCopy } from "@/app/api-copy.mjs";
 import { AppShell } from "@/components/app-shell";
-import { PrimaryButton } from "@/components/primary-button";
 import { SectionCard } from "@/components/section-card";
-import { getAwarenessCheckChapter, getAwarenessCheckTrends, type AwarenessCheckChapterTrendPoint, type AwarenessCheckPoint } from "@/lib/api";
+import { getAwarenessCheckChapter, getAwarenessCheckTrends, type AwarenessCheckChapterTrendPoint } from "@/lib/api";
 import { requireLogin } from "@/lib/auth";
 
-import { saveAwarenessCheckChapterScoresAction, submitAwarenessCheckChapterAction } from "../../actions";
-import { ScoreSlider } from "./score-slider";
+import { AwarenessCheckStepper } from "./stepper";
 
 type AwarenessCheckChapterPageProps = {
   params: Promise<{ chapterId: string }>;
@@ -52,37 +50,6 @@ function Notice({ children, tone = "success" }: { children: string; tone?: "succ
     >
       {children}
     </section>
-  );
-}
-
-function PointSlider({ point, index }: { point: AwarenessCheckPoint; index: number }) {
-  return (
-    <article className="rounded-[24px] border border-[var(--border-soft)] bg-white/90 p-4 shadow-[0_12px_28px_rgba(15,48,60,0.04)] md:p-5">
-      <input type="hidden" name="awarenessId" value={point.awarenessId} />
-
-      <div className="flex items-start gap-3">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[rgba(19,111,99,0.14)] bg-[var(--surface-soft)] text-[12px] font-semibold text-[var(--primary)]">
-          {index + 1}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-[17px] font-semibold leading-7 text-[var(--foreground)]">{point.title}</h2>
-            <span className="inline-flex min-h-[26px] items-center rounded-full border border-[var(--border-soft)] bg-[var(--surface-soft)] px-2.5 text-[12px] font-medium text-[var(--foreground-soft)]">
-              {point.directionText}
-            </span>
-          </div>
-          {point.summary ? <p className="mt-2 text-[13px] leading-6 text-[var(--foreground-soft)] md:text-sm md:leading-7">{point.summary}</p> : null}
-        </div>
-      </div>
-
-      <ScoreSlider point={point} />
-
-      {point.hasPrevScore ? (
-        <p className="mt-3 text-[12px] leading-5 text-[var(--foreground-faint)]">
-          较上次：{formatSigned(point.scoreChange)} 分
-        </p>
-      ) : null}
-    </article>
   );
 }
 
@@ -227,21 +194,7 @@ export default async function AwarenessCheckChapterPage({ params, searchParams }
 
       <ChapterHistoryPanel history={chapterHistory} />
 
-      <form action={saveAwarenessCheckChapterScoresAction} className="space-y-3.5 md:space-y-4">
-        <input type="hidden" name="chapterId" value={data.chapter.chapterId} />
-        {data.points.map((point, index) => (
-          <PointSlider key={point.awarenessId} point={point} index={index} />
-        ))}
-
-        <div className="sticky bottom-[72px] z-10 grid gap-3 rounded-[24px] border border-[var(--border-soft)] bg-white/92 p-3 shadow-[0_16px_34px_rgba(15,48,60,0.12)] backdrop-blur md:static md:grid-cols-2 md:p-0 md:shadow-none">
-          <PrimaryButton type="submit" variant="secondary">
-            保存本章评分
-          </PrimaryButton>
-          <PrimaryButton type="submit" formAction={submitAwarenessCheckChapterAction}>
-            {data.chapter.hasPrevScore ? "提交本章新评分" : "提交本章检测"}
-          </PrimaryButton>
-        </div>
-      </form>
+      <AwarenessCheckStepper chapterId={data.chapter.chapterId} points={data.points} isRetest={hasSubmittedScore} />
     </AppShell>
   );
 }
