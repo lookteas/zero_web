@@ -8,13 +8,13 @@ const form = readFileSync(new URL('./standardize-form.tsx', import.meta.url), 'u
 const actions = readFileSync(new URL('./actions.ts', import.meta.url), 'utf8')
 
 test('personal center links to the hypnosis document standardizer', () => {
-  assert.equal(mePage.includes('潜催文档优化'), true)
+  assert.equal(mePage.includes('互催文档优化'), true)
   assert.equal(mePage.includes('href: "/me/hypnosis-documents"'), true)
-  assert.equal(mePage.includes('可使用'), true)
+  assert.equal(mePage.includes('已开放'), true)
 })
 
 test('hypnosis document page exposes upload and metadata fields', () => {
-  assert.equal(page.includes('潜催文档标准化'), true)
+  assert.equal(page.includes('互催文档标准化'), true)
   assert.equal(form.includes('name="file"'), true)
   assert.equal(form.includes('accept=".docx'), true)
   assert.equal(form.includes('name="topic"'), true)

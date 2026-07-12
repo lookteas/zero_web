@@ -63,6 +63,124 @@ export type FreeModePractice = {
   updatedAt: string;
 };
 
+export type AwarenessCheckInfo = {
+  checkId: number;
+  status: string;
+  doneChapters: number;
+  totalChapters: number;
+  score?: number;
+  refScore?: number;
+  delta?: number;
+  prevCheckId?: number;
+  startedAt: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AwarenessCheckChapter = {
+  checkChapterId: number;
+  checkId: number;
+  chapterId: number;
+  chapterNo: number;
+  chapterTitle: string;
+  chapterFullTitle: string;
+  totalPoints: number;
+  scoredPoints: number;
+  score?: number;
+  refScore?: number;
+  delta?: number;
+  prevScore?: number;
+  hasPrevScore: boolean;
+  scoreChange?: number;
+  status: string;
+  submittedAt?: string;
+};
+
+export type AwarenessCheckPoint = {
+  awarenessId: number;
+  chapterId: number;
+  sectionId: number;
+  title: string;
+  summary?: string;
+  details?: string;
+  orderNo: number;
+  humanScore: number;
+  direction: string;
+  directionText: string;
+  selfScore: number;
+  score: number;
+  refScore: number;
+  delta: number;
+  prevScore?: number;
+  hasPrevScore: boolean;
+  scoreChange?: number;
+};
+
+export type AwarenessCheckChange = {
+  scope: string;
+  chapterId?: number;
+  awarenessId?: number;
+  title: string;
+  scoreChange: number;
+};
+
+export type AwarenessCheckCompare = {
+  prevCheckId?: number;
+  scoreChange?: number;
+  sameChapterCount: number;
+  missingChapters?: string[];
+  improvedChapters: AwarenessCheckChange[];
+  declinedChapters: AwarenessCheckChange[];
+  improvedPoints: AwarenessCheckChange[];
+  declinedPoints: AwarenessCheckChange[];
+};
+
+export type AwarenessCheckCurrentData = {
+  check: AwarenessCheckInfo;
+  chapters: AwarenessCheckChapter[];
+  missingChapters: AwarenessCheckChapter[];
+  compare: AwarenessCheckCompare;
+};
+
+export type AwarenessCheckChapterData = {
+  check: AwarenessCheckInfo;
+  chapter: AwarenessCheckChapter;
+  points: AwarenessCheckPoint[];
+  compare: AwarenessCheckCompare;
+};
+
+export type AwarenessCheckTrendPoint = {
+  checkId: number;
+  startedAt: string;
+  completedAt?: string;
+  doneChapters: number;
+  totalChapters: number;
+  score: number;
+  refScore: number;
+  delta: number;
+};
+
+export type AwarenessCheckChapterTrendPoint = {
+  checkId: number;
+  chapterId: number;
+  chapterNo: number;
+  chapterTitle: string;
+  chapterFullTitle: string;
+  submittedAt?: string;
+  score: number;
+  refScore: number;
+  delta: number;
+  hasPrevScore: boolean;
+  scoreChange?: number;
+};
+
+export type AwarenessCheckTrendsData = {
+  overall: AwarenessCheckTrendPoint[];
+  chapters: AwarenessCheckChapterTrendPoint[];
+  referenceDeltas: AwarenessCheckChapterTrendPoint[];
+};
+
 export type AdminUser = {
   id: number;
   account: string;
@@ -364,6 +482,44 @@ export async function updateFreemodePractice(practiceId: number, payload: { prac
     method: "PATCH",
     body: JSON.stringify(payload),
   });
+}
+
+export async function getAwarenessCheckCurrent() {
+  return request<AwarenessCheckCurrentData>("/awareness-checks/current");
+}
+
+export async function createAwarenessCheck() {
+  return request<AwarenessCheckCurrentData>("/awareness-checks", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export async function getAwarenessCheckChapter(chapterId: number) {
+  return request<AwarenessCheckChapterData>(`/awareness-checks/current/chapters/${chapterId}`);
+}
+
+export async function saveAwarenessCheckChapterScores(chapterId: number, scores: Array<{ awarenessId: number; selfScore: number }>) {
+  return request<AwarenessCheckChapterData>(`/awareness-checks/current/chapters/${chapterId}/scores`, {
+    method: "PUT",
+    body: JSON.stringify({ scores }),
+  });
+}
+
+export async function submitAwarenessCheckChapter(chapterId: number) {
+  return request<AwarenessCheckChapterData>(`/awareness-checks/current/chapters/${chapterId}/submit`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export async function listAwarenessCheckHistory() {
+  const data = await request<{ list: AwarenessCheckInfo[] }>("/awareness-checks/history");
+  return data.list;
+}
+
+export async function getAwarenessCheckTrends() {
+  return request<AwarenessCheckTrendsData>("/awareness-checks/trends");
 }
 
 export async function getCurrentWeeklyVote() {

@@ -6,8 +6,6 @@ import { logoutAction } from "@/app/login/actions";
 import { AppShell } from "@/components/app-shell";
 import { requireLogin } from "@/lib/auth";
 
-type ToolTone = "mint" | "blue" | "purple";
-
 const statusCards = [
   { label: "账号状态", value: "已登录" },
   { label: "能力中心", value: "试用开放" },
@@ -46,40 +44,26 @@ const tasks = [
   },
 ];
 
-const toolToneMap: Record<ToolTone, string> = {
-  mint: "border-[oklch(88%_0.018_185)] bg-[color-mix(in_oklch,oklch(50%_0.095_175),white_92%)] text-[oklch(50%_0.095_175)]",
-  blue: "border-[oklch(88%_0.018_185)] bg-[color-mix(in_oklch,oklch(61%_0.150_245),white_92%)] text-[oklch(52%_0.130_235)]",
-  purple: "border-[oklch(88%_0.018_185)] bg-[color-mix(in_oklch,oklch(63%_0.160_285),white_92%)] text-[oklch(52%_0.130_285)]",
-};
-
 const tools = [
   {
     title: "意识强度检测",
-    description: "根据打卡、觉察和复盘记录，形成阶段性的意识状态参考。",
-    compactDescription: "形成阶段性的意识状态参考",
-    status: "规划中",
-    action: "查看规划",
-    icon: "+",
-    tone: "mint" as const,
+    description: "按 9 个章节记录当前状态，随时回看阶段变化。",
+    status: "已开放",
+    action: "开始检测",
+    href: "/me/awareness-check",
   },
   {
-    title: "潜催文档优化",
-    description: "整理互催记录，生成结构统一、便于复盘的标准文档。",
-    compactDescription: "整理互催记录，生成标准复盘文档",
+    title: "互催文档优化",
+    description: "将已有互催记录整理成可用于复盘的规范文档。",
     status: "已开放",
     action: "开始整理",
-    icon: "⌁",
-    tone: "blue" as const,
     href: "/me/hypnosis-documents",
   },
   {
     title: "AI 辅助",
-    description: "在打卡、复盘和文档整理中提供提示、追问与表达优化。",
-    compactDescription: "基于当前练习记录提出改进建议",
+    description: "在练习、复盘和文档整理中提供针对性提示。",
     status: "即将上线",
     action: "加入提醒",
-    icon: "A",
-    tone: "purple" as const,
   },
 ];
 
@@ -351,44 +335,26 @@ function TodayPanel() {
   );
 }
 
-function ToolCard({ tool }: { tool: (typeof tools)[number] }) {
-  const body = (
+function ToolRow({ tool, index }: { tool: (typeof tools)[number]; index: number }) {
+  const row = (
     <>
-      <div className="flex items-start justify-between gap-3 md:block">
-        <span className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-[17px] border border-white/80 bg-white/70 text-[20px] font-black leading-none md:h-12 md:w-12 md:rounded-[18px]">
-          {tool.icon}
-        </span>
-        <span className="inline-flex min-h-[26px] shrink-0 items-center rounded-full bg-white/80 px-2.5 text-[12px] font-extrabold text-[oklch(50%_0.095_175)] md:min-h-[28px]">
-          {tool.status}
-        </span>
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-[rgba(19,111,99,0.13)] bg-[var(--surface-soft)] text-[13px] font-bold text-[var(--primary)]">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="text-[15px] font-bold text-[oklch(24%_0.042_215)] md:text-[16px]">{tool.title}</h3>
+          <span className={tool.href ? "inline-flex rounded-full bg-[rgba(224,246,239,0.92)] px-2 py-0.5 text-[11px] font-bold text-[var(--success-text)]" : "inline-flex rounded-full bg-[var(--surface-soft)] px-2 py-0.5 text-[11px] font-bold text-[var(--foreground-soft)]"}>
+            {tool.status}
+          </span>
+        </div>
+        <p className="mt-1 text-[12px] leading-5 text-[oklch(56%_0.030_215)] md:text-[13px]">{tool.description}</p>
       </div>
-      <div className="min-w-0">
-        <h3 className="text-[16px] font-bold tracking-normal text-[oklch(24%_0.042_215)] md:text-[19px]">{tool.title}</h3>
-        <p className="mt-1.5 text-[13px] leading-6 text-[oklch(56%_0.030_215)] md:mt-2 md:text-sm md:leading-7">
-          <span className="md:hidden">{tool.compactDescription}</span>
-          <span className="hidden md:inline">{tool.description}</span>
-        </p>
-      </div>
-      <SmallAction href={tool.href} muted={!tool.href}>
-        {tool.action}
-      </SmallAction>
+      <SmallAction href={tool.href} muted={!tool.href}>{tool.action}</SmallAction>
     </>
   );
 
-  const className = [
-    "grid gap-3 rounded-[20px] border p-3.5 transition md:min-h-[190px] md:grid-rows-[auto_1fr_auto] md:gap-3.5 md:rounded-[22px] md:p-[18px] md:hover:-translate-y-0.5 md:hover:shadow-[0_18px_34px_rgba(29,82,82,0.10)]",
-    toolToneMap[tool.tone],
-  ].join(" ");
-
-  if (tool.href) {
-    return (
-      <article className={className}>
-        {body}
-      </article>
-    );
-  }
-
-  return <article className={className}>{body}</article>;
+  return <article className="flex min-h-[72px] items-center gap-3 border-b border-[oklch(88%_0.018_185)] py-3 last:border-b-0 last:pb-0 first:pt-0 md:min-h-[76px]">{row}</article>;
 }
 
 function ToolsPanel() {
@@ -397,26 +363,11 @@ function ToolsPanel() {
       id="tools-center"
       eyebrow="能力中心"
       title="个人练习工具"
-      description="常用能力会逐步集中到这里，当前先开放文档整理工具，其他能力按试用反馈持续完善。"
-      action={
-        <div className="hidden shrink-0 rounded-full border border-[oklch(88%_0.018_185)] bg-[oklch(96%_0.010_185/.84)] p-1 md:flex">
-          {["全部", "已开放", "规划中"].map((item, index) => (
-            <span
-              key={item}
-              className={[
-                "inline-flex min-h-[34px] items-center rounded-full px-3 text-[13px] font-bold",
-                index === 0 ? "bg-white text-[oklch(24%_0.042_215)] shadow-[0_8px_18px_rgba(34,88,86,0.09)]" : "text-[oklch(56%_0.030_215)]",
-              ].join(" ")}
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      }
+      description="从这里进入检测、文档整理与后续的辅助能力。"
     >
-      <div className="grid gap-3 px-5 pb-5 md:grid-cols-3 md:gap-3.5 md:px-6 md:pb-6">
-        {tools.map((tool) => (
-          <ToolCard key={tool.title} tool={tool} />
+      <div className="px-5 pb-5 md:px-6 md:pb-6">
+        {tools.map((tool, index) => (
+          <ToolRow key={tool.title} tool={tool} index={index} />
         ))}
       </div>
     </Panel>
@@ -425,37 +376,23 @@ function ToolsPanel() {
 
 function SecurityPanel() {
   return (
-    <Panel id="security-center" eyebrow="账号安全" title="登录与安全设置">
-      <div className="grid gap-3 px-5 pb-5 md:grid-cols-2 md:gap-3.5 md:px-6 md:pb-6">
-        <article className="rounded-[18px] border border-[color-mix(in_oklch,oklch(67%_0.130_55),white_60%)] bg-[color-mix(in_oklch,oklch(67%_0.130_55),white_91%)] p-3.5 md:rounded-[22px] md:p-[18px]">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="text-[15px] font-bold text-[oklch(24%_0.042_215)] md:text-lg">密码修改</h3>
-            <span className="inline-flex min-h-[26px] shrink-0 items-center rounded-full bg-white/80 px-2.5 text-[12px] font-extrabold text-[oklch(67%_0.130_55)]">
-              待开放
-            </span>
-          </div>
-          <p className="mt-2 text-[12px] leading-6 text-[oklch(56%_0.030_215)] md:text-sm md:leading-7">
-            支持自主更新登录密码，进一步保护个人练习数据。
-          </p>
-          <div className="mt-3">
-            <SmallAction muted>设置密码</SmallAction>
-          </div>
-        </article>
-
-        <form action={logoutAction} className="rounded-[18px] border border-[oklch(88%_0.018_185)] bg-white p-3.5 md:rounded-[22px] md:p-[18px]">
-          <h3 className="text-[15px] font-bold text-[oklch(24%_0.042_215)] md:text-lg">退出当前账号</h3>
-          <p className="mt-2 text-[12px] leading-6 text-[oklch(56%_0.030_215)] md:text-sm md:leading-7">
-            退出后需要重新登录，才能继续使用个人练习工具。
-          </p>
-          <button
-            type="submit"
-            className="mt-3 inline-flex min-h-[34px] items-center justify-center rounded-full border border-[oklch(88%_0.018_185)] bg-white px-3 text-[12px] font-semibold leading-none text-[oklch(24%_0.042_215)] transition hover:border-[oklch(50%_0.095_175)] hover:text-[oklch(50%_0.095_175)] md:text-[13px]"
-          >
+    <section id="security-center" className="flex flex-col gap-4 rounded-[22px] border border-[oklch(88%_0.018_185)] bg-white/78 px-5 py-4 shadow-[0_12px_28px_rgba(25,83,80,0.06)] md:flex-row md:items-center md:justify-between md:px-6">
+      <div className="min-w-0">
+        <span className="text-[12px] font-bold tracking-[0.08em] text-[oklch(50%_0.095_175)]">账号安全</span>
+        <h2 className="mt-1 text-[18px] font-bold text-[oklch(24%_0.042_215)]">登录与安全设置</h2>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2 md:flex md:items-center md:gap-3">
+        <div className="flex min-h-[44px] items-center justify-between gap-4 rounded-[14px] border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3">
+          <span className="text-[13px] font-semibold text-[var(--foreground)]">密码修改</span>
+          <span className="text-[12px] text-[var(--foreground-faint)]">待开放</span>
+        </div>
+        <form action={logoutAction}>
+          <button type="submit" className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[14px] border border-[var(--border-soft)] bg-white px-4 text-[13px] font-semibold text-[var(--foreground)] transition hover:border-[oklch(50%_0.095_175)] hover:text-[oklch(50%_0.095_175)] md:w-auto">
             退出登录
           </button>
         </form>
       </div>
-    </Panel>
+    </section>
   );
 }
 

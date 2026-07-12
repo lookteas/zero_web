@@ -19,14 +19,15 @@ test('me page presents a complete personal center surface', () => {
 
 test('me page exposes trial-ready feature entries with clear status labels', () => {
   assert.equal(source.includes('意识强度检测'), true)
-  assert.equal(source.includes('潜催文档优化'), true)
+  assert.equal(source.includes('互催文档优化'), true)
   assert.equal(source.includes('AI 辅助'), true)
+  assert.equal(source.includes('function ToolRow('), true)
+  assert.equal(source.includes('function ToolCard('), false)
   assert.equal(source.includes('密码修改'), true)
-  assert.equal(source.includes('规划中'), true)
   assert.equal(source.includes('已开放'), true)
   assert.equal(source.includes('即将上线'), true)
   assert.equal(source.includes('待开放'), true)
-  assert.equal(source.includes('整理互催记录，生成结构统一、便于复盘的标准文档。'), true)
+  assert.equal(source.includes('将已有互催记录整理成可用于复盘的规范文档。'), true)
 })
 
 test('me page keeps desktop and mobile personal center affordances in one route', () => {
