@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type ReactNode, type Ref } from "react";
 
 import { PrimaryButton } from "@/components/primary-button";
@@ -30,6 +31,10 @@ const chapterGuides: Record<number, string> = {
 
 const INITIAL_RECENT_VISIBLE_COUNT = 3;
 const RECENT_PRACTICE_LIMIT = 7;
+
+function getChapterIllustration(chapterNo: number) {
+  return `/freemode-chapters/chapter-${String(chapterNo).padStart(2, "0")}.png`;
+}
 
 function Panel({ children, className = "", id, panelRef }: { children: ReactNode; className?: string; id?: string; panelRef?: Ref<HTMLElement> }) {
   return (
@@ -376,7 +381,7 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
                     aria-pressed={isActive}
                     onClick={() => handleSelectChapter(chapter.chapterId)}
                     className={[
-                      "relative aspect-[1.02] min-h-[96px] cursor-pointer rounded-[16px] border px-2.5 py-3 text-left transition md:aspect-auto md:min-h-[116px] md:rounded-[18px] md:px-4",
+                      "group relative grid aspect-[1.02] min-h-[96px] cursor-pointer grid-cols-[minmax(0,1fr)_42%] overflow-hidden rounded-[16px] border text-left transition md:aspect-auto md:min-h-[148px] md:rounded-[18px]",
                       isActive
                         ? "border-[rgba(19,111,99,0.34)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(232,247,243,0.88)_100%)] shadow-[inset_0_0_0_1px_rgba(19,111,99,0.08)]"
                         : "border-[var(--border-soft)] bg-white/94 hover:border-[rgba(19,111,99,0.18)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]",
@@ -387,13 +392,24 @@ export function FreemodeWorkbench({ chapters, recentPractices, showRecentOnMobil
                         已选
                       </span>
                     ) : null}
-                    <span className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">
-                      {String(chapter.chapterNo).padStart(2, "0")}
+                    <span className="relative z-[1] flex min-w-0 flex-col justify-center px-2.5 py-3 md:px-4">
+                      <span className="text-[12px] font-semibold tracking-[0.08em] text-[var(--primary)]/75">
+                        {String(chapter.chapterNo).padStart(2, "0")}
+                      </span>
+                      <strong className="mt-1.5 block text-[14px] leading-5 text-[var(--foreground)] md:mt-2 md:text-[16px]">{chapter.chapterTitle}</strong>
+                      <small className="mt-1.5 block text-[11px] leading-4 text-[var(--foreground-soft)] md:mt-2 md:text-[12px] md:leading-5">
+                        {chapterGuides[chapter.chapterNo] || `${chapter.points.length} 个意识点`}
+                      </small>
                     </span>
-                    <strong className="mt-2 block text-[14px] leading-5 text-[var(--foreground)] md:text-[16px]">{chapter.chapterTitle}</strong>
-                    <small className="mt-1.5 block text-[11px] leading-4 text-[var(--foreground-soft)] md:mt-2 md:text-[12px] md:leading-5">
-                      {chapterGuides[chapter.chapterNo] || `${chapter.points.length} 个意识点`}
-                    </small>
+                    <span className="relative min-h-0 overflow-hidden bg-[linear-gradient(135deg,rgba(235,249,248,0.92),rgba(255,255,255,0.56))]">
+                      <Image
+                        src={getChapterIllustration(chapter.chapterNo)}
+                        alt={`${chapter.chapterTitle}章节图`}
+                        fill
+                        sizes="(max-width: 768px) 28vw, 16vw"
+                        className="object-cover object-center transition duration-200 group-hover:scale-[1.03]"
+                      />
+                    </span>
                   </button>
                 );
               })}

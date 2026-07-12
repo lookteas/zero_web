@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       {
         pathname: "/login-illustration.png",
       },
+      {
+        pathname: "/freemode-chapters/**",
+      },
     ],
   },
 };
