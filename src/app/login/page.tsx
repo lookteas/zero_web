@@ -5,7 +5,7 @@ import { loginAction, registerAction } from "./actions";
 import { LoginExperience } from "./login-experience";
 
 type LoginPageProps = {
-  searchParams: Promise<{ loginError?: string; registerError?: string }>;
+  searchParams: Promise<{ loginError?: string; registerError?: string; passwordChanged?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -22,6 +22,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       registerAction={registerAction}
       loginError={Boolean(query.loginError)}
       registerError={Boolean(query.registerError)}
+      passwordChanged={Boolean(query.passwordChanged)}
     />
   );
 }

@@ -18,6 +18,7 @@ test('getAuthHeroContent returns the approved growth-app auth structure', () => 
 test('login page uses the latest split-panel auth composition', () => {
   assert.equal(hasTokens(loginPage, ['LoginExperience', 'loginAction={loginAction}', 'registerAction={registerAction}']), true)
   assert.equal(hasTokens(loginPage, ['searchParams', 'loginError', 'registerError']), true)
+  assert.equal(loginPage.includes('passwordChanged'), true)
 })
 
 test('login experience keeps the new desktop/mobile visual details and real auth actions', () => {
@@ -27,6 +28,7 @@ test('login experience keeps the new desktop/mobile visual details and real auth
   assert.equal(hasTokens(loginExperience, ['/login-illustration.png', '每日打卡', '习惯养成', '心境记录']), true)
   assert.equal(hasTokens(loginExperience, ['formAction={loginAction}', 'formAction={registerAction}']), true)
   assert.equal(hasTokens(loginExperience, ['login-error-alert', 'register-error-alert']), true)
+  assert.equal(loginExperience.includes('密码已更新，请使用新密码登录。'), true)
   assert.equal(loginExperience.includes('framer-motion'), false)
   assert.equal(loginExperience.includes('lucide-react'), false)
 })

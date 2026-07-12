@@ -450,6 +450,13 @@ export async function getHome() {
   return request<HomeData>("/me/home");
 }
 
+export async function changePassword(payload: { currentPassword: string; newPassword: string }) {
+  return request<{ message?: string }>("/me/password", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function listTopics() {
   const data = await request<{ list: Topic[] }>("/topics");
   return data.list;

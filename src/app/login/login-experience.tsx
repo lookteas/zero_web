@@ -10,6 +10,7 @@ type LoginExperienceProps = {
   registerAction: AuthFormAction;
   loginError: boolean;
   registerError: boolean;
+  passwordChanged: boolean;
 };
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -218,6 +219,7 @@ export function LoginExperience({
   registerAction,
   loginError,
   registerError,
+  passwordChanged,
 }: LoginExperienceProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -292,6 +294,11 @@ export function LoginExperience({
               {isLogin ? "登录你的账号，继续你的旅程" : "注册一个新账号，开启新的旅程"}
             </p>
           </div>
+          {passwordChanged ? (
+            <p className="mb-3.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs leading-5 text-emerald-800 md:mb-5">
+              密码已更新，请使用新密码登录。
+            </p>
+          ) : null}
           <AuthForm
             isLogin={isLogin}
             showPassword={showPassword}

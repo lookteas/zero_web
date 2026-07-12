@@ -2,10 +2,10 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-import { logoutAction } from "@/app/login/actions";
 import { AppShell } from "@/components/app-shell";
 import { requireLogin } from "@/lib/auth";
 
+import { SecurityPanel } from "./security-panel";
 const statusCards = [
   { label: "账号状态", value: "已登录" },
   { label: "能力中心", value: "试用开放" },
@@ -374,28 +374,6 @@ function ToolsPanel() {
   );
 }
 
-function SecurityPanel() {
-  return (
-    <section id="security-center" className="flex flex-col gap-4 rounded-[22px] border border-[oklch(88%_0.018_185)] bg-white/78 px-5 py-4 shadow-[0_12px_28px_rgba(25,83,80,0.06)] md:flex-row md:items-center md:justify-between md:px-6">
-      <div className="min-w-0">
-        <span className="text-[12px] font-bold tracking-[0.08em] text-[oklch(50%_0.095_175)]">账号安全</span>
-        <h2 className="mt-1 text-[18px] font-bold text-[oklch(24%_0.042_215)]">登录与安全设置</h2>
-      </div>
-      <div className="grid gap-2 sm:grid-cols-2 md:flex md:items-center md:gap-3">
-        <div className="flex min-h-[44px] items-center justify-between gap-4 rounded-[14px] border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3">
-          <span className="text-[13px] font-semibold text-[var(--foreground)]">密码修改</span>
-          <span className="text-[12px] text-[var(--foreground-faint)]">待开放</span>
-        </div>
-        <form action={logoutAction}>
-          <button type="submit" className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[14px] border border-[var(--border-soft)] bg-white px-4 text-[13px] font-semibold text-[var(--foreground)] transition hover:border-[oklch(50%_0.095_175)] hover:text-[oklch(50%_0.095_175)] md:w-auto">
-            退出登录
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-
 function SideCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="rounded-[26px] border border-[oklch(88%_0.018_185)] bg-white/80 p-5 shadow-[0_18px_42px_rgba(25,83,80,0.10)]">
@@ -449,8 +427,14 @@ function PersonalAside() {
   );
 }
 
-export default async function MePage() {
+type MePageProps = {
+  searchParams: Promise<{ passwordError?: string }>;
+};
+
+export default async function MePage({ searchParams }: MePageProps) {
   await requireLogin();
+
+  const query = await searchParams;
 
   const cookieStore = await cookies();
   const account = cookieStore.get("zero_user_account")?.value || "当前账号";
@@ -464,7 +448,7 @@ export default async function MePage() {
         <div className="grid gap-5">
           <TodayPanel />
           <ToolsPanel />
-          <SecurityPanel />
+          <SecurityPanel passwordError={Boolean(query.passwordError)} />
         </div>
         <PersonalAside />
       </div>
